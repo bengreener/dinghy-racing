@@ -27,9 +27,9 @@ class RaceTests {
 	}
 	
 	@Test
-	void setTime() {
-		race.setTime(LocalTime.of(16, 47));
-		assertEquals(race.getTime(), LocalTime.of(16, 47));
+	void setPlannedStartTime() {
+		race.setPlannedStartTime(LocalTime.of(16, 47));
+		assertEquals(race.getPlannedStartTime(), LocalTime.of(16, 47));
 	}
 	
 }

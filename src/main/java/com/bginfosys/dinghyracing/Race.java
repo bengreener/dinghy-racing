@@ -5,7 +5,7 @@ import java.time.LocalTime;
 
 public class Race {
 	private LocalDate date;
-	private LocalTime time;
+	private LocalTime plannedStartTime;
 	
 	public Race() {	
 	}
@@ -18,11 +18,11 @@ public class Race {
 		return date;
 	}
 	
-	public void setTime(LocalTime time) {
-		this.time = time;
+	public void setPlannedStartTime(LocalTime time) {
+		plannedStartTime = time;
 	}
 	
-	public LocalTime getTime() {
-		return time;
+	public LocalTime getPlannedStartTime() {
+		return plannedStartTime;
 	}
 }
