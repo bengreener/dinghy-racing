@@ -7,8 +7,6 @@ import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.bginfosys.dinghyracing.race.Race;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 
