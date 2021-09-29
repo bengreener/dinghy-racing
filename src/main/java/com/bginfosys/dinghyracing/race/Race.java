@@ -1,4 +1,4 @@
-package com.bginfosys.dinghyracing;
+package com.bginfosys.dinghyracing.race;
 
 import java.time.LocalDate;
 import java.time.LocalTime;

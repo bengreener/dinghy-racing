@@ -1,4 +1,4 @@
-package com.bginfosys.dinghyracing;
+package com.bginfosys.dinghyracing.race;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.test.context.SpringBootTest;
+
+import com.bginfosys.dinghyracing.race.Race;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
