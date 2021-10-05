@@ -18,6 +18,11 @@ public class Race {
 	public Race() {	
 	}
 	
+	public Race(LocalDate date, LocalTime plannedStartTime) {
+		this.date = date;
+		this.plannedStartTime = plannedStartTime;
+	}
+	
 	public void setDate(LocalDate date) {
 		this.date = date;
 	}
