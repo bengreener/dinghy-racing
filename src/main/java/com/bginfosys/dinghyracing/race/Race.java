@@ -12,15 +12,26 @@ public class Race {
 	
 	private @Id @GeneratedValue Long id;
 	
+	private String name;
 	private LocalDate date;
 	private LocalTime plannedStartTime;
 	
 	public Race() {	
 	}
 	
-	public Race(LocalDate date, LocalTime plannedStartTime) {
+	public Race(String name, LocalDate date, LocalTime plannedStartTime) {
+		this.name = name;
 		this.date = date;
 		this.plannedStartTime = plannedStartTime;
+	}
+	
+	
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	public String getName() {
+		return this.name;
 	}
 	
 	public void setDate(LocalDate date) {
