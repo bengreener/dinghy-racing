@@ -14,7 +14,7 @@ public class RaceWebSocketConfiguration implements WebSocketMessageBrokerConfigu
 		
 		@Override
 		public void registerStompEndpoints(StompEndpointRegistry registry) {
-			registry.addEndpoint("/dinghyracing").withSockJS();
+			registry.addEndpoint("/dinghyracing/messages").withSockJS();
 		}
 		
 		@Override
