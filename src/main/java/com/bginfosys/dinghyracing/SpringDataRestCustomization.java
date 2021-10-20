@@ -1,4 +1,4 @@
-package com.bginfosys.dinghyracing.race;
+package com.bginfosys.dinghyracing;
 
 import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurer;
 import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
