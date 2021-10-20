@@ -17,6 +17,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class Race {
 	
 	private @Id @GeneratedValue Long id;
+	private @Version @JsonIgnore Long version;
 	
 	@NotNull
 	private String name;
@@ -27,7 +28,7 @@ public class Race {
 	@NotNull
 	private LocalTime plannedStartTime;
 	
-	private @Version @JsonIgnore Long version;
+	public Race() {}
 	
 	public Race(String name, LocalDate date, LocalTime plannedStartTime) {
 		this.name = name;
