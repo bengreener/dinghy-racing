@@ -8,6 +8,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Version;
 
+import javax.validation.constraints.NotNull;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
@@ -16,8 +18,13 @@ public class Race {
 	
 	private @Id @GeneratedValue Long id;
 	
+	@NotNull
 	private String name;
+	
+	@NotNull
 	private LocalDate date;
+	
+	@NotNull
 	private LocalTime plannedStartTime;
 	
 	private @Version @JsonIgnore Long version;
