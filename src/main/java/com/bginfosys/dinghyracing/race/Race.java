@@ -6,6 +6,10 @@ import java.time.LocalTime;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Version;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 @Entity
 public class Race {
@@ -16,6 +20,8 @@ public class Race {
 	private LocalDate date;
 	private LocalTime plannedStartTime;
 	
+	private @Version @JsonIgnore Long version;
+	
 	public Race() {	
 	}
 	
@@ -25,6 +31,13 @@ public class Race {
 		this.plannedStartTime = plannedStartTime;
 	}
 	
+	public Long getId() {
+		return id;
+	}
+	
+	public void setId(Long id) {
+		this.id = id;
+	}
 	
 	public void setName(String name) {
 		this.name = name;
