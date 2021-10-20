@@ -29,9 +29,6 @@ public class Race {
 	
 	private @Version @JsonIgnore Long version;
 	
-	public Race() {	
-	}
-	
 	public Race(String name, LocalDate date, LocalTime plannedStartTime) {
 		this.name = name;
 		this.date = date;

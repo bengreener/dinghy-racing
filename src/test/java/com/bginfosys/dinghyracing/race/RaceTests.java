@@ -3,7 +3,6 @@ package com.bginfosys.dinghyracing.race;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-// import static org.hamcrest.CoreMatchers.instanceOf;
 
 import org.junit.jupiter.api.Test;
 
@@ -12,7 +11,7 @@ import java.time.LocalTime;
 
 class RaceTests {
 
-	private Race race = new Race();
+	private Race race = new Race("Test Race", LocalDate.of(2021, 10, 14), LocalTime.of(14, 10));
 	
 	@Test
 	void raceCreated() {
