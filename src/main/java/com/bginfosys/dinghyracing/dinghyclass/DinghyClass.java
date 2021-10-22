@@ -18,6 +18,8 @@ public class DinghyClass {
 	@NotNull
 	private String name;
 
+	//Required by JPA
+	//Not recommended by Spring Data
 	public DinghyClass() {}
 	
 	public DinghyClass(String name) {

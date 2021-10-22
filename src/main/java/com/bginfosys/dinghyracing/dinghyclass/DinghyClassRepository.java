@@ -4,7 +4,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
-@RepositoryRestResource(path = "dinghyclasses")
+@RepositoryRestResource(path = "dinghyclasses") //, exported = false)
 public interface DinghyClassRepository extends PagingAndSortingRepository<DinghyClass, Long> {
 
 	@Override
@@ -15,4 +15,5 @@ public interface DinghyClassRepository extends PagingAndSortingRepository<Dinghy
 
 	@Override
 	void delete(@Param("dinghyClass") DinghyClass dinghyClass);
+	
 }

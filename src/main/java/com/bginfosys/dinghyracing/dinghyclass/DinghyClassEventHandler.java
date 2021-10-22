@@ -1,6 +1,5 @@
 package com.bginfosys.dinghyracing.dinghyclass;
 
-import static com.bginfosys.dinghyracing.dinghyclass.DinghyClassWebSocketConfiguration.*;
 import static com.bginfosys.dinghyracing.dinghyclass.DinghyClassWebSocketConfiguration.MESSAGE_PREFIX;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +10,6 @@ import org.springframework.data.rest.core.annotation.RepositoryEventHandler;
 import org.springframework.hateoas.server.EntityLinks;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
-
-import com.bginfosys.dinghyracing.race.Race;
 
 @Component
 @RepositoryEventHandler(DinghyClass.class)

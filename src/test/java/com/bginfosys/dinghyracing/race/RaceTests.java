@@ -9,9 +9,11 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+import com.bginfosys.dinghyracing.dinghyclass.DinghyClass;
+
 class RaceTests {
 
-	private Race race = new Race("Test Race", LocalDate.of(2021, 10, 14), LocalTime.of(14, 10));
+	private Race race = new Race("Test Race", LocalDate.of(2021, 10, 14), LocalTime.of(14, 10), new DinghyClass("Test"));
 	
 	@Test
 	void raceCreated() {
