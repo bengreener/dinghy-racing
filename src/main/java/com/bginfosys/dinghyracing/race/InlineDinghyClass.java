@@ -1,7 +1,8 @@
 package com.bginfosys.dinghyracing.race;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+//import java.time.LocalDate;
+//import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 import org.springframework.data.rest.core.config.Projection;
 
@@ -12,9 +13,10 @@ interface InlineDinghyClass {
 	
 	String getName();
 	
-	LocalDate getDate();
+	//LocalDate getDate();
 	
-	LocalTime getPlannedStartTime();
+	//LocalTime getPlannedStartTime();
+	LocalDateTime getPlannedStartTime();
 	
 	DinghyClass getDinghyClass();
 }

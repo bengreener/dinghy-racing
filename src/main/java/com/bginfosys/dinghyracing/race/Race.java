@@ -1,7 +1,8 @@
 package com.bginfosys.dinghyracing.race;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+//import java.time.LocalDate;
+//import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -24,11 +25,12 @@ public class Race {
 	@NotNull
 	private String name;
 	
-	@NotNull
-	private LocalDate date;
+	//@NotNull
+	//private LocalDate date;
 	
 	@NotNull
-	private LocalTime plannedStartTime;
+	//private LocalTime plannedStartTime;
+	private LocalDateTime plannedStartTime;
 	
 	private @ManyToOne DinghyClass dinghyClass;
 	
@@ -36,9 +38,10 @@ public class Race {
 	//Not recommended by Spring Data
 	public Race() {}
 	
-	public Race(String name, LocalDate date, LocalTime plannedStartTime, DinghyClass dinghyClass) {
+	//public Race(String name, LocalDate date, LocalTime plannedStartTime, DinghyClass dinghyClass) {
+	public Race(String name, LocalDateTime plannedStartTime, DinghyClass dinghyClass) {
 		this.name = name;
-		this.date = date;
+		//this.date = date;
 		this.plannedStartTime = plannedStartTime;
 		this.dinghyClass = dinghyClass;
 	}
@@ -58,7 +61,7 @@ public class Race {
 	public String getName() {
 		return this.name;
 	}
-	
+	/*
 	public void setDate(LocalDate date) {
 		this.date = date;
 	}
@@ -72,6 +75,14 @@ public class Race {
 	}
 	
 	public LocalTime getPlannedStartTime() {
+		return plannedStartTime;
+	}
+	*/
+	public void setPlannedStartTime(LocalDateTime plannedStartTime) {
+		this.plannedStartTime = plannedStartTime;
+	}
+	
+	public LocalDateTime getPlannedStartTime() {
 		return plannedStartTime;
 	}
 	
