@@ -1,34 +1,49 @@
 package com.bginfosys.dinghyracing.race;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+//import java.time.LocalDate;
+//import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Version;
+import javax.persistence.ManyToOne;
+
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import com.bginfosys.dinghyracing.dinghyclass.DinghyClass;
 
 @Entity
 public class Race {
 	
 	private @Id @GeneratedValue Long id;
-	
-	private String name;
-	private LocalDate date;
-	private LocalTime plannedStartTime;
-	
 	private @Version @JsonIgnore Long version;
 	
-	public Race() {	
-	}
+	@NotNull
+	private String name;
 	
-	public Race(String name, LocalDate date, LocalTime plannedStartTime) {
+	//@NotNull
+	//private LocalDate date;
+	
+	@NotNull
+	//private LocalTime plannedStartTime;
+	private LocalDateTime plannedStartTime;
+	
+	private @ManyToOne DinghyClass dinghyClass;
+	
+	//Required by JPA
+	//Not recommended by Spring Data
+	public Race() {}
+	
+	//public Race(String name, LocalDate date, LocalTime plannedStartTime, DinghyClass dinghyClass) {
+	public Race(String name, LocalDateTime plannedStartTime, DinghyClass dinghyClass) {
 		this.name = name;
-		this.date = date;
+		//this.date = date;
 		this.plannedStartTime = plannedStartTime;
+		this.dinghyClass = dinghyClass;
 	}
 	
 	public Long getId() {
@@ -46,7 +61,7 @@ public class Race {
 	public String getName() {
 		return this.name;
 	}
-	
+	/*
 	public void setDate(LocalDate date) {
 		this.date = date;
 	}
@@ -62,4 +77,21 @@ public class Race {
 	public LocalTime getPlannedStartTime() {
 		return plannedStartTime;
 	}
+	*/
+	public void setPlannedStartTime(LocalDateTime plannedStartTime) {
+		this.plannedStartTime = plannedStartTime;
+	}
+	
+	public LocalDateTime getPlannedStartTime() {
+		return plannedStartTime;
+	}
+	
+	public DinghyClass getDinghyClass() {
+		return dinghyClass;
+	}
+
+	public void setDinghyClass(DinghyClass dinghyClass) {
+		this.dinghyClass = dinghyClass;
+	}
+
 }
