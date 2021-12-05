@@ -6,9 +6,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
+import com.bginfosys.dinghyracing.dinghyclass.DinghyClass;
+
 class DinghyTests {
 	
-	private Dinghy dinghy = new Dinghy("2689");
+	private Dinghy dinghy = new Dinghy("2689", new DinghyClass("Scorpion"));
 	
 	@Test
 	void dinghyCreated() {
@@ -37,5 +39,18 @@ class DinghyTests {
 	void sailNumberIsString() {
 		dinghy.setSailNumber("1859");
 		assertTrue(dinghy.getSailNumber() instanceof String);
+	}
+	
+	@Test
+	void setDinghyClass() {
+		DinghyClass dc = new DinghyClass("Comet");
+		dinghy.setDinghyClass(dc);
+		assertEquals(dinghy.getDinghyClass(), dc);
+	}
+	
+	@Test
+	void dinghyClassIsDinghyClass() {
+		dinghy.setDinghyClass(new DinghyClass("Comet"));
+		assertTrue(dinghy.getDinghyClass() instanceof DinghyClass);
 	}
 }

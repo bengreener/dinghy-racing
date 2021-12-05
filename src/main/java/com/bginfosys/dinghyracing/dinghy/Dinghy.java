@@ -4,10 +4,13 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Version;
+import javax.persistence.ManyToOne;
 
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import com.bginfosys.dinghyracing.dinghyclass.DinghyClass;
 
 @Entity
 public class Dinghy {
@@ -18,10 +21,14 @@ public class Dinghy {
 	@NotNull
 	private String sailNumber;
 	
+	@ManyToOne
+	private DinghyClass dinghyClass;
+	
 	public Dinghy() {}
 	
-	public Dinghy(String sailNumber) {
+	public Dinghy(String sailNumber, DinghyClass dinghyClass) {
 		this.sailNumber = sailNumber;
+		this.dinghyClass = dinghyClass;
 	}
 	
 	public Long getId() {
@@ -38,6 +45,14 @@ public class Dinghy {
 	
 	public void setSailNumber(String sailNumber) {
 		this.sailNumber = sailNumber;
+	}
+	
+	public DinghyClass getDinghyClass() {
+		return this.dinghyClass;
+	}
+	
+	public void setDinghyClass(DinghyClass dinghyClass) {
+		this.dinghyClass = dinghyClass;
 	}
 
 }
