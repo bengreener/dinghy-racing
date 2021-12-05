@@ -4,6 +4,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.CoreMatchers.equalTo;
+
+import org.assertj.core.util.Arrays;
 import org.junit.jupiter.api.Test;
 
 //import java.time.LocalDate;
@@ -11,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDateTime;
 
 import com.bginfosys.dinghyracing.dinghyclass.DinghyClass;
+import com.bginfosys.dinghyracing.dinghy.Dinghy;
 
 class RaceTests {
 
@@ -46,32 +52,6 @@ class RaceTests {
 		assertTrue(race.getName() instanceof String);
 	}
 	
-	/*
-	@Test
-	void setDate() {
-		race.setDate(LocalDate.of(2021, 9, 27));
-		assertEquals(race.getDate(), LocalDate.of(2021, 9, 27));
-	}
-	
-	@Test
-	void dateIsLocalDate() {
-		race.setDate(LocalDate.of(2021, 9, 27));
-		assertTrue(race.getDate() instanceof LocalDate);
-	}
-	
-	
-	@Test
-	void setPlannedStartTime() {
-		race.setPlannedStartTime(LocalTime.of(16, 47));
-		assertEquals(race.getPlannedStartTime(), LocalTime.of(16, 47));
-	}
-	
-	@Test
-	void plannedStartTimeIsLocalTime() {
-		race.setPlannedStartTime(LocalTime.of(16, 47));
-		assertTrue(race.getPlannedStartTime() instanceof LocalTime);
-	}
-	*/
 	@Test
 	void setPlannedStartTime() {
 		race.setPlannedStartTime(LocalDateTime.of(2021, 9, 27, 16, 47));
@@ -82,5 +62,13 @@ class RaceTests {
 	void plannedStartTimeIsLocalDateTime() {
 		race.setPlannedStartTime(LocalDateTime.of(2021, 9, 27, 16, 47));
 		assertTrue(race.getPlannedStartTime() instanceof LocalDateTime);
+	}
+	
+	@Test
+	void signUpDinghy() {
+		DinghyClass dc = new DinghyClass("Scorpion");
+		Dinghy d = new Dinghy("1234", dc);
+		race.signUpDinghy(d);
+		//assertThat(race.getSignedUp(), contains(Arrays.asList(equalTo(d))));
 	}
 }

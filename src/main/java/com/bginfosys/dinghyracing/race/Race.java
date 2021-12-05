@@ -10,6 +10,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import java.util.Set;
+import java.util.HashSet;
 
 import javax.validation.constraints.NotNull;
 
@@ -86,5 +87,12 @@ public class Race {
 	/*public void setSignedUp(Set<Dinghy> signedUp) {
 		this.signedUp = signedUp;
 	}*/
+	
+	public void signUpDinghy(Dinghy dinghy) {
+		if (this.signedUp == null) {
+			this.signedUp = new HashSet<Dinghy>();
+		}
+		signedUp.add(dinghy);
+	}
 	
 }
