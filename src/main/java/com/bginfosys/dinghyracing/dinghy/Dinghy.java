@@ -55,4 +55,7 @@ public class Dinghy {
 		this.dinghyClass = dinghyClass;
 	}
 
+	public String toString() {
+		return sailNumber + ", " + dinghyClass.getName();
+	}
 }

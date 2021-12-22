@@ -1,6 +1,7 @@
 package com.bginfosys.dinghyracing.dinghy;
 
 import java.util.List;
+import java.util.Optional;
 
 //import org.springframework.data.domain.Page;
 
@@ -23,7 +24,7 @@ public interface DinghyRepository extends PagingAndSortingRepository<Dinghy, Lon
 	@Override
 	void delete(@Param("dinghy") Dinghy dinghy);	
 	
-	Dinghy findByDinghyClassAndSailNumber(DinghyClass dinghyClass, String sailNumber);
+	Optional<Dinghy> findByDinghyClassAndSailNumber(DinghyClass dinghyClass, String sailNumber);
 
 
 }

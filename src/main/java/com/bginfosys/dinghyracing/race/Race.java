@@ -8,6 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.Version;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import java.util.Set;
 import java.util.HashSet;
@@ -20,6 +22,7 @@ import com.bginfosys.dinghyracing.dinghy.Dinghy;
 import com.bginfosys.dinghyracing.dinghyclass.DinghyClass;
 
 @Entity
+@Table(uniqueConstraints=@UniqueConstraint(columnNames={"name", "dinghy_class_id"}))
 public class Race {
 	
 	private @Id @GeneratedValue Long id;
@@ -95,4 +98,7 @@ public class Race {
 		signedUp.add(dinghy);
 	}
 	
+	public String toString() {
+		return (name + ", " + plannedStartTime.toString() + ", " + dinghyClass.getName());
+	}
 }
