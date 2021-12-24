@@ -26,4 +26,6 @@ public class DinghyClassTests {
 	void nameIsString() {
 		assertTrue(dinghyClass.getName() instanceof String);
 	}
+	
+	
 }

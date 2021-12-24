@@ -21,6 +21,7 @@ public class Dinghy {
 	@NotNull
 	private String sailNumber;
 	
+	@NotNull
 	@ManyToOne
 	private DinghyClass dinghyClass;
 	
