@@ -5,6 +5,8 @@ import org.springframework.data.repository.query.Param;
 
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
+//import com.bginfosys.dinghyracing.dinghyclass.DinghyClass;
+
 @RepositoryRestResource(excerptProjection = InlineDinghyClass.class)
 public interface RaceRepository extends PagingAndSortingRepository<Race, Long> {
 
@@ -16,5 +18,7 @@ public interface RaceRepository extends PagingAndSortingRepository<Race, Long> {
 
 	@Override
 	void delete(@Param("race") Race race);
+	
+	//Optional<Race> findByDinghyClass(@Param("dinghyclass") DinghyClass dinghyClass);
 	
 }
