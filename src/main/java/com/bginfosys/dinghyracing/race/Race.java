@@ -1,7 +1,5 @@
 package com.bginfosys.dinghyracing.race;
 
-//import java.time.LocalDate;
-//import java.time.LocalTime;
 import java.time.LocalDateTime;
 
 import javax.persistence.Entity;
@@ -9,14 +7,22 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Version;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+
+import java.util.Set;
+import java.util.HashSet;
 
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import com.bginfosys.dinghyracing.dinghy.Dinghy;
 import com.bginfosys.dinghyracing.dinghyclass.DinghyClass;
 
 @Entity
+@Table(uniqueConstraints=@UniqueConstraint(columnNames={"name", "dinghy_class_id"}))
 public class Race {
 	
 	private @Id @GeneratedValue Long id;
@@ -25,14 +31,14 @@ public class Race {
 	@NotNull
 	private String name;
 	
-	//@NotNull
-	//private LocalDate date;
-	
 	@NotNull
-	//private LocalTime plannedStartTime;
 	private LocalDateTime plannedStartTime;
 	
-	private @ManyToOne DinghyClass dinghyClass;
+	@ManyToOne
+	private DinghyClass dinghyClass;
+	
+	@OneToMany
+	private Set<Dinghy> signedUp;
 	
 	//Required by JPA
 	//Not recommended by Spring Data
@@ -41,7 +47,6 @@ public class Race {
 	//public Race(String name, LocalDate date, LocalTime plannedStartTime, DinghyClass dinghyClass) {
 	public Race(String name, LocalDateTime plannedStartTime, DinghyClass dinghyClass) {
 		this.name = name;
-		//this.date = date;
 		this.plannedStartTime = plannedStartTime;
 		this.dinghyClass = dinghyClass;
 	}
@@ -61,23 +66,7 @@ public class Race {
 	public String getName() {
 		return this.name;
 	}
-	/*
-	public void setDate(LocalDate date) {
-		this.date = date;
-	}
-	
-	public LocalDate getDate() {
-		return date;
-	}
-	
-	public void setPlannedStartTime(LocalTime time) {
-		plannedStartTime = time;
-	}
-	
-	public LocalTime getPlannedStartTime() {
-		return plannedStartTime;
-	}
-	*/
+
 	public void setPlannedStartTime(LocalDateTime plannedStartTime) {
 		this.plannedStartTime = plannedStartTime;
 	}
@@ -93,5 +82,23 @@ public class Race {
 	public void setDinghyClass(DinghyClass dinghyClass) {
 		this.dinghyClass = dinghyClass;
 	}
-
+	
+	public Set<Dinghy> getSignedUp() {
+		return signedUp;
+	}
+	
+	/*public void setSignedUp(Set<Dinghy> signedUp) {
+		this.signedUp = signedUp;
+	}*/
+	
+	public void signUpDinghy(Dinghy dinghy) {
+		if (this.signedUp == null) {
+			this.signedUp = new HashSet<Dinghy>();
+		}
+		signedUp.add(dinghy);
+	}
+	
+	public String toString() {
+		return (name + ", " + plannedStartTime.toString() + ", " + dinghyClass.getName());
+	}
 }
