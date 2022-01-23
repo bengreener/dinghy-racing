@@ -21,6 +21,7 @@ public class Dinghy {
 	@NotNull
 	private String sailNumber;
 	
+	@NotNull
 	@ManyToOne
 	private DinghyClass dinghyClass;
 	
@@ -55,4 +56,7 @@ public class Dinghy {
 		this.dinghyClass = dinghyClass;
 	}
 
+	public String toString() {
+		return sailNumber + ", " + dinghyClass.getName();
+	}
 }
