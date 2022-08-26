@@ -1,10 +1,10 @@
 package com.bginfosys.dinghyracing.web.rest;
 
-import org.junit.jupiter.api.Test;
+//import org.junit.jupiter.api.Test;
 
-import com.bginfosys.dinghyracing.model.DinghyClass;
+//import com.bginfosys.dinghyracing.model.DinghyClass;
 
-import java.time.LocalDateTime;
+//import java.time.LocalDateTime;
 
 public class InlineDinghyClassTests {
 

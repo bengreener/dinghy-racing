@@ -18,6 +18,7 @@ import com.bginfosys.dinghyracing.model.DinghyInlineDinghyClass;
 @RepositoryRestResource(excerptProjection = DinghyInlineDinghyClass.class)
 public interface DinghyRepository extends PagingAndSortingRepository<Dinghy, Long> {
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	Dinghy save(@Param("dinghy") Dinghy dinghy);
 	

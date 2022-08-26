@@ -13,8 +13,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.bginfosys.dinghyracing.model.Dinghy;
 import com.bginfosys.dinghyracing.model.DinghyClass;
-import com.bginfosys.dinghyracing.persistence.DinghyClassRepository;
-import com.bginfosys.dinghyracing.persistence.DinghyRepository;
+//import com.bginfosys.dinghyracing.persistence.DinghyClassRepository;
+//import com.bginfosys.dinghyracing.persistence.DinghyRepository;
 
 @DataJpaTest
 public class DinghyRepositoryTests {

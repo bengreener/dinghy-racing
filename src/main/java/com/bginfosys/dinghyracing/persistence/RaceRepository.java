@@ -13,6 +13,7 @@ import com.bginfosys.dinghyracing.model.Race;
 @RepositoryRestResource(excerptProjection = RaceInlineDinghyClass.class)
 public interface RaceRepository extends PagingAndSortingRepository<Race, Long> {
 
+	@SuppressWarnings("unchecked")
 	@Override
 	Race save(@Param("race") Race race);
 

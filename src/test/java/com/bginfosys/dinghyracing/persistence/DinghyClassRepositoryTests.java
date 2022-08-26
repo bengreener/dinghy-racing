@@ -8,7 +8,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.DataIntegrityViolationException;
 
 import com.bginfosys.dinghyracing.model.DinghyClass;
-import com.bginfosys.dinghyracing.persistence.DinghyClassRepository;
+//import com.bginfosys.dinghyracing.persistence.DinghyClassRepository;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
