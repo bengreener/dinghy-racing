@@ -33,7 +33,11 @@
         <appender-ref ref="RollingFile" />
         <appender-ref ref="Console" />
     </root>
-
+    <!-- LOG "org.springframework.data.repository*" at DEBUG level -->
+    <!-- logger name="org.springframework.data.repository" level="debig" additivity="false" -->
+        <!-- appender-ref ref="RollingFile" / -->
+        <!-- appender-ref ref="Console" / -->
+    <!-- /logger -->
     <!-- LOG "com.bginfosys*" at TRACE level -->
     <logger name="com.bginfosys" level="trace" additivity="false">
         <appender-ref ref="RollingFile" />

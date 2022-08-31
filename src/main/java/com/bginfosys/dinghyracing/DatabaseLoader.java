@@ -41,6 +41,11 @@ public class DatabaseLoader implements CommandLineRunner {
 		this.dinghies.save(d1);
 		this.dinghies.save(d2);
 		
+		DinghyClass dc2 = new DinghyClass("Graduate");
+		Dinghy d3 = new Dinghy("2726", dc2);
+		this.dinghyClasses.save(dc2);
+		this.dinghies.save(d3);
+		
 		//this.races.save(new Race("Scorpion A", LocalDate.of(2021, 10, 14), LocalTime.of(14, 10), dc));
 		//this.races.save(new Race("Scorpion A", LocalDateTime.of(2021, 10, 14, 14, 10), dc));
 		//this.races.save(new Race("Test", LocalDate.of(2022, 10, 10), LocalTime.of(15, 35)));
