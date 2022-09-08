@@ -32,26 +32,31 @@ public class DatabaseLoader implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		DinghyClass dc = new DinghyClass("Scorpion");
-		Dinghy d1 = new Dinghy("1234", dc);
-		Dinghy d2 = new Dinghy("6745", dc);
-		Race r = new Race("Scorpion A", LocalDateTime.of(2021, 10, 14, 14, 10), dc);
-		
 		this.dinghyClasses.save(dc);
 		
+		Dinghy d1 = new Dinghy("1234", dc);
+		Dinghy d2 = new Dinghy("6745", dc);
 		this.dinghies.save(d1);
 		this.dinghies.save(d2);
 		
+		Race r = new Race("Scorpion A", LocalDateTime.of(2021, 10, 14, 14, 10), dc);
+		this.races.save(r);
+		
 		DinghyClass dc2 = new DinghyClass("Graduate");
-		Dinghy d3 = new Dinghy("2726", dc2);
 		this.dinghyClasses.save(dc2);
+		
+		Dinghy d3 = new Dinghy("2726", dc2);
 		this.dinghies.save(d3);
+		
+		Race r2 = new Race("Graduate A", LocalDateTime.of(2021, 10, 14, 10, 30), dc2);
+		this.races.save(r2);
 		
 		//this.races.save(new Race("Scorpion A", LocalDate.of(2021, 10, 14), LocalTime.of(14, 10), dc));
 		//this.races.save(new Race("Scorpion A", LocalDateTime.of(2021, 10, 14, 14, 10), dc));
 		//this.races.save(new Race("Test", LocalDate.of(2022, 10, 10), LocalTime.of(15, 35)));
-		this.races.save(r);
 		
 		r.signUpDinghy(d1);
+		r.signUpDinghy(d2);
 		this.races.save(r);
 	}
 
