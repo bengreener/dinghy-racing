@@ -51,6 +51,9 @@ public class DatabaseLoader implements CommandLineRunner {
 		Race r2 = new Race("Graduate A", LocalDateTime.of(2021, 10, 14, 10, 30), dc2);
 		this.races.save(r2);
 		
+//		Race r3 = new Race("Graduate B", LocalDateTime.of(2021, 10, 15, 12, 30), dc2);
+//		this.races.save(r3);
+		
 		//this.races.save(new Race("Scorpion A", LocalDate.of(2021, 10, 14), LocalTime.of(14, 10), dc));
 		//this.races.save(new Race("Scorpion A", LocalDateTime.of(2021, 10, 14, 14, 10), dc));
 		//this.races.save(new Race("Test", LocalDate.of(2022, 10, 10), LocalTime.of(15, 35)));
@@ -58,6 +61,12 @@ public class DatabaseLoader implements CommandLineRunner {
 		r.signUpDinghy(d1);
 		r.signUpDinghy(d2);
 		this.races.save(r);
+		
+//		r2.signUpDinghy(d3);
+//		this.races.save(r2);
+		
+//		r3.signUpDinghy(d3);
+//		this.races.save(r3);
 	}
 
 }
