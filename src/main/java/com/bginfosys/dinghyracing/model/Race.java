@@ -5,9 +5,9 @@ import java.time.LocalDateTime;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.Version;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -34,7 +34,7 @@ public class Race {
 	@ManyToOne
 	private DinghyClass dinghyClass;
 	
-	@OneToMany
+	@ManyToMany
 	private Set<Dinghy> signedUp;
 	
 	//Required by JPA
