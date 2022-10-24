@@ -11,6 +11,6 @@ public class SpringDataRestCustomization implements RepositoryRestConfigurer {
 
 	@Override
 	public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config, CorsRegistry cors) {
-		cors.addMapping("/dinghyracing/**");
+		cors.addMapping("/dinghyracing/**").allowedMethods("GET", "HEAD", "POST", "PUT", "PATCH");
 	}
 }
