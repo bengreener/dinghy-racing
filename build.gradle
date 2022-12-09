@@ -1,12 +1,13 @@
 plugins {
-	id 'org.springframework.boot' version '2.5.5'
+	id 'org.springframework.boot' version '2.7.5'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
 }
 
 group = 'com.bginfosys'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '16'
+//sourceCompatibility = '16'
+sourceCompatibility = '11'
 
 
 repositories {
@@ -20,7 +21,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	runtimeOnly 'com.h2database:h2'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'	
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	//testImplementation 'org.junit.vintage:junit-vintage-engine'
 }
 
