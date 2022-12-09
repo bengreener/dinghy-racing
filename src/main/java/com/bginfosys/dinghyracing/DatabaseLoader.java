@@ -1,7 +1,7 @@
 package com.bginfosys.dinghyracing;
 
 import org.springframework.boot.CommandLineRunner;
-
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import com.bginfosys.dinghyracing.model.Dinghy;
@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+@Profile("dev")
 @Component
 public class DatabaseLoader implements CommandLineRunner {
 
