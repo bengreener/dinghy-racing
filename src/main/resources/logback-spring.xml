@@ -34,7 +34,7 @@
         <appender-ref ref="Console" />
     </root>
     <!-- LOG "org.springframework.data.repository*" at DEBUG level -->
-    <!-- logger name="org.springframework.data.repository" level="debig" additivity="false" -->
+    <!-- logger name="org.springframework.data.repository" level="debug" additivity="false" -->
         <!-- appender-ref ref="RollingFile" / -->
         <!-- appender-ref ref="Console" / -->
     <!-- /logger -->

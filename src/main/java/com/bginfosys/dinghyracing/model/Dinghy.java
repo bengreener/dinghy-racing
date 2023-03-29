@@ -8,6 +8,8 @@ import javax.persistence.ManyToOne;
 
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.NaturalId;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
@@ -16,9 +18,11 @@ public class Dinghy {
 	private @Id @GeneratedValue Long id;
 	private @Version @JsonIgnore Long version;
 	
+	@NaturalId
 	@NotNull
 	private String sailNumber;
 	
+	@NaturalId
 	@NotNull
 	@ManyToOne
 	private DinghyClass dinghyClass;
