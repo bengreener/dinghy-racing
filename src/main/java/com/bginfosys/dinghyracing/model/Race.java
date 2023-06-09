@@ -84,9 +84,9 @@ public class Race {
 		return signedUp;
 	}
 	
-	/*public void setSignedUp(Set<Dinghy> signedUp) {
+	public void setSignedUp(Set<Dinghy> signedUp) {
 		this.signedUp = signedUp;
-	}*/
+	}
 	
 	public void signUpDinghy(Dinghy dinghy) {
 		if (this.signedUp == null) {
