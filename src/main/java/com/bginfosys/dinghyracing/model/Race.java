@@ -92,7 +92,9 @@ public class Race {
 		if (this.signedUp == null) {
 			this.signedUp = new HashSet<Dinghy>();
 		}
-		signedUp.add(dinghy);
+		if (this.getDinghyClass() == null || (dinghy.getDinghyClass() == this.getDinghyClass())) {
+			signedUp.add(dinghy);
+		}
 	}
 	
 	public String toString() {
