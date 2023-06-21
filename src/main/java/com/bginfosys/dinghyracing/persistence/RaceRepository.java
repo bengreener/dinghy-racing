@@ -5,11 +5,7 @@ import org.springframework.data.repository.query.Param;
 
 import com.bginfosys.dinghyracing.model.Race;
 
-public interface RaceRepository extends PagingAndSortingRepository<Race, Long> {
-
-	@SuppressWarnings("unchecked")
-	@Override
-	Race save(@Param("race") Race race);
+public interface RaceRepository extends PagingAndSortingRepository<Race, Long>, RaceRepositoryCustom {
 
 	@Override
 	void deleteById(@Param("id") Long id);

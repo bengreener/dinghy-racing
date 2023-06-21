@@ -84,15 +84,20 @@ public class Race {
 		return signedUp;
 	}
 	
-	/*public void setSignedUp(Set<Dinghy> signedUp) {
+	public void setSignedUp(Set<Dinghy> signedUp) {
 		this.signedUp = signedUp;
-	}*/
+	}
 	
 	public void signUpDinghy(Dinghy dinghy) {
 		if (this.signedUp == null) {
 			this.signedUp = new HashSet<Dinghy>();
 		}
-		signedUp.add(dinghy);
+		if (this.getDinghyClass() == null || (dinghy.getDinghyClass() == this.getDinghyClass())) {
+			signedUp.add(dinghy);
+		}
+		else {
+			throw new DinghyClassMismatchException();
+		}
 	}
 	
 	public String toString() {

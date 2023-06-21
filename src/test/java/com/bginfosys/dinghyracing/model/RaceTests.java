@@ -3,6 +3,7 @@ package com.bginfosys.dinghyracing.model;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 //import static org.hamcrest.Matchers.contains;
 //import static org.hamcrest.MatcherAssert.assertThat;
@@ -22,7 +23,8 @@ import java.time.LocalDateTime;
 class RaceTests {
 
 	//private Race race = new Race("Test Race", LocalDate.of(2021, 10, 14), LocalTime.of(14, 10), new DinghyClass("Test"));
-	private Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), new DinghyClass("Test"));
+	private DinghyClass dinghyClass = new DinghyClass("Test");
+	private Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), dinghyClass);
 	
 	@Test
 	void raceCreated() {
@@ -66,10 +68,31 @@ class RaceTests {
 	}
 	
 	@Test
-	void signUpDinghy() {
-		DinghyClass dc = new DinghyClass("Scorpion");
-		Dinghy d = new Dinghy("1234", dc);
+	void when_signingUpDinghyAndDinghyDinghyClassMatchesRaceDinghyClass_Then_dinghySignedUp() {
+//		DinghyClass dc = new DinghyClass("Test");
+		Dinghy d = new Dinghy("1234", dinghyClass);
 		race.signUpDinghy(d);
-		//assertThat(race.getSignedUp(), contains(Arrays.asList(equalTo(d))));
+		assertThat(race.getSignedUp()).contains(d);
 	}
+	
+	@Test
+	void when_signingUpDinghyClassDoesNotMatchRaceDinghyClassAndRaceDinghyClassIsNotNull_then_throwsException() {
+		DinghyClass dc = new DinghyClass("NotTest");
+		Dinghy d = new Dinghy("1234", dc);
+//		race.signUpDinghy(d);
+//		assertThat(race.getSignedUp()).doesNotContain(d);
+		assertThrows(DinghyClassMismatchException.class, () -> {
+			race.signUpDinghy(d);
+		});
+	}
+	
+	@Test
+	void when_signingUpDinghyClassDoesNotMatchRaceDinghyClassAndRaceDinghyClassIsNull_Then_dinghySignedUp() {
+		Race race1 = new Race("New Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), null);
+		Dinghy d = new Dinghy("1234", dinghyClass);
+		race1.signUpDinghy(d);
+		assertThat(race1.getSignedUp()).contains(d);
+	}
+	
+	
 }
