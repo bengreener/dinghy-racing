@@ -1,13 +1,9 @@
 package com.bginfosys.dinghyracing.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.CoreMatchers.hasItems;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.contains;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import org.assertj.core.api.AssertFactory;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 //import static org.hamcrest.Matchers.contains;
 //import static org.hamcrest.MatcherAssert.assertThat;
@@ -80,15 +76,18 @@ class RaceTests {
 	}
 	
 	@Test
-	void when_signingUpDinghyAndDinghyDinghyClassDoesNotMatchRaceDinghyClass_Then_dinghyNotSignedUp() {
+	void when_signingUpDinghyClassDoesNotMatchRaceDinghyClassAndRaceDinghyClassIsNotNull_then_throwsException() {
 		DinghyClass dc = new DinghyClass("NotTest");
 		Dinghy d = new Dinghy("1234", dc);
-		race.signUpDinghy(d);
-		assertThat(race.getSignedUp()).doesNotContain(d);
+//		race.signUpDinghy(d);
+//		assertThat(race.getSignedUp()).doesNotContain(d);
+		assertThrows(DinghyClassMismatchException.class, () -> {
+			race.signUpDinghy(d);
+		});
 	}
 	
 	@Test
-	void when_signingUpDinghyAndRaceDinghyClassIsNull_Then_dinghySignedUp() {
+	void when_signingUpDinghyClassDoesNotMatchRaceDinghyClassAndRaceDinghyClassIsNull_Then_dinghySignedUp() {
 		Race race1 = new Race("New Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), null);
 		Dinghy d = new Dinghy("1234", dinghyClass);
 		race1.signUpDinghy(d);

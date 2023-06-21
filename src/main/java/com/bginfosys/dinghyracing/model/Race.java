@@ -95,6 +95,9 @@ public class Race {
 		if (this.getDinghyClass() == null || (dinghy.getDinghyClass() == this.getDinghyClass())) {
 			signedUp.add(dinghy);
 		}
+		else {
+			throw new DinghyClassMismatchException();
+		}
 	}
 	
 	public String toString() {
