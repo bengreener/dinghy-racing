@@ -21,7 +21,6 @@ public class DinghyClassEventHandler {
 	
 	private final EntityLinks entityLinks;
 	
-	@Autowired
 	public DinghyClassEventHandler(SimpMessagingTemplate websocket, EntityLinks entityLinks) {
 		this.websocket = websocket;
 		this.entityLinks = entityLinks;

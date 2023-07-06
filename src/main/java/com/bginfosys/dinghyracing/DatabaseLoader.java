@@ -23,7 +23,6 @@ public class DatabaseLoader implements CommandLineRunner {
 	private final DinghyClassRepository dinghyClasses;
 	private final DinghyRepository dinghies;
 
-	@Autowired
 	public DatabaseLoader(RaceRepository raceRepository, DinghyClassRepository dinghyClasses, DinghyRepository dinghies) {
 		this.races = raceRepository;
 		this.dinghyClasses = dinghyClasses;

@@ -21,7 +21,6 @@ public class RaceEventHandler {
 	
 	private final EntityLinks entityLinks;
 	
-	@Autowired
 	public RaceEventHandler(SimpMessagingTemplate websocket, EntityLinks entityLinks) {
 		this.websocket = websocket;
 		this.entityLinks = entityLinks;
