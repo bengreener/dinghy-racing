@@ -19,4 +19,5 @@ public interface DinghyClassRepository extends PagingAndSortingRepository<Dinghy
 	@Override
 	void delete(@Param("dinghyClass") DinghyClass dinghyClass);
 	
+	DinghyClass findByName(@Param("name") String Name);
 }

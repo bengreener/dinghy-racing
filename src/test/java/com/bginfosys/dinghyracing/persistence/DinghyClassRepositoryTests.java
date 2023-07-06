@@ -59,4 +59,15 @@ public class DinghyClassRepositoryTests {
 			dinghyClassRepository.count();
 		});
 	}
+	
+	@Test
+	void when_searchingForADinghyClassByName_then_returnsDinghyClass() {
+		DinghyClass dc1 = new DinghyClass("TestClass");
+		dinghyClassRepository.save(dc1);
+		
+		DinghyClass dc2 = dinghyClassRepository.findByName("TestClass");
+		
+		assertThat(dc1 == dc2);
+				
+	}
 }
