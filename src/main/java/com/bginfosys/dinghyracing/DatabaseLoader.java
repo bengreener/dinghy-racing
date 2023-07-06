@@ -13,8 +13,6 @@ import com.bginfosys.dinghyracing.persistence.RaceRepository;
 
 import java.time.LocalDateTime;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 @Profile("dev")
 @Component
 public class DatabaseLoader implements CommandLineRunner {

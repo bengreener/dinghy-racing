@@ -2,7 +2,6 @@ package com.bginfosys.dinghyracing.web.websocket;
 
 import static com.bginfosys.dinghyracing.web.websocket.DinghyClassWebSocketConfiguration.MESSAGE_PREFIX;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.core.annotation.HandleAfterCreate;
 import org.springframework.data.rest.core.annotation.HandleAfterDelete;
 import org.springframework.data.rest.core.annotation.HandleAfterSave;
