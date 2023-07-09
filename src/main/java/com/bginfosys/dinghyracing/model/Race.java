@@ -16,6 +16,7 @@ import java.util.HashSet;
 
 import javax.validation.constraints.NotNull;
 
+import com.bginfosys.dinghyracing.exceptions.DinghyClassMismatchException;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity

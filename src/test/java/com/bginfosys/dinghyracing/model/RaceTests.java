@@ -12,6 +12,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 //import org.assertj.core.util.Arrays;
 import org.junit.jupiter.api.Test;
 
+import com.bginfosys.dinghyracing.exceptions.DinghyClassMismatchException;
+
 //import com.bginfosys.dinghyracing.model.Dinghy;
 //import com.bginfosys.dinghyracing.model.DinghyClass;
 //import com.bginfosys.dinghyracing.model.Race;

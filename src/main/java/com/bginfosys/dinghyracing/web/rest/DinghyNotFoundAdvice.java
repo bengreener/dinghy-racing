@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.bginfosys.dinghyracing.model.DinghyNotFoundException;
+import com.bginfosys.dinghyracing.exceptions.DinghyNotFoundException;
 
 @RestControllerAdvice
 public class DinghyNotFoundAdvice {

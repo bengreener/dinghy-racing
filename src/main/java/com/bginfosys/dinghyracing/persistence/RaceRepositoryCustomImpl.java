@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import com.bginfosys.dinghyracing.exceptions.DinghyClassMismatchException;
 import com.bginfosys.dinghyracing.model.Dinghy;
-import com.bginfosys.dinghyracing.model.DinghyClassMismatchException;
 import com.bginfosys.dinghyracing.model.Race;
 
 public class RaceRepositoryCustomImpl implements RaceRepositoryCustom {

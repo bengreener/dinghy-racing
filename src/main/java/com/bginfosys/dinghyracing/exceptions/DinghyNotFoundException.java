@@ -1,4 +1,4 @@
-package com.bginfosys.dinghyracing.model;
+package com.bginfosys.dinghyracing.exceptions;
 
 public class DinghyNotFoundException extends RuntimeException {
 	

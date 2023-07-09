@@ -1,4 +1,4 @@
-package com.bginfosys.dinghyracing.model;
+package com.bginfosys.dinghyracing.exceptions;
 
 //public class RaceNotFoundException extends RuntimeException {
 public class RaceNotFoundException extends Exception {
