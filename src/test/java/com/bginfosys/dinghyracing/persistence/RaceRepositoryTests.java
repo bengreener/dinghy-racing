@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 
 import java.util.Set;
 import java.util.HashSet;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -150,5 +151,20 @@ public class RaceRepositoryTests {
 			&& race1.getPlannedStartTime() == race2.getPlannedStartTime()
 			&& race1.getSignedUp() == race2.getSignedUp()
 		);
+	}
+
+	void when_aCollectionOfRacesAfterACertainTimeIsRequested_then_ACollectionContainingOnlyRacesThatStartAtOrAfterThatTimeIsReturned() {
+		DinghyClass dinghyClass = new DinghyClass("Test Dinghyclass");
+		
+		Race race1 = new Race("Test Race1", LocalDateTime.of(2023, 5, 13, 11, 00), dinghyClass);
+		raceRepository.save(race1);
+		Race race2 = new Race("Test Race2", LocalDateTime.of(2023, 5, 13, 12, 00), dinghyClass);
+		raceRepository.save(race2);
+		Race race3 = new Race("Test Race3", LocalDateTime.of(2023, 5, 13, 13, 00), dinghyClass);
+		raceRepository.save(race3);
+		
+		List<Race> result = raceRepository.findByPlannedStartTimeGreaterThanEqual(LocalDateTime.of(2023, 5, 13, 12, 00));
+		
+		assertThat(result).contains(race2, race3);
 	}
 }
