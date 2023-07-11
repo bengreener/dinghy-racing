@@ -25,9 +25,8 @@ public class CompetitorRepositoryTests {
 	void when_providedWithAValidInstanceOfCompetitor_then_samesCompetitor() {
 		Competitor competitor1 = new Competitor("Some Name");
 		Competitor insertedCompetitor = competitorRepository.save(competitor1);
-		Competitor competitor2 = entityManager.find(Competitor.class, insertedCompetitor.getId());
 		
-		assertThat(competitor2).isEqualTo(competitor1);
+		assertThat(entityManager.find(Competitor.class, entityManager.getId(insertedCompetitor))).isEqualTo(competitor1);
 	}
 	
 	@Test
@@ -47,7 +46,7 @@ public class CompetitorRepositoryTests {
 		entityManager.persist(competitor1);
 		
 		competitor1.setName("New Name");
-		competitorRepository.save(competitor1);
-		assertThat(entityManager.find(Competitor.class, competitor1.getId()).getName()).isEqualTo("New Name");
+		Competitor insertedCompetitor = competitorRepository.save(competitor1);
+		assertThat(entityManager.find(Competitor.class, entityManager.getId(insertedCompetitor)).getName()).isEqualTo("New Name");
 	}
 }
