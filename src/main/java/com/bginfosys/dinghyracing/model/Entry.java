@@ -30,7 +30,7 @@ public class Entry {
 
 	public Entry() {}
 	
-	public Entry(Dinghy dinghy, Competitor competitor) {
+	public Entry(Competitor competitor, Dinghy dinghy) {
 		this.dinghy = dinghy;
 		this.competitor = competitor;
 	}

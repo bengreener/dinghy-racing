@@ -16,10 +16,10 @@ public class EntryTests {
 	
 	@Test
 	void when_constructorCalled_then_itInstantiatesAndSetsPropertyValues() {
-		Dinghy dinghy = new Dinghy();
 		Competitor competitor = new Competitor();
+		Dinghy dinghy = new Dinghy();
 		
-		Entry entry = new Entry(dinghy, competitor);
+		Entry entry = new Entry(competitor, dinghy);
 		assertTrue(entry instanceof Entry);
 		assertEquals(entry.getDinghy(), dinghy);
 		assertEquals(entry.getCompetitor(), competitor);
