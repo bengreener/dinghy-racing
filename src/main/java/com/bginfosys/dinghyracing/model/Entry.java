@@ -49,12 +49,5 @@ public class Entry {
 
 	public void setCompetitor(Competitor competitor) {
 		this.competitor = competitor;
-	}
-
-	protected Long getId() {
-		return id;
-	}
-	
-	
-	
+	}	
 }
