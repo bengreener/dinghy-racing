@@ -23,4 +23,5 @@ public interface DinghyRepository extends PagingAndSortingRepository<Dinghy, Lon
 	
 	Page<Dinghy> findByDinghyClass(@Param("dinghyclass") DinghyClass dinghyClass, Pageable pageable);
 
+	Dinghy findBySailNumberAndDinghyClass(@Param("sailNumber") String sailNumber, @Param("dinghyclass") DinghyClass dinghyClass);
 }

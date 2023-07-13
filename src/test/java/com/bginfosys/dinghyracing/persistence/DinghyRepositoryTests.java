@@ -1,5 +1,6 @@
 package com.bginfosys.dinghyracing.persistence;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
@@ -93,5 +94,18 @@ public class DinghyRepositoryTests {
 		Page<Dinghy> dinghies = dinghyRepository.findByDinghyClass(dinghyClass, Pageable.ofSize(5));
 		
 		assertThat(dinghies).contains(dinghy1, dinghy2);
+	}
+	
+	@Test
+	void given_theDinghyExists_when_searcingForTheDinghyByDinghyClassAndSailNumber_then_theDinghyIsReturned() {
+		DinghyClass dinghyClass = new DinghyClass("DinghyClass");
+		entityManager.persist(dinghyClass);
+		
+		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
+		entityManager.persist(dinghy1);
+		
+		Dinghy dinghy2 = dinghyRepository.findBySailNumberAndDinghyClass("1234", dinghyClass);
+		
+		assertEquals(dinghy1, dinghy2);
 	}
 }
