@@ -1,6 +1,7 @@
 package com.bginfosys.dinghyracing.persistence;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import javax.validation.ConstraintViolationException;
@@ -48,5 +49,15 @@ public class CompetitorRepositoryTests {
 		competitor1.setName("New Name");
 		Competitor insertedCompetitor = competitorRepository.save(competitor1);
 		assertThat(entityManager.find(Competitor.class, entityManager.getId(insertedCompetitor)).getName()).isEqualTo("New Name");
+	}
+	
+	@Test
+	void given_competitorExists_when_searchingForCompetitorByName_then_returnsCompetitor() {
+		Competitor competitor1 = new Competitor("Some Name");
+		entityManager.persist(competitor1);
+		
+		Competitor competitor2 = competitorRepository.findByName("Some Name");
+		
+		assertEquals(competitor1, competitor2);
 	}
 }
