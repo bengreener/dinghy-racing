@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Version;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -35,8 +36,8 @@ public class Race {
 	@ManyToOne
 	private DinghyClass dinghyClass;
 	
-	@ManyToMany
-	private Set<Dinghy> signedUp;
+	@OneToMany
+	private Set<Entry> signedUp;
 	
 	//Required by JPA
 	//Not recommended by Spring Data
@@ -81,20 +82,20 @@ public class Race {
 		this.dinghyClass = dinghyClass;
 	}
 	
-	public Set<Dinghy> getSignedUp() {
+	public Set<Entry> getSignedUp() {
 		return signedUp;
 	}
 	
-	public void setSignedUp(Set<Dinghy> signedUp) {
+	public void setSignedUp(Set<Entry> signedUp) {
 		this.signedUp = signedUp;
 	}
 	
-	public void signUpDinghy(Dinghy dinghy) {
+	public void signUp(Entry entry) {
 		if (this.signedUp == null) {
-			this.signedUp = new HashSet<Dinghy>();
+			this.signedUp = new HashSet<Entry>();
 		}
-		if (this.getDinghyClass() == null || (dinghy.getDinghyClass() == this.getDinghyClass())) {
-			signedUp.add(dinghy);
+		if (this.getDinghyClass() == null || (entry.getDinghy().getDinghyClass() == this.getDinghyClass())) {
+			signedUp.add(entry);
 		}
 		else {
 			throw new DinghyClassMismatchException();

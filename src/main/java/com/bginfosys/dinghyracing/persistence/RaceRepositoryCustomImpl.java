@@ -10,6 +10,7 @@ import org.springframework.util.Assert;
 
 import com.bginfosys.dinghyracing.exceptions.DinghyClassMismatchException;
 import com.bginfosys.dinghyracing.model.Dinghy;
+import com.bginfosys.dinghyracing.model.Entry;
 import com.bginfosys.dinghyracing.model.Race;
 
 public class RaceRepositoryCustomImpl implements RaceRepositoryCustom {
@@ -19,26 +20,26 @@ public class RaceRepositoryCustomImpl implements RaceRepositoryCustom {
 	
 	@Override
 	@Transactional
-	public Race save(Race entity) {
+	public Race save(Race race) {
 		
-		Assert.notNull(entity, "Entity must not be null.");
+		Assert.notNull(race, "Entity must not be null.");
 		
 		// check signed up dinghies are allowed for race
-		Set<Dinghy> signedUp = entity.getSignedUp();
-		if (entity.getSignedUp() != null && entity.getDinghyClass() != null) {
-			signedUp.stream().forEach(dinghy -> {
-				if (dinghy.getDinghyClass() != entity.getDinghyClass()) {
+		Set<Entry> signedUp = race.getSignedUp();
+		if (race.getSignedUp() != null && race.getDinghyClass() != null) {
+			signedUp.stream().forEach(entry -> {
+				if (entry.getDinghy().getDinghyClass() != race.getDinghyClass()) {
 					throw new DinghyClassMismatchException();
 				};
 			});
 		}
 		
-		if (!entityManager.contains(entity) && entity.getId() == null) {
-			entityManager.persist(entity);
-			return entity;
+		if (!entityManager.contains(race) && race.getId() == null) {
+			entityManager.persist(race);
+			return race;
 		}
 		else {
-			return entityManager.merge(entity);
+			return entityManager.merge(race);
 		}
 		
 	}

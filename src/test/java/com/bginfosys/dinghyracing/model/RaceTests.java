@@ -70,30 +70,35 @@ class RaceTests {
 	}
 	
 	@Test
-	void when_signingUpDinghyAndDinghyDinghyClassMatchesRaceDinghyClass_Then_dinghySignedUp() {
-//		DinghyClass dc = new DinghyClass("Test");
-		Dinghy d = new Dinghy("1234", dinghyClass);
-		race.signUpDinghy(d);
-		assertThat(race.getSignedUp()).contains(d);
+	void when_signingUpAndEntryDinghyDinghyClassMatchesRaceDinghyClass_Then_dinghySignedUp() {
+		Competitor competitor = new Competitor();
+		Dinghy dinghy = new Dinghy("1234", dinghyClass);
+		Entry entry = new Entry(competitor, dinghy);
+		race.signUp(entry);
+		assertThat(race.getSignedUp()).contains(entry);
 	}
 	
 	@Test
 	void when_signingUpDinghyClassDoesNotMatchRaceDinghyClassAndRaceDinghyClassIsNotNull_then_throwsException() {
-		DinghyClass dc = new DinghyClass("NotTest");
-		Dinghy d = new Dinghy("1234", dc);
-//		race.signUpDinghy(d);
-//		assertThat(race.getSignedUp()).doesNotContain(d);
+		Competitor competitor = new Competitor();
+		DinghyClass dinghyClass = new DinghyClass("NotTest");
+		Dinghy dinghy = new Dinghy("1234", dinghyClass);
+		Entry entry = new Entry(competitor, dinghy);
+		
 		assertThrows(DinghyClassMismatchException.class, () -> {
-			race.signUpDinghy(d);
+			race.signUp(entry);
 		});
 	}
 	
 	@Test
 	void when_signingUpDinghyClassDoesNotMatchRaceDinghyClassAndRaceDinghyClassIsNull_Then_dinghySignedUp() {
-		Race race1 = new Race("New Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), null);
-		Dinghy d = new Dinghy("1234", dinghyClass);
-		race1.signUpDinghy(d);
-		assertThat(race1.getSignedUp()).contains(d);
+		Race race = new Race("New Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), null);
+		Competitor competitor = new Competitor();
+		Dinghy dinghy = new Dinghy("1234", dinghyClass);
+		Entry entry = new Entry(competitor, dinghy);
+		
+		race.signUp(entry);
+		assertThat(race.getSignedUp()).contains(entry);
 	}
 	
 	
