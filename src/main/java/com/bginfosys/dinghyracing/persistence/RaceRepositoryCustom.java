@@ -4,6 +4,6 @@ import com.bginfosys.dinghyracing.model.Race;
 
 public interface RaceRepositoryCustom {
 	
-	Race save(Race entity);
+	Race save(Race race);
 
 }
