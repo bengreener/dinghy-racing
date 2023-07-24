@@ -2,6 +2,7 @@ package com.bginfosys.dinghyracing.model;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -36,6 +37,7 @@ public class Race {
 	@ManyToOne
 	private DinghyClass dinghyClass;
 	
+	@Column(unique=true)
 	@OneToMany
 	private Set<Entry> signedUp;
 	

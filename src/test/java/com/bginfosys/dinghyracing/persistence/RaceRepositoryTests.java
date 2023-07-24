@@ -93,32 +93,8 @@ public class RaceRepositoryTests {
 	}
 	
 	@Test
-	void when_entryDinghyClassDoesNotMatchRaceDinghyClassAndRaceDinghyClassIsNotNull_then_throwsException() {
-		Competitor competitor = new Competitor("A Competitor");
-		competitorRepository.save(competitor);
+	void when_entryDinghyClassMatchesRaceDinghyClass_then_savesRace() {
 		
-		DinghyClass dinghyClass1 = new DinghyClass("Test Dinghyclass");
-		DinghyClass dinghyClass2 = new DinghyClass("Different Dinghyclass");
-		dinghyClassRepository.save(dinghyClass1);
-		dinghyClassRepository.save(dinghyClass2);
-		
-		Dinghy dinghy = new Dinghy("1234", dinghyClass1);
-		dinghyRepository.save(dinghy);
-		
-		Entry entry = new Entry(competitor, dinghy);
-		entryRepository.save(entry);
-		
-		Race race = new Race();
-		race.setName("Test Race");
-		race.setPlannedStartTime(LocalDateTime.of(2023, 5, 13, 12, 00));
-		race.setDinghyClass(dinghyClass2);
-		Set<Entry> signedUp = new HashSet<Entry>();
-		signedUp.add(entry);
-		race.setSignedUp(signedUp); 
-		
-		assertThrows(DinghyClassMismatchException.class, () -> {
-			raceRepository.save(race);
-		});
 	}
 
 	@Test
@@ -149,6 +125,50 @@ public class RaceRepositoryTests {
 			&& race1.getDinghyClass() == race2.getDinghyClass() 
 			&& race1.getPlannedStartTime() == race2.getPlannedStartTime()
 		));
+	}
+	
+	@Test
+	void when_entryDinghyClassDoesNotMatchRaceDinghyClassAndRaceDinghyClassIsNotNull_then_throwsException() {
+		Competitor competitor = new Competitor("A Competitor");
+		competitorRepository.save(competitor);
+		
+		DinghyClass dinghyClass1 = new DinghyClass("Test Dinghyclass");
+		DinghyClass dinghyClass2 = new DinghyClass("Different Dinghyclass");
+		dinghyClassRepository.save(dinghyClass1);
+		dinghyClassRepository.save(dinghyClass2);
+		
+		Dinghy dinghy = new Dinghy("1234", dinghyClass1);
+		dinghyRepository.save(dinghy);
+		
+		Entry entry = new Entry(competitor, dinghy);
+		entryRepository.save(entry);
+		
+		Race race = new Race();
+		race.setName("Test Race");
+		race.setPlannedStartTime(LocalDateTime.of(2023, 5, 13, 12, 00));
+		race.setDinghyClass(dinghyClass2);
+		Set<Entry> signedUp = new HashSet<Entry>();
+		signedUp.add(entry);
+		race.setSignedUp(signedUp); 
+		
+		assertThrows(DinghyClassMismatchException.class, () -> {
+			raceRepository.save(race);
+		});
+	}
+	
+	@Test
+	void givenEntryExistsForRace_when_newEntryForCompetitorIsAttempted_then_creationOfEntryFails() {
+		
+	}
+	
+	@Test
+	void givenEntryExistsForRace_when_newEntryForDinghyIsAttempted_then_creationOfEntryFails() {
+		
+	}
+	
+	@Test
+	void givenAnEntryAlreadyExistsForARace_when_aNewEntryForTheSameCompetitorAndDinghyIsAttempted_then_creationOfEntryFails() {
+		
 	}
 	
 	@Test

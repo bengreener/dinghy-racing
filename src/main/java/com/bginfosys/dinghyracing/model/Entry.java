@@ -3,6 +3,7 @@ package com.bginfosys.dinghyracing.model;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
@@ -19,6 +20,10 @@ public class Entry {
 	@Version
 	@JsonIgnore
 	private Long version;
+	
+	@NotNull
+	@ManyToOne
+	private Race race;
 	
 	@NotNull
 	@OneToOne
