@@ -17,7 +17,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import javax.validation.ConstraintViolationException;
 
 import com.bginfosys.dinghyracing.model.Race;
-import com.bginfosys.dinghyracing.exceptions.DinghyClassMismatchException;
 import com.bginfosys.dinghyracing.model.Dinghy;
 import com.bginfosys.dinghyracing.model.DinghyClass;
 import com.bginfosys.dinghyracing.model.Entry;
