@@ -86,6 +86,7 @@ public class Entry {
 	public void setRace(Race race) {
 		if (race.getDinghyClass() == null || this.getDinghy() == null || (this.getDinghy().getDinghyClass() == race.getDinghyClass())) {
 			this.race = race;
+			race.signUp(this);
 		}
 		else {
 			throw new DinghyClassMismatchException();

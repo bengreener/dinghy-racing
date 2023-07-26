@@ -1,5 +1,7 @@
 package com.bginfosys.dinghyracing.model;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -192,5 +194,13 @@ public class EntryTests {
 		Entry entry = new Entry();
 		entry.setDinghy(dinghy);
 		entry.setRace(race);
+	}
+	
+	@Test
+	void when_raceAddedToEntry_the_updatesRaceToRecordEntry() {
+		Race race = new Race();
+		Entry entry = new Entry();
+		entry.setRace(race);
+		assertThat(race.getSignedUp(), hasItem(entry));
 	}
 }
