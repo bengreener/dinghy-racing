@@ -5,13 +5,21 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
+
+import org.hibernate.annotations.NaturalId;
 
 import com.bginfosys.dinghyracing.exceptions.DinghyClassMismatchException;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
+@Table(uniqueConstraints = {
+		@UniqueConstraint(columnNames = {"competitor_id", "race_id"}), 
+		@UniqueConstraint(columnNames = {"dinghy_id", "race_id"})
+})
 public class Entry {
 
 	@Id	
@@ -22,14 +30,17 @@ public class Entry {
 	@JsonIgnore
 	private Long version;
 
+	@NaturalId
 	@NotNull
 	@OneToOne
 	private Competitor competitor;
 	
+	@NaturalId
 	@NotNull
 	@OneToOne
 	private Dinghy dinghy;
 	
+	@NaturalId
 	@NotNull
 	@ManyToOne
 	private Race race;
