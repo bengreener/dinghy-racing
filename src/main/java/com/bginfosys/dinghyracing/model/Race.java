@@ -93,6 +93,9 @@ public class Race {
 	}
 	
 	public void signUp(Entry entry) {
+		if (signedUp == null) {
+			signedUp = new HashSet<Entry>(64);
+		}
 		signedUp.add(entry);
 	}
 	
