@@ -1,9 +1,12 @@
 package com.bginfosys.dinghyracing.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
+
+import com.bginfosys.dinghyracing.exceptions.DinghyClassMismatchException;
 
 public class EntryTests {
 	
@@ -15,18 +18,50 @@ public class EntryTests {
 	}
 	
 	@Test
-	void when_constructorCalled_then_itInstantiatesAndSetsPropertyValues() {
+	void when_constructorCalledWithArguments_then_itInstantiatesAndSetsPropertyValues() {
 		Competitor competitor = new Competitor();
 		Dinghy dinghy = new Dinghy();
+		Race race = new Race();
 		
-		Entry entry = new Entry(competitor, dinghy);
+		Entry entry = new Entry(competitor, dinghy, race);
 		assertTrue(entry instanceof Entry);
 		assertEquals(entry.getDinghy(), dinghy);
 		assertEquals(entry.getCompetitor(), competitor);
+		assertEquals(entry.getRace(), race);
 	}
-
+	
 	@Test
-	void when_settingDinghy_then_itRecordsNewValue() {
+	void when_constructorCalledWithArgumentsAndRaceDinghyClassIsNotNullAndDoesNotMatchDinghyDinghyClass_then_throwsDinghyClassMismatchException() {
+		DinghyClass dc1 = new DinghyClass("Scorpion");
+		DinghyClass dc2 = new DinghyClass("Graduate");
+		Competitor competitor = new Competitor();
+		Dinghy dinghy = new Dinghy();
+		dinghy.setDinghyClass(dc1);
+		Race race = new Race();
+		race.setDinghyClass(dc2);
+		
+		assertThrows(DinghyClassMismatchException.class, () -> {
+			new Entry(competitor, dinghy, race);	
+		});
+	}
+	
+	@Test
+	void when_constructorCalledWithArgumentsAndRaceDinghyClassIsNullAndDoesNotMatchDinghyDinghyClass_then_itInstantiatesAndSetsPropertyValues() {
+		DinghyClass dc1 = new DinghyClass("Scorpion");
+		Competitor competitor = new Competitor();
+		Dinghy dinghy = new Dinghy();
+		dinghy.setDinghyClass(dc1);
+		Race race = new Race();
+		
+		Entry entry = new Entry(competitor, dinghy, race);
+		assertTrue(entry instanceof Entry);
+		assertEquals(entry.getDinghy(), dinghy);
+		assertEquals(entry.getCompetitor(), competitor);
+		assertEquals(entry.getRace(), race);
+	}
+	// Set dinghy tests
+	@Test
+	void when_settingDinghyAndRaceIsNull_then_itSetsDinghy() {
 		Entry entry = new Entry();
 		Dinghy dinghy = new Dinghy();
 		
@@ -35,11 +70,127 @@ public class EntryTests {
 	}
 	
 	@Test
+	void when_settingDinghyAndDinghyDinghyClassEqualsRaceDinghyClass_then_itSetsDinghy() {
+		DinghyClass dinghyClass = new DinghyClass("Scorpion");
+		Race race = new Race();
+		race.setDinghyClass(dinghyClass);
+		Entry entry = new Entry();
+		Dinghy dinghy = new Dinghy();
+		dinghy.setDinghyClass(dinghyClass);
+		
+		entry.setDinghy(dinghy);
+		assertEquals(entry.getDinghy(), dinghy);
+	}
+	
+	@Test
+	void when_settingDinghyAndDinghyDinghyClassDoesNotMatchRaceDinghyClass_then_throwsDinghyClassMismatchException() {
+		DinghyClass dc1 = new DinghyClass("Scorpion");
+		DinghyClass dc2 = new DinghyClass("Graduate");
+		Race race = new Race();
+		race.setDinghyClass(dc1);
+		
+		Dinghy dinghy = new Dinghy();
+		dinghy.setDinghyClass(dc2);
+		
+		Entry entry = new Entry();
+		entry.setRace(race);
+		
+		assertThrows(DinghyClassMismatchException.class, () -> {
+			entry.setDinghy(dinghy);
+		});
+	}
+	
+	@Test
+	void when_settingDinghyAndRaceDinghyClassIsNull_then_setsDinghy() {
+		DinghyClass dinghyClass = new DinghyClass("Scorpion");
+		Race race = new Race();
+		Entry entry = new Entry();
+		entry.setRace(race);
+		Dinghy dinghy = new Dinghy();
+		dinghy.setDinghyClass(dinghyClass);
+		
+		entry.setDinghy(dinghy);
+		assertEquals(entry.getDinghy(), dinghy);
+	}
+	
+	@Test
+	void when_settingDinghyAndDinghyDinghyClassIsNotNullAndRaceisNull_then_setsDinghy() {
+		DinghyClass dinghyClass = new DinghyClass("Scorpion");
+		Entry entry = new Entry();
+		Dinghy dinghy = new Dinghy();
+		dinghy.setDinghyClass(dinghyClass);
+		
+		entry.setDinghy(dinghy);
+		assertEquals(entry.getDinghy(), dinghy);
+	}
+	// Set competitor tests
+	@Test
 	void when_settingCompetitor_then_itRecordsNewValue() {
 		Entry entry = new Entry();
 		Competitor competitor = new Competitor();
 		
 		entry.setCompetitor(competitor);
 		assertEquals(entry.getCompetitor(), competitor);
+	}
+	// Set race tests
+	@Test
+	void when_settingRaceAndRaceDinghyClassIsNullAndDinghyIsNull_then_setsRace() {
+		Entry entry = new Entry();
+		Race race = new Race();
+		
+		entry.setRace(race);
+		assertEquals(entry.getRace(), race);
+	}
+
+	@Test
+	void when_settingRaceAndRaceDinghyClassIsNotNullAndDinghyIsNull_then_setsRace() {
+		DinghyClass dinghyClass = new DinghyClass("Scorpion");
+		Race race = new Race();
+		race.setDinghyClass(dinghyClass);
+		
+		Entry entry = new Entry();
+		entry.setRace(race);
+	}
+	
+	@Test
+	void when_settingRaceAndRaceDinghyClassIsNotNullAndMatchesDinghyDinghyClass_then_setsRace() {
+		DinghyClass dinghyClass = new DinghyClass("Scorpion");
+		Dinghy dinghy = new Dinghy();
+		dinghy.setDinghyClass(dinghyClass);
+		Race race = new Race();
+		race.setDinghyClass(dinghyClass);
+		
+		Entry entry = new Entry();
+		entry.setDinghy(dinghy);
+		entry.setRace(race);
+	}
+	
+	@Test
+	void when_settingRaceAndRaceDinghyClassIsNotNullAndDinghyDinghyClassIsNotNullAndRaceDinghyClassDoesNotMatchDinghyDinghyClass_then_throwsDinghyMismAtchException() {
+		DinghyClass dc1 = new DinghyClass("Scorpion");
+		DinghyClass dc2 = new DinghyClass("Graduate");
+		Dinghy dinghy = new Dinghy();
+		dinghy.setDinghyClass(dc1);
+		Race race = new Race();
+		race.setDinghyClass(dc2);
+		
+		Entry entry = new Entry();
+		entry.setDinghy(dinghy);
+		
+		assertThrows(DinghyClassMismatchException.class, () -> {
+			entry.setRace(race);
+		});
+	}
+	
+	@Test
+	void when_settingRaceAndRaceDinghyClassIsNullAndDoesNotMatchDinghyDinghyClass_then_setsRace() {
+		DinghyClass dinghyClass = new DinghyClass("Scorpion");
+		Dinghy dinghy = new Dinghy();
+		dinghy.setDinghyClass(dinghyClass);
+		Race race = new Race();
+		
+		Entry entry = new Entry();
+		entry.setDinghy(dinghy);
+		entry.setRace(race);
 	}
 }
