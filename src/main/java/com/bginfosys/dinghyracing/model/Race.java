@@ -2,11 +2,11 @@ package com.bginfosys.dinghyracing.model;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.Version;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -38,7 +38,7 @@ public class Race {
 	private DinghyClass dinghyClass;
 	
 	@Column(unique=true)
-	@OneToMany
+	@OneToMany(mappedBy = "race", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<Entry> signedUp;
 	
 	//Required by JPA
@@ -93,15 +93,7 @@ public class Race {
 	}
 	
 	public void signUp(Entry entry) {
-		if (this.signedUp == null) {
-			this.signedUp = new HashSet<Entry>();
-		}
-		if (this.getDinghyClass() == null || (entry.getDinghy().getDinghyClass() == this.getDinghyClass())) {
-			signedUp.add(entry);
-		}
-		else {
-			throw new DinghyClassMismatchException();
-		}
+		signedUp.add(entry);
 	}
 	
 	public String toString() {

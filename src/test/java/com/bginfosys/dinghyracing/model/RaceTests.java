@@ -1,25 +1,14 @@
 package com.bginfosys.dinghyracing.model;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
-//import static org.hamcrest.Matchers.contains;
-//import static org.hamcrest.MatcherAssert.assertThat;
-//import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
 
-//import org.assertj.core.util.Arrays;
 import org.junit.jupiter.api.Test;
 
-import com.bginfosys.dinghyracing.exceptions.DinghyClassMismatchException;
-
-//import com.bginfosys.dinghyracing.model.Dinghy;
-//import com.bginfosys.dinghyracing.model.DinghyClass;
-//import com.bginfosys.dinghyracing.model.Race;
-
-//import java.time.LocalDate;
-//import java.time.LocalTime;
 import java.time.LocalDateTime;
 
 class RaceTests {
@@ -30,7 +19,7 @@ class RaceTests {
 	
 	@Test
 	void raceCreated() {
-		assertThat(race).isNotNull();
+		assertThat(race, notNullValue());
 	}
 		
 	@Test
@@ -70,36 +59,10 @@ class RaceTests {
 	}
 	
 	@Test
-	void when_signingUpAndEntryDinghyDinghyClassMatchesRaceDinghyClass_Then_dinghySignedUp() {
-		Competitor competitor = new Competitor();
-		Dinghy dinghy = new Dinghy("1234", dinghyClass);
-		Entry entry = new Entry(competitor, dinghy);
+	void when_entryAddedViaSignUp_the_addedToSignedUp() {
+		Race race = new Race();
+		Entry entry = new Entry();
 		race.signUp(entry);
-		assertThat(race.getSignedUp()).contains(entry);
+		assertThat(race.getSignedUp(), hasItem(entry));
 	}
-	
-	@Test
-	void when_signingUpDinghyClassDoesNotMatchRaceDinghyClassAndRaceDinghyClassIsNotNull_then_throwsException() {
-		Competitor competitor = new Competitor();
-		DinghyClass dinghyClass = new DinghyClass("NotTest");
-		Dinghy dinghy = new Dinghy("1234", dinghyClass);
-		Entry entry = new Entry(competitor, dinghy);
-		
-		assertThrows(DinghyClassMismatchException.class, () -> {
-			race.signUp(entry);
-		});
-	}
-	
-	@Test
-	void when_signingUpDinghyClassDoesNotMatchRaceDinghyClassAndRaceDinghyClassIsNull_Then_dinghySignedUp() {
-		Race race = new Race("New Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), null);
-		Competitor competitor = new Competitor();
-		Dinghy dinghy = new Dinghy("1234", dinghyClass);
-		Entry entry = new Entry(competitor, dinghy);
-		
-		race.signUp(entry);
-		assertThat(race.getSignedUp()).contains(entry);
-	}
-	
-	
 }
