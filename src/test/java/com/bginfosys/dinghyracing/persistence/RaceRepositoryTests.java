@@ -17,7 +17,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import javax.validation.ConstraintViolationException;
 
 import com.bginfosys.dinghyracing.model.Race;
-import com.bginfosys.dinghyracing.exceptions.DinghyClassMismatchException;
 import com.bginfosys.dinghyracing.model.Dinghy;
 import com.bginfosys.dinghyracing.model.DinghyClass;
 import com.bginfosys.dinghyracing.model.Entry;
@@ -93,65 +92,6 @@ public class RaceRepositoryTests {
 	}
 	
 	@Test
-	void when_entryDinghyClassDoesNotMatchRaceDinghyClassAndRaceDinghyClassIsNotNull_then_throwsException() {
-		Competitor competitor = new Competitor("A Competitor");
-		competitorRepository.save(competitor);
-		
-		DinghyClass dinghyClass1 = new DinghyClass("Test Dinghyclass");
-		DinghyClass dinghyClass2 = new DinghyClass("Different Dinghyclass");
-		dinghyClassRepository.save(dinghyClass1);
-		dinghyClassRepository.save(dinghyClass2);
-		
-		Dinghy dinghy = new Dinghy("1234", dinghyClass1);
-		dinghyRepository.save(dinghy);
-		
-		Entry entry = new Entry(competitor, dinghy);
-		entryRepository.save(entry);
-		
-		Race race = new Race();
-		race.setName("Test Race");
-		race.setPlannedStartTime(LocalDateTime.of(2023, 5, 13, 12, 00));
-		race.setDinghyClass(dinghyClass2);
-		Set<Entry> signedUp = new HashSet<Entry>();
-		signedUp.add(entry);
-		race.setSignedUp(signedUp); 
-		
-		assertThrows(DinghyClassMismatchException.class, () -> {
-			raceRepository.save(race);
-		});
-	}
-
-	@Test
-	void when_entryDinghyClassDoesNotMatchRaceDinghyClassAndRaceDinghyClassIsNull_then_savesRace() {
-		Competitor competitor = new Competitor("A Competitor");
-		competitorRepository.save(competitor);
-		
-		DinghyClass dinghyClass = new DinghyClass("Test Dinghyclass");
-		dinghyClassRepository.save(dinghyClass);
-		
-		Dinghy dinghy = new Dinghy("1234", dinghyClass);
-		dinghyRepository.save(dinghy);
-		
-		Entry entry = new Entry(competitor, dinghy);
-		entryRepository.save(entry);
-		
-		long raceCount = raceRepository.count();
-		
-		Race race1 = new Race();
-		race1.setName("Test Race");
-		race1.setPlannedStartTime(LocalDateTime.of(2023, 5, 13, 12, 00));
-		Set<Entry> signedUp = new HashSet<Entry>();
-		signedUp.add(entry);
-		race1.setSignedUp(signedUp);
-		Race race2 = raceRepository.save(race1);
-		
-		assertThat(raceRepository.count() == raceCount + 1 && (race1.getName() == race2.getName()
-			&& race1.getDinghyClass() == race2.getDinghyClass() 
-			&& race1.getPlannedStartTime() == race2.getPlannedStartTime()
-		));
-	}
-	
-	@Test
 	void given_raceAlreadySaved_when_raceUpdated_updatedVersionIsSaved() {
 		Competitor competitor = new Competitor();
 		competitorRepository.save(competitor);
@@ -166,7 +106,7 @@ public class RaceRepositoryTests {
 		// remove entity from session (detach entity). Not doing so can result in a false positive dependent on the logic used to check for an exisitng entity in repository save method
 		entityManager.detach(race1);
 		
-		Entry entry = new Entry(competitor, dinghy);
+		Entry entry = new Entry(competitor, dinghy, race1);
 		entryRepository.save(entry);
 		
 		Set<Entry> signedUp = new HashSet<Entry>();

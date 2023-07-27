@@ -11,7 +11,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import com.bginfosys.dinghyracing.model.Race;
 
-public interface RaceRepository extends PagingAndSortingRepository<Race, Long>, RaceRepositoryCustom {
+public interface RaceRepository extends PagingAndSortingRepository<Race, Long> {
 
 	@Override
 	void deleteById(@Param("id") Long id);

@@ -62,8 +62,8 @@ public class DatabaseLoader implements CommandLineRunner {
 		competitorRepository.save(c1);
 		competitorRepository.save(c2);
 		
-		Entry e1 = new Entry(c1, d1);
-		Entry e2 = new Entry(c2, d2);
+		Entry e1 = new Entry(c1, d1, r);
+		Entry e2 = new Entry(c2, d2, r);
 		entryRepository.save(e1);
 		entryRepository.save(e2);
 		

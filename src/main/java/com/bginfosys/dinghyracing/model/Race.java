@@ -2,10 +2,11 @@ package com.bginfosys.dinghyracing.model;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.Version;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -17,7 +18,6 @@ import java.util.HashSet;
 
 import javax.validation.constraints.NotNull;
 
-import com.bginfosys.dinghyracing.exceptions.DinghyClassMismatchException;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
@@ -36,7 +36,8 @@ public class Race {
 	@ManyToOne
 	private DinghyClass dinghyClass;
 	
-	@OneToMany
+	@Column(unique=true)
+	@OneToMany(mappedBy = "race", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<Entry> signedUp;
 	
 	//Required by JPA
@@ -91,15 +92,10 @@ public class Race {
 	}
 	
 	public void signUp(Entry entry) {
-		if (this.signedUp == null) {
-			this.signedUp = new HashSet<Entry>();
+		if (signedUp == null) {
+			signedUp = new HashSet<Entry>(64);
 		}
-		if (this.getDinghyClass() == null || (entry.getDinghy().getDinghyClass() == this.getDinghyClass())) {
-			signedUp.add(entry);
-		}
-		else {
-			throw new DinghyClassMismatchException();
-		}
+		signedUp.add(entry);
 	}
 	
 	public String toString() {
