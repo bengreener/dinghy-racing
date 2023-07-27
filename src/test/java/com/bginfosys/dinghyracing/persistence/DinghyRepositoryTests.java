@@ -97,7 +97,7 @@ public class DinghyRepositoryTests {
 	}
 	
 	@Test
-	void given_theDinghyExists_when_searcingForTheDinghyByDinghyClassAndSailNumber_then_theDinghyIsReturned() {
+	void given_theDinghyExists_when_searchingForTheDinghyBySailNumberAndDinghyClass_then_theDinghyIsReturned() {
 		DinghyClass dinghyClass = new DinghyClass("DinghyClass");
 		entityManager.persist(dinghyClass);
 		
