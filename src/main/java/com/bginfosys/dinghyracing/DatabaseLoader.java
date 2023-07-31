@@ -4,11 +4,15 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
+import com.bginfosys.dinghyracing.model.Competitor;
 import com.bginfosys.dinghyracing.model.Dinghy;
 import com.bginfosys.dinghyracing.model.DinghyClass;
 import com.bginfosys.dinghyracing.model.Race;
+import com.bginfosys.dinghyracing.model.Entry;
+import com.bginfosys.dinghyracing.persistence.CompetitorRepository;
 import com.bginfosys.dinghyracing.persistence.DinghyClassRepository;
 import com.bginfosys.dinghyracing.persistence.DinghyRepository;
+import com.bginfosys.dinghyracing.persistence.EntryRepository;
 import com.bginfosys.dinghyracing.persistence.RaceRepository;
 
 import java.time.LocalDateTime;
@@ -17,54 +21,55 @@ import java.time.LocalDateTime;
 @Component
 public class DatabaseLoader implements CommandLineRunner {
 
-	private final RaceRepository races;
-	private final DinghyClassRepository dinghyClasses;
-	private final DinghyRepository dinghies;
+	private final RaceRepository raceRepository;
+	private final CompetitorRepository competitorRepository;
+	private final DinghyClassRepository dinghyClassRepository;
+	private final DinghyRepository dinghyRepository;
+	private final EntryRepository entryRepository;
 
-	public DatabaseLoader(RaceRepository raceRepository, DinghyClassRepository dinghyClasses, DinghyRepository dinghies) {
-		this.races = raceRepository;
-		this.dinghyClasses = dinghyClasses;
-		this.dinghies = dinghies;
+	public DatabaseLoader(RaceRepository raceRepository, CompetitorRepository competitorRepository, DinghyClassRepository dinghyClassRepository, DinghyRepository dinghyRepository, EntryRepository entryRepository) {
+		this.raceRepository = raceRepository;
+		this.competitorRepository = competitorRepository;
+		this.dinghyClassRepository = dinghyClassRepository;
+		this.dinghyRepository = dinghyRepository;
+		this.entryRepository = entryRepository;
 	}
 	
 	@Override
 	public void run(String... args) throws Exception {
 		DinghyClass dc = new DinghyClass("Scorpion");
-		this.dinghyClasses.save(dc);
+		this.dinghyClassRepository.save(dc);
 		
 		Dinghy d1 = new Dinghy("1234", dc);
 		Dinghy d2 = new Dinghy("6745", dc);
-		this.dinghies.save(d1);
-		this.dinghies.save(d2);
+		this.dinghyRepository.save(d1);
+		this.dinghyRepository.save(d2);
 		
 		Race r = new Race("Scorpion A", LocalDateTime.of(2021, 10, 14, 14, 10), dc);
-		this.races.save(r);
+		this.raceRepository.save(r);
 		
 		DinghyClass dc2 = new DinghyClass("Graduate");
-		this.dinghyClasses.save(dc2);
+		this.dinghyClassRepository.save(dc2);
 		
 		Dinghy d3 = new Dinghy("2726", dc2);
-		this.dinghies.save(d3);
+		this.dinghyRepository.save(d3);
 		
 		Race r2 = new Race("Graduate A", LocalDateTime.of(2021, 10, 14, 10, 30), dc2);
-		this.races.save(r2);
+		this.raceRepository.save(r2);
 		
-//		Race r3 = new Race("Graduate B", LocalDateTime.of(2021, 10, 15, 12, 30), dc2);
-//		this.races.save(r3);
+		Competitor c1 = new Competitor("Chris Marshall");
+		Competitor c2 = new Competitor("Sarah Pascal");
+		competitorRepository.save(c1);
+		competitorRepository.save(c2);
 		
-		//this.races.save(new Race("Scorpion A", LocalDate.of(2021, 10, 14), LocalTime.of(14, 10), dc));
-		//this.races.save(new Race("Scorpion A", LocalDateTime.of(2021, 10, 14, 14, 10), dc));
-		//this.races.save(new Race("Test", LocalDate.of(2022, 10, 10), LocalTime.of(15, 35)));
+		Entry e1 = new Entry(c1, d1, r);
+		Entry e2 = new Entry(c2, d2, r);
+		entryRepository.save(e1);
+		entryRepository.save(e2);
 		
-		r.signUpDinghy(d1);
-		r.signUpDinghy(d2);
-		this.races.save(r);
-		
-//		r2.signUpDinghy(d3);
-//		this.races.save(r2);
-		
-//		r3.signUpDinghy(d3);
-//		this.races.save(r3);
+		r.signUp(e1);
+		r.signUp(e2);
+		this.raceRepository.save(r);
 	}
 
 }

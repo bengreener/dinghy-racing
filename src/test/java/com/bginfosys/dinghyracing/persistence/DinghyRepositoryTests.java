@@ -1,12 +1,16 @@
 package com.bginfosys.dinghyracing.persistence;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import javax.validation.ConstraintViolationException;
 
@@ -17,6 +21,9 @@ import com.bginfosys.dinghyracing.model.DinghyClass;
 
 @DataJpaTest
 public class DinghyRepositoryTests {
+	
+	@Autowired
+	TestEntityManager entityManager;
 	
 	@Autowired
 	DinghyRepository dinghyRepository;
@@ -71,5 +78,34 @@ public class DinghyRepositoryTests {
 			// force flush of memory to database
 			dinghyRepository.count();
 		});
+	}
+	
+	@Test
+	void given_dinghiesOfTheDinghyClassExist_when_searchingForDinghiesByTheDinghyClass_then_dinghiesAreReturned() {
+		DinghyClass dinghyClass = new DinghyClass("DinghyClass");
+		entityManager.persist(dinghyClass);
+		
+		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
+		Dinghy dinghy2 = new Dinghy("5678", dinghyClass);
+		
+		entityManager.persist(dinghy1);
+		entityManager.persist(dinghy2);
+		
+		Page<Dinghy> dinghies = dinghyRepository.findByDinghyClass(dinghyClass, Pageable.ofSize(5));
+		
+		assertThat(dinghies).contains(dinghy1, dinghy2);
+	}
+	
+	@Test
+	void given_theDinghyExists_when_searchingForTheDinghyBySailNumberAndDinghyClass_then_theDinghyIsReturned() {
+		DinghyClass dinghyClass = new DinghyClass("DinghyClass");
+		entityManager.persist(dinghyClass);
+		
+		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
+		entityManager.persist(dinghy1);
+		
+		Dinghy dinghy2 = dinghyRepository.findBySailNumberAndDinghyClass("1234", dinghyClass);
+		
+		assertEquals(dinghy1, dinghy2);
 	}
 }

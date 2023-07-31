@@ -2,12 +2,14 @@ package com.bginfosys.dinghyracing.model;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.Version;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -16,7 +18,6 @@ import java.util.HashSet;
 
 import javax.validation.constraints.NotNull;
 
-import com.bginfosys.dinghyracing.exceptions.DinghyClassMismatchException;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
@@ -35,8 +36,9 @@ public class Race {
 	@ManyToOne
 	private DinghyClass dinghyClass;
 	
-	@ManyToMany
-	private Set<Dinghy> signedUp;
+	@Column(unique=true)
+	@OneToMany(mappedBy = "race", cascade = CascadeType.ALL, orphanRemoval = true)
+	private Set<Entry> signedUp;
 	
 	//Required by JPA
 	//Not recommended by Spring Data
@@ -81,24 +83,19 @@ public class Race {
 		this.dinghyClass = dinghyClass;
 	}
 	
-	public Set<Dinghy> getSignedUp() {
+	public Set<Entry> getSignedUp() {
 		return signedUp;
 	}
 	
-	public void setSignedUp(Set<Dinghy> signedUp) {
+	public void setSignedUp(Set<Entry> signedUp) {
 		this.signedUp = signedUp;
 	}
 	
-	public void signUpDinghy(Dinghy dinghy) {
-		if (this.signedUp == null) {
-			this.signedUp = new HashSet<Dinghy>();
+	public void signUp(Entry entry) {
+		if (signedUp == null) {
+			signedUp = new HashSet<Entry>(64);
 		}
-		if (this.getDinghyClass() == null || (dinghy.getDinghyClass() == this.getDinghyClass())) {
-			signedUp.add(dinghy);
-		}
-		else {
-			throw new DinghyClassMismatchException();
-		}
+		signedUp.add(entry);
 	}
 	
 	public String toString() {
