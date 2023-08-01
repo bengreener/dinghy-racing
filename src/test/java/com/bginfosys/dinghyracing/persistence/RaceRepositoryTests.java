@@ -2,6 +2,7 @@ package com.bginfosys.dinghyracing.persistence;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDateTime;
 
@@ -30,39 +31,22 @@ public class RaceRepositoryTests {
 	
 	@Autowired
 	RaceRepository raceRepository;
-	
-	@Autowired
-	DinghyClassRepository dinghyClassRepository;
-	
-	@Autowired
-	DinghyRepository dinghyRepository;
-	
-	@Autowired
-	CompetitorRepository competitorRepository;
-	
-	@Autowired
-	EntryRepository entryRepository;
 
 	@Test
 	void when_providedWithValidRace_then_savesRace() {
 		DinghyClass dinghyClass = new DinghyClass("Test Dinghyclass");
-		dinghyClassRepository.save(dinghyClass);
-		
-		long raceCount = raceRepository.count();
+		entityManager.persist(dinghyClass);
 		
 		Race race1 = new Race("Test Race", LocalDateTime.of(2023, 5, 13, 12, 00), dinghyClass);
 		Race race2 = raceRepository.save(race1);
 		
-		assertThat(raceRepository.count() == raceCount + 1 && (race1.getName() == race2.getName()
-			&& race1.getDinghyClass() == race2.getDinghyClass() 
-			&& race1.getPlannedStartTime() == race2.getPlannedStartTime()
-		));
+		assertThat(entityManager.find(Race.class, entityManager.getId(race2))).isEqualTo(race1);
 	}
 	
 	@Test
 	void when_raceHasNoName_then_throwsException() {
 		DinghyClass dinghyClass = new DinghyClass("Test Dinghyclass");
-		dinghyClassRepository.save(dinghyClass);
+		entityManager.persist(dinghyClass);
 				
 		Race race1 = new Race();
 		race1.setPlannedStartTime(LocalDateTime.of(2023, 5, 13, 12, 00));
@@ -70,15 +54,14 @@ public class RaceRepositoryTests {
 		raceRepository.save(race1);
 		
 		assertThrows(ConstraintViolationException.class, () -> {
-			// force flush of memory to database (could probably call entityManager.flush() instead now :-))
-			raceRepository.count();
+			entityManager.flush();
 		});
 	}
 	
 	@Test
 	void when_raceHasNoPlannedStartTime_then_throwsException() {
 		DinghyClass dinghyClass = new DinghyClass("Test Dinghyclass");
-		dinghyClassRepository.save(dinghyClass);
+		entityManager.persist(dinghyClass);
 				
 		Race race1 = new Race();
 		race1.setName("Test Race");
@@ -86,20 +69,19 @@ public class RaceRepositoryTests {
 		raceRepository.save(race1);
 		
 		assertThrows(ConstraintViolationException.class, () -> {
-			// force flush of memory to database
-			raceRepository.count();
+			entityManager.flush();
 		});
 	}
 	
 	@Test
 	void given_raceAlreadySaved_when_raceUpdated_updatedVersionIsSaved() {
 		Competitor competitor = new Competitor();
-		competitorRepository.save(competitor);
+		entityManager.persist(competitor);
 		
 		DinghyClass dinghyClass = new DinghyClass("Test Dinghyclass");
-		dinghyClassRepository.save(dinghyClass);
+		entityManager.persist(dinghyClass);
 		Dinghy dinghy = new Dinghy("1234", dinghyClass);
-		dinghyRepository.save(dinghy);
+		entityManager.persist(dinghy);
 				
 		Race race1 = new Race("Test Race", LocalDateTime.of(2023, 5, 13, 12, 00), dinghyClass);
 		entityManager.persist(race1);
@@ -107,7 +89,7 @@ public class RaceRepositoryTests {
 		entityManager.detach(race1);
 		
 		Entry entry = new Entry(competitor, dinghy, race1);
-		entryRepository.save(entry);
+		entityManager.persist(entry);
 		
 		Set<Entry> signedUp = new HashSet<Entry>();
 		signedUp.add(entry);
@@ -126,11 +108,11 @@ public class RaceRepositoryTests {
 		DinghyClass dinghyClass = new DinghyClass("Test Dinghyclass");
 		
 		Race race1 = new Race("Test Race1", LocalDateTime.of(2023, 5, 13, 11, 00), dinghyClass);
-		raceRepository.save(race1);
+		entityManager.persist(race1);
 		Race race2 = new Race("Test Race2", LocalDateTime.of(2023, 5, 13, 12, 00), dinghyClass);
-		raceRepository.save(race2);
+		entityManager.persist(race2);
 		Race race3 = new Race("Test Race3", LocalDateTime.of(2023, 5, 13, 13, 00), dinghyClass);
-		raceRepository.save(race3);
+		entityManager.persist(race3);
 		
 		List<Race> result = raceRepository.findByPlannedStartTimeGreaterThanEqual(LocalDateTime.of(2023, 5, 13, 12, 00));
 		
