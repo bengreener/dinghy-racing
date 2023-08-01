@@ -10,8 +10,6 @@ import javax.persistence.Id;
 import javax.persistence.Version;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 
 import java.util.Set;
 import java.util.HashSet;
@@ -21,7 +19,6 @@ import javax.validation.constraints.NotNull;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-@Table(uniqueConstraints=@UniqueConstraint(columnNames={"name", "dinghy_class_id"}))
 public class Race {
 	
 	private @Id @GeneratedValue Long id;
@@ -44,7 +41,6 @@ public class Race {
 	//Not recommended by Spring Data
 	public Race() {}
 	
-	//public Race(String name, LocalDate date, LocalTime plannedStartTime, DinghyClass dinghyClass) {
 	public Race(String name, LocalDateTime plannedStartTime, DinghyClass dinghyClass) {
 		this.name = name;
 		this.plannedStartTime = plannedStartTime;
