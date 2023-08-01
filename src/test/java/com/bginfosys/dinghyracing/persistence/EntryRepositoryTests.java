@@ -5,8 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.persistence.PersistenceException;
 import javax.validation.ConstraintViolationException;
@@ -32,27 +30,15 @@ public class EntryRepositoryTests {
 	@Autowired
 	EntryRepository entryRepository;
 	
-	@Autowired
-	DinghyRepository dinghyRepository;
-	
-	@Autowired
-	CompetitorRepository competitorRepository;
-	
-	@Autowired
-	RaceRepository raceRepository;
-	
-	@Autowired
-	DinghyClassRepository dinghyClassRepository;
-	
 	@Test
 	void when_providedWithAValidInstanceOfEntry_then_savesEntry() {
 		Competitor competitor = new Competitor();
 		Dinghy dinghy = new Dinghy();
 		Race race = new Race();
 		
-		competitorRepository.save(competitor);
-		dinghyRepository.save(dinghy);
-		raceRepository.save(race);
+		entityManager.persist(competitor);
+		entityManager.persist(dinghy);
+		entityManager.persist(race);
 		
 		Entry entry = new Entry(competitor, dinghy, race);
 		Entry insertedEntry = entryRepository.save(entry);
@@ -64,8 +50,8 @@ public class EntryRepositoryTests {
 		Dinghy dinghy = new Dinghy();
 		Race race = new Race();
 		
-		dinghyRepository.save(dinghy);
-		raceRepository.save(race);
+		entityManager.persist(dinghy);
+		entityManager.persist(race);
 		
 		Entry entry = new Entry();
 		entry.setDinghy(dinghy);
@@ -82,8 +68,8 @@ public class EntryRepositoryTests {
 		Competitor competitor = new Competitor();
 		Race race = new Race();
 		
-		competitorRepository.save(competitor);
-		raceRepository.save(race);
+		entityManager.persist(competitor);
+		entityManager.persist(race);
 		
 		Entry entry = new Entry();
 		entry.setCompetitor(competitor);
@@ -100,8 +86,8 @@ public class EntryRepositoryTests {
 		Competitor competitor = new Competitor();
 		Dinghy dinghy = new Dinghy();
 		
-		competitorRepository.save(competitor);
-		dinghyRepository.save(dinghy);
+		entityManager.persist(competitor);
+		entityManager.persist(dinghy);
 		
 		Entry entry = new Entry();
 		entry.setCompetitor(competitor);
@@ -116,7 +102,7 @@ public class EntryRepositoryTests {
 	@Test
 	void when_dinghyDinghyClassMatchesRaceDinghyClass_then_savesRace() {
 		DinghyClass dinghyClass = new DinghyClass("Scorpion");
-		dinghyClassRepository.save(dinghyClass);
+		entityManager.persist(dinghyClass);
 		
 		Competitor competitor = new Competitor();
 		Dinghy dinghy = new Dinghy();
@@ -124,9 +110,9 @@ public class EntryRepositoryTests {
 		Race race = new Race();
 		race.setDinghyClass(dinghyClass);
 		
-		competitorRepository.save(competitor);
-		dinghyRepository.save(dinghy);
-		raceRepository.save(race);
+		entityManager.persist(competitor);
+		entityManager.persist(dinghy);
+		entityManager.persist(race);
 		
 		Entry entry = new Entry(competitor, dinghy, race);
 		Entry insertedEntry = entryRepository.save(entry);
@@ -136,55 +122,42 @@ public class EntryRepositoryTests {
 	@Test
 	void when_dinghyDinghyClassDoesNotMatchRaceDinghyClassAndRaceDinghyClassIsNull_then_savesRace() {
 		Competitor competitor = new Competitor("A Competitor");
-		competitorRepository.save(competitor);
+		entityManager.persist(competitor);
 		
 		DinghyClass dinghyClass = new DinghyClass("Test Dinghyclass");
-		dinghyClassRepository.save(dinghyClass);
+		entityManager.persist(dinghyClass);
 		
 		Race race = new Race("Race A", LocalDateTime.of(2023, 7, 25, 11, 54, 30), null);
-		raceRepository.save(race);
+		entityManager.persist(race);
 		
 		Dinghy dinghy = new Dinghy("1234", dinghyClass);
-		dinghyRepository.save(dinghy);
+		entityManager.persist(dinghy);
 		
 		Entry entry = new Entry(competitor, dinghy, race);
-		entryRepository.save(entry);
-		
-		long raceCount = raceRepository.count();
-		
-		Race race1 = new Race();
-		race1.setName("Test Race");
-		race1.setPlannedStartTime(LocalDateTime.of(2023, 5, 13, 12, 00));
-		Set<Entry> signedUp = new HashSet<Entry>();
-		signedUp.add(entry);
-		race1.setSignedUp(signedUp);
-		Race race2 = raceRepository.save(race1);
-		
-		assertThat(raceRepository.count() == raceCount + 1 && (race1.getName() == race2.getName()
-			&& race1.getDinghyClass() == race2.getDinghyClass() 
-			&& race1.getPlannedStartTime() == race2.getPlannedStartTime()
-		));
+		Entry insertedEntry = entryRepository.save(entry);
+
+		assertThat(entityManager.find(Entry.class, entityManager.getId(insertedEntry))).isEqualTo(entry);
 	}
 	
 	@Test
 	void when_dinghyDinghyClassDoesNotMatchRaceDinghyClassAndRaceDinghyClassIsNotNull_then_throwsException() {
 		Competitor competitor = new Competitor("A Competitor");
-		competitorRepository.save(competitor);
+		entityManager.persist(competitor);
 		
 		DinghyClass dinghyClass1 = new DinghyClass("Test Dinghyclass");
 		DinghyClass dinghyClass2 = new DinghyClass("Different Dinghyclass");
-		dinghyClassRepository.save(dinghyClass1);
-		dinghyClassRepository.save(dinghyClass2);
+		entityManager.persist(dinghyClass1);
+		entityManager.persist(dinghyClass2);
 		
 		Race race = new Race("Race A", LocalDateTime.of(2023, 7, 25, 11, 54, 30), dinghyClass2);
-		raceRepository.save(race);
+		entityManager.persist(race);
 		
 		Dinghy dinghy = new Dinghy("1234", dinghyClass1);
-		dinghyRepository.save(dinghy);
+		entityManager.persist(dinghy);
 		
 		assertThrows(DinghyClassMismatchException.class, () -> {
 			Entry entry = new Entry(competitor, dinghy, race);
-			entryRepository.save(entry);
+			entityManager.persist(entry);
 			entityManager.flush();
 		});
 	}
