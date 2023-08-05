@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.data.domain.Page;
 
 import com.bginfosys.dinghyracing.exceptions.DinghyClassMismatchException;
 import com.bginfosys.dinghyracing.model.Competitor;
@@ -231,5 +232,29 @@ public class EntryRepositoryTests {
 		});
 
 		assertTrue(e.getCause() instanceof org.hibernate.exception.ConstraintViolationException);
+	}
+	
+	@Test
+	void given_entriesExistForRace_when_searchingForEntriesByRace_EntriesAreReturned() {
+		Competitor c1 = new Competitor("Competitor One");
+		Competitor c2 = new Competitor("Competitor Two");
+		entityManager.persist(c1);
+		entityManager.persist(c2);
+		DinghyClass dc1 = new DinghyClass("Dinghy Class One");
+		entityManager.persist(dc1);
+		Dinghy d1 = new Dinghy("1", dc1);
+		Dinghy d2 = new Dinghy("2", dc1);
+		entityManager.persist(d1);
+		entityManager.persist(d2);
+		Race r1 = new Race("Race One", LocalDateTime.of(2023, 5, 13, 12, 00), dc1);
+		entityManager.persist(r1);
+		Entry e1 = new Entry(c1, d1, r1);
+		Entry e2 = new Entry(c2, d2, r1);
+		entityManager.persist(e1);
+		entityManager.persist(e2);
+		
+		Page<Entry> entries = entryRepository.findByRace(r1, null);
+		
+		assertThat(entries).contains(e1, e2);
 	}
 }
