@@ -157,4 +157,22 @@ public class RaceRepositoryTests {
 		
 		assertEquals(race2, result);
 	}
+
+	@Test
+	void
+	given_raceExistsWithNameAndStartTime_when_creatingAnotherRaceWithTheSameNameAndStartTime_then_throwsError() {
+		Race race1 = new Race();
+		race1.setName("Test Race");
+		race1.setPlannedStartTime(LocalDateTime.of(2023, 10, 13, 12, 00));
+		entityManager.persistAndFlush(race1);
+		
+		Race race2 = new Race();
+		race1.setName("Test Race");
+		race1.setPlannedStartTime(LocalDateTime.of(2023, 10, 13, 12, 00));
+		
+		assertThrows(ConstraintViolationException.class, () -> {
+			raceRepository.save(race2);
+			entityManager.flush();
+		});
+	}
 }

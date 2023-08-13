@@ -16,6 +16,8 @@ import java.util.HashSet;
 
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.NaturalId;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
@@ -25,9 +27,11 @@ public class Race {
 	private @Version @JsonIgnore Long version;
 	
 	@NotNull
+	@NaturalId
 	private String name;
 	
 	@NotNull
+	@NaturalId
 	private LocalDateTime plannedStartTime;
 	
 	private LocalDateTime actualStartTime;
