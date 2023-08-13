@@ -2,7 +2,6 @@ package com.bginfosys.dinghyracing.persistence;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDateTime;
 
@@ -117,5 +116,23 @@ public class RaceRepositoryTests {
 		List<Race> result = raceRepository.findByPlannedStartTimeGreaterThanEqual(LocalDateTime.of(2023, 5, 13, 12, 00));
 		
 		assertThat(result).contains(race2, race3);
+	}
+	
+	void when_raceIsStarted_then_savesRaceWIthActualStartTime() {
+		DinghyClass dinghyClass = new DinghyClass("Test Dinghyclass");
+		entityManager.persist(dinghyClass);
+		Dinghy dinghy = new Dinghy("1234", dinghyClass);
+		entityManager.persist(dinghy);
+				
+		Race race1 = new Race("Test Race", LocalDateTime.of(2023, 5, 13, 12, 00), dinghyClass);
+		entityManager.persist(race1);
+		// remove entity from session (detach entity). Not doing so can result in a false positive dependent on the logic used to check for an exisitng entity in repository save method
+		entityManager.detach(race1);
+		
+		LocalDateTime startTime = LocalDateTime.now();
+		race1.setActualStartTime(startTime);
+		Race race2 = raceRepository.save(race1);
+		
+		assertThat(race1.getActualStartTime() == race2.getActualStartTime());
 	}
 }
