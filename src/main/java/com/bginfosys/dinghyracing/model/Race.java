@@ -51,10 +51,11 @@ public class Race {
 	//Not recommended by Spring Data
 	public Race() {}
 	
-	public Race(String name, LocalDateTime plannedStartTime, DinghyClass dinghyClass) {
+	public Race(String name, LocalDateTime plannedStartTime, DinghyClass dinghyClass, Duration duration) {
 		this.name = name;
 		this.plannedStartTime = plannedStartTime;
 		this.dinghyClass = dinghyClass;
+		this.duration = duration;
 	}
 	
 	public Long getId() {
