@@ -65,4 +65,10 @@ class RaceTests {
 		race.signUp(entry);
 		assertThat(race.getSignedUp(), hasItem(entry));
 	}
+
+	@Test
+	void when_startingARace_then_startTimeIsSet() {
+		race.setActualStartTime(LocalDateTime.of(2023,  8, 12, 15, 00));
+		assertEquals(race.getActualStartTime(), LocalDateTime.of(2023,  8, 12, 15, 00));
+	}
 }

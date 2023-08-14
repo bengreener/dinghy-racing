@@ -20,4 +20,6 @@ public interface RaceRepository extends PagingAndSortingRepository<Race, Long> {
 	void delete(@Param("race") Race race);
 	
 	List<Race> findByPlannedStartTimeGreaterThanEqual(@Param("time") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime time);
+	
+	Race findByNameAndPlannedStartTime(@Param("name") String name, @Param("time") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime time);
 }

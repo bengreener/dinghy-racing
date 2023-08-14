@@ -16,6 +16,8 @@ import java.util.HashSet;
 
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.NaturalId;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
@@ -25,10 +27,14 @@ public class Race {
 	private @Version @JsonIgnore Long version;
 	
 	@NotNull
+	@NaturalId
 	private String name;
 	
 	@NotNull
+	@NaturalId
 	private LocalDateTime plannedStartTime;
+	
+	private LocalDateTime actualStartTime;
 	
 	@ManyToOne
 	private DinghyClass dinghyClass;
@@ -62,15 +68,23 @@ public class Race {
 	public String getName() {
 		return this.name;
 	}
+	
+	public LocalDateTime getPlannedStartTime() {
+		return plannedStartTime;
+	}
 
 	public void setPlannedStartTime(LocalDateTime plannedStartTime) {
 		this.plannedStartTime = plannedStartTime;
 	}
 	
-	public LocalDateTime getPlannedStartTime() {
-		return plannedStartTime;
+	public LocalDateTime getActualStartTime() {
+		return actualStartTime;
 	}
-	
+
+	public void setActualStartTime(LocalDateTime actualStartTime) {
+		this.actualStartTime = actualStartTime;
+	}
+
 	public DinghyClass getDinghyClass() {
 		return dinghyClass;
 	}
