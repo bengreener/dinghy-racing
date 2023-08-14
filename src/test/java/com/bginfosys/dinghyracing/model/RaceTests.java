@@ -9,6 +9,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 class RaceTests {
@@ -52,6 +53,12 @@ class RaceTests {
 		assertEquals(race.getPlannedStartTime(), LocalDateTime.of(2021, 9, 27, 16, 47));
 	}
 	
+	@Test
+	void setDuration() {
+		race.setDuration(Duration.ofMillis(1000));
+		assertEquals(race.getDuration(), Duration.ofSeconds(1));
+	}
+
 	@Test
 	void plannedStartTimeIsLocalDateTime() {
 		race.setPlannedStartTime(LocalDateTime.of(2021, 9, 27, 16, 47));
