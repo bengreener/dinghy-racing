@@ -1,5 +1,6 @@
 package com.bginfosys.dinghyracing.model;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 import javax.persistence.CascadeType;
@@ -39,6 +40,9 @@ public class Race {
 	@ManyToOne
 	private DinghyClass dinghyClass;
 	
+	@NotNull
+	private Duration duration;
+	
 	@Column(unique=true)
 	@OneToMany(mappedBy = "race", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<Entry> signedUp;
@@ -47,10 +51,11 @@ public class Race {
 	//Not recommended by Spring Data
 	public Race() {}
 	
-	public Race(String name, LocalDateTime plannedStartTime, DinghyClass dinghyClass) {
+	public Race(String name, LocalDateTime plannedStartTime, DinghyClass dinghyClass, Duration duration) {
 		this.name = name;
 		this.plannedStartTime = plannedStartTime;
 		this.dinghyClass = dinghyClass;
+		this.duration = duration;
 	}
 	
 	public Long getId() {
@@ -93,6 +98,14 @@ public class Race {
 		this.dinghyClass = dinghyClass;
 	}
 	
+	public Duration getDuration() {
+		return duration;
+	}
+
+	public void setDuration(Duration duration) {
+		this.duration = duration;
+	}
+
 	public Set<Entry> getSignedUp() {
 		return signedUp;
 	}
