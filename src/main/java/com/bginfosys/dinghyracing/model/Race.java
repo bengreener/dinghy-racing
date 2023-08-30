@@ -43,6 +43,8 @@ public class Race {
 	@NotNull
 	private Duration duration;
 	
+	private Integer plannedLaps;
+	
 	@Column(unique=true)
 	@OneToMany(mappedBy = "race", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<Entry> signedUp;
@@ -104,6 +106,14 @@ public class Race {
 
 	public void setDuration(Duration duration) {
 		this.duration = duration;
+	}
+
+	public Integer getPlannedLaps() {
+		return plannedLaps;
+	}
+
+	public void setPlannedLaps(Integer plannedLaps) {
+		this.plannedLaps = plannedLaps;
 	}
 
 	public Set<Entry> getSignedUp() {

@@ -41,6 +41,7 @@ public class RaceRepositoryTests {
 		entityManager.persist(dinghyClass);
 		
 		Race race1 = new Race("Test Race", LocalDateTime.of(2023, 5, 13, 12, 00), dinghyClass, Duration.ofMinutes(45));
+		race1.setPlannedLaps(5);
 		Race race2 = raceRepository.save(race1);
 		
 		assertThat(entityManager.find(Race.class, entityManager.getId(race2))).isEqualTo(race1);
@@ -57,7 +58,7 @@ public class RaceRepositoryTests {
 		race1.setDuration(Duration.ofMinutes(45));
 		raceRepository.save(race1);
 		
-		Exception exception = assertThrows(ConstraintViolationException.class, () -> {
+		assertThrows(ConstraintViolationException.class, () -> {
 			entityManager.flush();
 		});
 	}
