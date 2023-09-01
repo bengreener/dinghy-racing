@@ -6,6 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.junit.jupiter.api.Test;
 
 import com.bginfosys.dinghyracing.exceptions.DinghyClassMismatchException;
@@ -203,4 +206,11 @@ public class EntryTests {
 		entry.setRace(race);
 		assertThat(race.getSignedUp(), hasItem(entry));
 	}
+	
+//	@Test
+//	void when_requestingLaps_then_getSet() {
+//		Entry entry = new Entry();
+//		entry.setLaps(new HashSet<Lap>());
+//		assertTrue(entry.getLaps() instanceof Set<?>);
+//	}
 }

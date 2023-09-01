@@ -1,9 +1,13 @@
 package com.bginfosys.dinghyracing.model;
 
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -45,6 +49,9 @@ public class Entry {
 	@ManyToOne
 	private Race race;
 
+	@OneToMany
+	private Set<Lap> laps;
+	
 	public Entry() {}
 	
 	public Entry(Competitor competitor, Dinghy dinghy, Race race) {
@@ -91,5 +98,13 @@ public class Entry {
 		else {
 			throw new DinghyClassMismatchException();
 		}
+	}
+
+	public Set<Lap> getLaps() {
+		return laps;
+	}
+
+	public void setLaps(Set<Lap> laps) {
+		this.laps = laps;
 	}
 }
