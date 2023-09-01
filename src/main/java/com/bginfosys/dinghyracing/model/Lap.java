@@ -5,7 +5,10 @@ import java.time.Duration;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class Lap {
@@ -13,6 +16,8 @@ public class Lap {
 	@Id	
 	@GeneratedValue 
 	private Long id;
+	
+	private @Version @JsonIgnore Long version;
 	
 	@NotNull
 	private Integer number;
