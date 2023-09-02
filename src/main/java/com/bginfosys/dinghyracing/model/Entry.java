@@ -1,5 +1,6 @@
 package com.bginfosys.dinghyracing.model;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -106,5 +107,12 @@ public class Entry {
 
 	public void setLaps(Set<Lap> laps) {
 		this.laps = laps;
+	}
+	
+	public void addLap(Lap lap) {
+		if (laps == null) {
+			laps = new HashSet<Lap>();
+		}
+		laps.add(lap);
 	}
 }
