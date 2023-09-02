@@ -1,26 +1,13 @@
 package com.bginfosys.dinghyracing.web.controllers;
 
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.core.convert.ConversionService;
-import org.springframework.core.convert.TypeDescriptor;
-import org.springframework.data.mapping.context.PersistentEntities;
-import org.springframework.data.repository.support.DefaultRepositoryInvokerFactory;
-import org.springframework.data.repository.support.Repositories;
-import org.springframework.data.rest.core.UriToEntityConverter;
-import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
-import org.springframework.data.rest.core.support.EntityLookup;
-import org.springframework.data.repository.support.RepositoryInvokerFactory;
-import org.springframework.data.rest.core.support.UnwrappingRepositoryInvokerFactory;
+
 import org.springframework.data.rest.webmvc.RepositoryRestController;
 import org.springframework.data.rest.webmvc.mapping.LinkCollector;
 import org.springframework.data.rest.webmvc.support.RepositoryEntityLinks;
-import org.springframework.format.support.DefaultFormattingConversionService;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Links;
 import org.springframework.http.ResponseEntity;
