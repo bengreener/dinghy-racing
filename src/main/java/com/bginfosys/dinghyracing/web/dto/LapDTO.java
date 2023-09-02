@@ -7,6 +7,8 @@ public class LapDTO {
 	
 	private Duration time;
 
+	public LapDTO() {}
+	
 	public LapDTO(Integer number, Duration time) {
 		this.number = number;
 		this.time = time;
