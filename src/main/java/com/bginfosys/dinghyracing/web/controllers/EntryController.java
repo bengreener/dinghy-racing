@@ -12,8 +12,8 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Links;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.bginfosys.dinghyracing.model.Entry;
@@ -45,7 +45,7 @@ public class EntryController {
 	}
 	
 	@Transactional
-	@PutMapping(path = "/entries/{entryId}/addLap", consumes = "application/json")
+	@PatchMapping(path = "/entries/{entryId}/addLap", consumes = "application/json")
 	public ResponseEntity<EntityModel<Entry>> addLap(@PathVariable Long entryId, @RequestBody LapDTO lapDTO) {
 		Optional<Entry> optEntry = entryRepository.findById(entryId);
 		Entry entry = optEntry.get();
