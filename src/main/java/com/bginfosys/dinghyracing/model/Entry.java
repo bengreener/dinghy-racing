@@ -1,15 +1,15 @@
 package com.bginfosys.dinghyracing.model;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.SortedSet;
+import java.util.concurrent.ConcurrentSkipListSet;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
@@ -51,7 +51,8 @@ public class Entry {
 	private Race race;
 
 	@OneToMany
-	private Set<Lap> laps;
+	@OrderBy("number")
+	private SortedSet<Lap> laps;
 	
 	public Entry() {}
 	
@@ -101,17 +102,17 @@ public class Entry {
 		}
 	}
 
-	public Set<Lap> getLaps() {
+	public SortedSet<Lap> getLaps() {
 		return laps;
 	}
 
-	public void setLaps(Set<Lap> laps) {
+	public void setLaps(SortedSet<Lap> laps) {
 		this.laps = laps;
 	}
 	
 	public void addLap(Lap lap) {
 		if (laps == null) {
-			laps = new HashSet<Lap>();
+			laps = new ConcurrentSkipListSet<Lap>();
 		}
 		laps.add(lap);
 	}

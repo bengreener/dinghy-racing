@@ -6,8 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.SortedSet;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 import javax.persistence.PersistenceException;
 import javax.validation.ConstraintViolationException;
@@ -273,7 +273,7 @@ public class EntryRepositoryTests {
 		entityManager.persist(race);
 		
 		Entry entry = new Entry(competitor, dinghy, race);
-		entry.setLaps(new HashSet<Lap>());
+		entry.setLaps(new ConcurrentSkipListSet<Lap>());
 		Entry insertedEntry = entryRepository.save(entry);
 		assertThat(entityManager.find(Entry.class, entityManager.getId(insertedEntry))).isEqualTo(entry);
 	}
@@ -293,7 +293,7 @@ public class EntryRepositoryTests {
 		entityManager.persist(lap2);
 		
 		Entry entry = new Entry(competitor, dinghy, race);
-		Set<Lap> laps = new HashSet<Lap>();
+		SortedSet<Lap> laps = new ConcurrentSkipListSet<Lap>();
 		laps.add(lap1);
 		laps.add(lap2);
 		entry.setLaps(laps);

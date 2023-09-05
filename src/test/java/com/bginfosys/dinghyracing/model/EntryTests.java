@@ -7,8 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Duration;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.SortedSet;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 import org.junit.jupiter.api.Test;
 
@@ -211,8 +211,8 @@ public class EntryTests {
 	@Test
 	void when_requestingLaps_then_getSet() {
 		Entry entry = new Entry();
-		entry.setLaps(new HashSet<Lap>());
-		assertTrue(entry.getLaps() instanceof Set<?>);
+		entry.setLaps(new ConcurrentSkipListSet<Lap>());
+		assertTrue(entry.getLaps() instanceof SortedSet<?>);
 	}
 	
 	@Test
