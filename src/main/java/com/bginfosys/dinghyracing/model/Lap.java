@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-public class Lap {
+public class Lap implements Comparable<Lap> {
 	
 	@Id	
 	@GeneratedValue 
@@ -54,5 +54,16 @@ public class Lap {
 
 	public void setTime(Duration time) {
 		this.time = time;
+	}
+
+	@Override
+	public int compareTo(Lap o) {
+		if (this.getNumber() > o.getNumber()) {
+			return 1;
+		}
+		if (this.getNumber() < o.getNumber()) {
+			return -1;
+		}
+		return 0;
 	}
 }

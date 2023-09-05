@@ -6,8 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.time.Duration;
+import java.util.SortedSet;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 import org.junit.jupiter.api.Test;
 
@@ -207,10 +208,20 @@ public class EntryTests {
 		assertThat(race.getSignedUp(), hasItem(entry));
 	}
 	
-//	@Test
-//	void when_requestingLaps_then_getSet() {
-//		Entry entry = new Entry();
-//		entry.setLaps(new HashSet<Lap>());
-//		assertTrue(entry.getLaps() instanceof Set<?>);
-//	}
+	@Test
+	void when_requestingLaps_then_getSet() {
+		Entry entry = new Entry();
+		entry.setLaps(new ConcurrentSkipListSet<Lap>());
+		assertTrue(entry.getLaps() instanceof SortedSet<?>);
+	}
+	
+	@Test
+	void when_addingALap_then_lapIsAddedToLaps() {
+		Entry entry = new Entry();
+		Lap lap = new Lap(1, Duration.ofMinutes(13));
+		entry.addLap(lap);
+		
+		assertTrue(entry.getLaps().contains(lap));
+		
+	}
 }
