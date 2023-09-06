@@ -1,5 +1,6 @@
 package com.bginfosys.dinghyracing.model;
 
+import java.time.Duration;
 import java.util.SortedSet;
 import java.util.concurrent.ConcurrentSkipListSet;
 
@@ -103,6 +104,25 @@ public class Entry {
 		}
 	}
 
+	/**
+	 * Get the time taken by the entry to complete the recorded laps
+	 * @return
+	 */
+	public Duration getSumOfLapTimes() {
+		return laps.stream().map(lap -> lap.getTime()).reduce(Duration.ofMillis(0), (Duration sum, Duration lapTime) -> sum.plus(lapTime));
+	}
+	
+	public Duration getLastLapTime() {
+		return laps.size() > 0 ? laps.last().getTime() : Duration.ofMillis(0);
+	}
+	
+	public Duration getAverageLapTime() {
+		if (laps.size() == 0) {
+			return Duration.ofMillis(0);
+		}
+		return this.getSumOfLapTimes().dividedBy(laps.size());
+	}
+	
 	public SortedSet<Lap> getLaps() {
 		return laps;
 	}
