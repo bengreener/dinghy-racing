@@ -3,6 +3,7 @@ package com.bginfosys.dinghyracing.model;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -220,8 +221,15 @@ public class EntryTests {
 		Entry entry = new Entry();
 		Lap lap = new Lap(1, Duration.ofMinutes(13));
 		entry.addLap(lap);
-		
 		assertTrue(entry.getLaps().contains(lap));
-		
+	}
+	
+	@Test
+	void when_removingALap_then_lapIsRemoved() {
+		Entry entry = new Entry();
+		Lap lap = new Lap(1, Duration.ofMinutes(13));
+		entry.addLap(lap);
+		entry.removeLap(new Lap(1, Duration.ofMinutes(13)));
+		assertFalse(entry.getLaps().contains(lap));
 	}
 }
