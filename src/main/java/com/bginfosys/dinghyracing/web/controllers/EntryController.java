@@ -2,9 +2,6 @@ package com.bginfosys.dinghyracing.web.controllers;
 
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-
 import org.springframework.data.rest.webmvc.RepositoryRestController;
 import org.springframework.data.rest.webmvc.mapping.LinkCollector;
 import org.springframework.data.rest.webmvc.support.RepositoryEntityLinks;
@@ -25,9 +22,6 @@ import com.bginfosys.dinghyracing.web.dto.LapDTO;
 
 @RepositoryRestController
 public class EntryController {
-	
-	@Autowired
-	ApplicationContext context;
 	
 	private final EntryRepository entryRepository;
 	
