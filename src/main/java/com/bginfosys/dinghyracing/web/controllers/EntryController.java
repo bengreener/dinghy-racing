@@ -10,6 +10,7 @@ import org.springframework.data.rest.webmvc.mapping.LinkCollector;
 import org.springframework.data.rest.webmvc.support.RepositoryEntityLinks;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Links;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -69,5 +70,26 @@ public class EntryController {
 			.body(resource);
 		
 		return responseEntity;
+	}
+	
+	@Transactional
+	@PatchMapping(path = "/entries/{entryId}/removeLap", consumes = "application/json")
+	public ResponseEntity<Entry> removeLap(@PathVariable Long entryId, @RequestBody LapDTO lapDTO) {
+		Optional<Entry> optEntry = entryRepository.findById(entryId);
+		
+		if (optEntry.isPresent()) {
+			Entry entry = optEntry.get();
+			Lap lap = new Lap(lapDTO.getNumber(), lapDTO.getTime());
+			if (entry.removeLap(lap)) {
+				entryRepository.save(entry);
+				return new ResponseEntity<Entry>(HttpStatus.NO_CONTENT);
+			} 
+			else {
+				return new ResponseEntity<Entry>(HttpStatus.BAD_REQUEST);
+			}
+		}
+		else {
+			return new ResponseEntity<Entry>(HttpStatus.NOT_FOUND);
+		}
 	}
 }

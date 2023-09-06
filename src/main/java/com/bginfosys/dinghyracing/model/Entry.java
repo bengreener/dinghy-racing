@@ -3,6 +3,7 @@ package com.bginfosys.dinghyracing.model;
 import java.util.SortedSet;
 import java.util.concurrent.ConcurrentSkipListSet;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -50,9 +51,9 @@ public class Entry {
 	@ManyToOne
 	private Race race;
 
-	@OneToMany
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@OrderBy("number")
-	private SortedSet<Lap> laps;
+	private SortedSet<Lap> laps = new ConcurrentSkipListSet<Lap>();
 	
 	public Entry() {}
 	
@@ -111,9 +112,10 @@ public class Entry {
 	}
 	
 	public void addLap(Lap lap) {
-		if (laps == null) {
-			laps = new ConcurrentSkipListSet<Lap>();
-		}
 		laps.add(lap);
+	}
+	
+	public boolean removeLap(Lap lap) {
+		return this.laps.remove(lap);
 	}
 }
