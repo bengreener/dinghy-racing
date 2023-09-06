@@ -3,8 +3,13 @@ package com.bginfosys.dinghyracing.model;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.time.Duration;
+import java.util.SortedSet;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 import org.junit.jupiter.api.Test;
 
@@ -202,5 +207,29 @@ public class EntryTests {
 		Entry entry = new Entry();
 		entry.setRace(race);
 		assertThat(race.getSignedUp(), hasItem(entry));
+	}
+	
+	@Test
+	void when_requestingLaps_then_getSet() {
+		Entry entry = new Entry();
+		entry.setLaps(new ConcurrentSkipListSet<Lap>());
+		assertTrue(entry.getLaps() instanceof SortedSet<?>);
+	}
+	
+	@Test
+	void when_addingALap_then_lapIsAddedToLaps() {
+		Entry entry = new Entry();
+		Lap lap = new Lap(1, Duration.ofMinutes(13));
+		entry.addLap(lap);
+		assertTrue(entry.getLaps().contains(lap));
+	}
+	
+	@Test
+	void when_removingALap_then_lapIsRemoved() {
+		Entry entry = new Entry();
+		Lap lap = new Lap(1, Duration.ofMinutes(13));
+		entry.addLap(lap);
+		entry.removeLap(new Lap(1, Duration.ofMinutes(13)));
+		assertFalse(entry.getLaps().contains(lap));
 	}
 }

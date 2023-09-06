@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.SortedSet;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 import javax.persistence.PersistenceException;
 import javax.validation.ConstraintViolationException;
@@ -21,6 +23,7 @@ import com.bginfosys.dinghyracing.model.Competitor;
 import com.bginfosys.dinghyracing.model.Dinghy;
 import com.bginfosys.dinghyracing.model.DinghyClass;
 import com.bginfosys.dinghyracing.model.Entry;
+import com.bginfosys.dinghyracing.model.Lap;
 import com.bginfosys.dinghyracing.model.Race;
 
 @DataJpaTest
@@ -257,5 +260,44 @@ public class EntryRepositoryTests {
 		Page<Entry> entries = entryRepository.findByRace(r1, null);
 		
 		assertThat(entries).contains(e1, e2);
+	}
+
+	@Test
+	void when_entryHasEmptyLaps_then_savesEntry() {
+		Competitor competitor = new Competitor();
+		Dinghy dinghy = new Dinghy();
+		Race race = new Race();
+		
+		entityManager.persist(competitor);
+		entityManager.persist(dinghy);
+		entityManager.persist(race);
+		
+		Entry entry = new Entry(competitor, dinghy, race);
+		entry.setLaps(new ConcurrentSkipListSet<Lap>());
+		Entry insertedEntry = entryRepository.save(entry);
+		assertThat(entityManager.find(Entry.class, entityManager.getId(insertedEntry))).isEqualTo(entry);
+	}
+	
+	@Test
+	void when_entryHasLap_then_savesEntry() {
+		Competitor competitor = new Competitor();
+		Dinghy dinghy = new Dinghy();
+		Race race = new Race();
+		Lap lap1 = new Lap(1, Duration.ofMinutes(15));
+		Lap lap2 = new Lap(2, Duration.ofMinutes(16));
+		
+		entityManager.persist(competitor);
+		entityManager.persist(dinghy);
+		entityManager.persist(race);
+		entityManager.persist(lap1);
+		entityManager.persist(lap2);
+		
+		Entry entry = new Entry(competitor, dinghy, race);
+		SortedSet<Lap> laps = new ConcurrentSkipListSet<Lap>();
+		laps.add(lap1);
+		laps.add(lap2);
+		entry.setLaps(laps);
+		Entry insertedEntry = entryRepository.save(entry);
+		assertThat(entityManager.find(Entry.class, entityManager.getId(insertedEntry))).isEqualTo(entry);
 	}
 }

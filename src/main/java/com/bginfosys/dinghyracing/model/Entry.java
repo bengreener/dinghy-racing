@@ -1,10 +1,16 @@
 package com.bginfosys.dinghyracing.model;
 
+import java.util.SortedSet;
+import java.util.concurrent.ConcurrentSkipListSet;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
@@ -45,6 +51,10 @@ public class Entry {
 	@ManyToOne
 	private Race race;
 
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@OrderBy("number")
+	private SortedSet<Lap> laps = new ConcurrentSkipListSet<Lap>();
+	
 	public Entry() {}
 	
 	public Entry(Competitor competitor, Dinghy dinghy, Race race) {
@@ -91,5 +101,21 @@ public class Entry {
 		else {
 			throw new DinghyClassMismatchException();
 		}
+	}
+
+	public SortedSet<Lap> getLaps() {
+		return laps;
+	}
+
+	public void setLaps(SortedSet<Lap> laps) {
+		this.laps = laps;
+	}
+	
+	public void addLap(Lap lap) {
+		laps.add(lap);
+	}
+	
+	public boolean removeLap(Lap lap) {
+		return this.laps.remove(lap);
 	}
 }
