@@ -13,6 +13,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import java.util.Set;
+import java.util.stream.Stream;
+import java.util.Comparator;
 import java.util.HashSet;
 
 import javax.validation.constraints.NotNull;
@@ -129,6 +131,33 @@ public class Race {
 			signedUp = new HashSet<Entry>(64);
 		}
 		signedUp.add(entry);
+	}
+	
+	public Integer leadEntrylapsCompleted() {
+		return signedUp.stream().mapToInt(entry -> entry.getLaps().size()).max().orElse(0);
+	}
+	
+	public Entry getLeadEntry() {
+		// get entries that have completed the same number of laps as lead boat
+		Integer leadLapCount = this.leadEntrylapsCompleted(); 
+		Stream<Entry> entriesOnLeadLap = signedUp.stream().filter(entry -> entry.getLaps().size() == leadLapCount);
+		// return entry on lead lap with lowest sum of lap times
+		return entriesOnLeadLap.min(Comparator.comparing(Entry::getSumOfLapTimes)).orElse(null);
+	}
+	
+	/**
+	 * Return an estimate of the number of laps that will be completed given the pace per lap, number of laps completed, and the race duration
+	 * If no laps have been completed will return the number of laps set for the race
+	 * @return
+	 */
+	public Double getLapForecast() {
+		Entry leadEntry = this.getLeadEntry();
+		if (leadEntry == null || leadEntry.getLaps().size() == 0) {
+			return (double)this.getPlannedLaps();
+		}
+		Duration remainingTime = this.getDuration().minus(leadEntry.getSumOfLapTimes());
+		Double lapsEstimate = (double)remainingTime.toSeconds() / (double)leadEntry.getLastLapTime().toSeconds();
+		return leadEntry.getLaps().size() + lapsEstimate;
 	}
 	
 	public String toString() {
