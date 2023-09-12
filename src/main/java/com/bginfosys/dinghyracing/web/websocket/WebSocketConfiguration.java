@@ -8,13 +8,13 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 
 @Component
 @EnableWebSocketMessageBroker
-public class DinghyClassWebSocketConfiguration implements WebSocketMessageBrokerConfigurer {
+public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer {
 
 	static final String MESSAGE_PREFIX = "/topic";
 	
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
-		registry.addEndpoint("/dinghyracing/dinghyclasses/messages").setAllowedOriginPatterns("*").withSockJS();
+		registry.addEndpoint("/dinghyracingws").setAllowedOriginPatterns("*");//.withSockJS();
 	}
 	
 	@Override

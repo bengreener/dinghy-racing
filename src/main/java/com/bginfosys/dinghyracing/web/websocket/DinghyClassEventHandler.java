@@ -1,6 +1,6 @@
 package com.bginfosys.dinghyracing.web.websocket;
 
-import static com.bginfosys.dinghyracing.web.websocket.DinghyClassWebSocketConfiguration.MESSAGE_PREFIX;
+import static com.bginfosys.dinghyracing.web.websocket.WebSocketConfiguration.MESSAGE_PREFIX;
 
 import org.springframework.data.rest.core.annotation.HandleAfterCreate;
 import org.springframework.data.rest.core.annotation.HandleAfterDelete;
