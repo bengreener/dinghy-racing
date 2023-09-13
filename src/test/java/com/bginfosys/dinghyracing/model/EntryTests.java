@@ -66,7 +66,7 @@ public class EntryTests {
 		assertEquals(entry.getCompetitor(), competitor);
 		assertEquals(entry.getRace(), race);
 	}
-	// Set dinghy tests
+	
 	@Test
 	void when_settingDinghyAndRaceIsNull_then_itSetsDinghy() {
 		Entry entry = new Entry();
@@ -130,7 +130,7 @@ public class EntryTests {
 		entry.setDinghy(dinghy);
 		assertEquals(entry.getDinghy(), dinghy);
 	}
-	// Set competitor tests
+	
 	@Test
 	void when_settingCompetitor_then_itRecordsNewValue() {
 		Entry entry = new Entry();
@@ -139,7 +139,7 @@ public class EntryTests {
 		entry.setCompetitor(competitor);
 		assertEquals(entry.getCompetitor(), competitor);
 	}
-	// Set race tests
+	
 	@Test
 	void when_settingRaceAndRaceDinghyClassIsNullAndDinghyIsNull_then_setsRace() {
 		Entry entry = new Entry();
@@ -300,4 +300,5 @@ public class EntryTests {
 		
 		assertEquals(entry.getAverageLapTime(), Duration.ofSeconds(912));
 	}
+
 }
