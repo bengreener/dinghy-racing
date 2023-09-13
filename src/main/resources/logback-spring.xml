@@ -39,9 +39,9 @@
         <!-- appender-ref ref="Console" / -->
     <!-- /logger -->
     <!-- LOG "com.bginfosys*" at TRACE level -->
-    <logger name="com.bginfosys" level="trace" additivity="false">
-        <appender-ref ref="RollingFile" />
-        <appender-ref ref="Console" />
-    </logger>
+    <!-- <logger name="com.bginfosys" level="trace" additivity="false"> -->
+        <!-- <appender-ref ref="RollingFile" /> -->
+        <!-- <appender-ref ref="Console" /> -->
+    <!-- </logger> -->
 	
 </configuration>
