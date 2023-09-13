@@ -2,6 +2,12 @@ package com.bginfosys.dinghyracing.web.controllers;
 
 import java.util.Optional;
 
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.ApplicationEventPublisherAware;
+import org.springframework.data.rest.core.event.AfterCreateEvent;
+import org.springframework.data.rest.core.event.AfterLinkSaveEvent;
+import org.springframework.data.rest.core.event.BeforeCreateEvent;
+import org.springframework.data.rest.core.event.BeforeLinkSaveEvent;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
 import org.springframework.data.rest.webmvc.mapping.LinkCollector;
 import org.springframework.data.rest.webmvc.support.RepositoryEntityLinks;
@@ -21,7 +27,7 @@ import com.bginfosys.dinghyracing.persistence.LapRepository;
 import com.bginfosys.dinghyracing.web.dto.LapDTO;
 
 @RepositoryRestController
-public class EntryController {
+public class EntryController implements ApplicationEventPublisherAware {
 	
 	private final EntryRepository entryRepository;
 	
@@ -30,6 +36,8 @@ public class EntryController {
 	private final RepositoryEntityLinks entityLinks;
 	
 	private final LinkCollector linkCollector;
+
+	private ApplicationEventPublisher publisher;
 	
 	EntryController(EntryRepository entryRepository, LapRepository lapRepository, RepositoryEntityLinks entityLinks, 
 			LinkCollector linkCollector) {
@@ -37,6 +45,11 @@ public class EntryController {
 		this.lapRepository = lapRepository;
 		this.entityLinks = entityLinks;
 		this.linkCollector = linkCollector;
+	}
+
+	@Override
+	public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
+		this.publisher = applicationEventPublisher;		
 	}
 	
 	@Transactional
@@ -46,16 +59,20 @@ public class EntryController {
 		Entry entry = optEntry.get();
 		
 		Lap lap = new Lap(lapDTO.getNumber(), lapDTO.getTime());
-		lapRepository.save(lap);
+		publisher.publishEvent(new BeforeCreateEvent(lap));
+		Lap savedLap = lapRepository.save(lap);
+		publisher.publishEvent(new AfterCreateEvent(savedLap));
 		
 		entry.addLap(lap);
 		
-		entryRepository.save(entry);
+		publisher.publishEvent(new BeforeLinkSaveEvent(entry, entry.getLaps()));
+		Entry savedEntry = entryRepository.save(entry);
+		publisher.publishEvent(new AfterLinkSaveEvent(savedEntry, savedEntry.getLaps()));
 		
-		Class<?> type = entry.getClass();
+		Class<?> type = savedEntry.getClass();
 		
-		Links links = linkCollector.getLinksFor(entry);
-		EntityModel<Entry> resource = EntityModel.of(entry);
+		Links links = linkCollector.getLinksFor(savedEntry);
+		EntityModel<Entry> resource = EntityModel.of(savedEntry);
 		resource.add(links);
 		resource.add(entityLinks.linkToItemResource(type, entryId));
 		
@@ -75,7 +92,9 @@ public class EntryController {
 			Entry entry = optEntry.get();
 			Lap lap = new Lap(lapDTO.getNumber(), lapDTO.getTime());
 			if (entry.removeLap(lap)) {
-				entryRepository.save(entry);
+				publisher.publishEvent(new BeforeLinkSaveEvent(entry, entry.getLaps()));
+				Entry savedEntry = entryRepository.save(entry);
+				publisher.publishEvent(new AfterLinkSaveEvent(savedEntry, savedEntry.getLaps()));
 				return new ResponseEntity<Entry>(HttpStatus.NO_CONTENT);
 			} 
 			else {
