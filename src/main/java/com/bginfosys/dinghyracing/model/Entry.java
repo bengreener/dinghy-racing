@@ -69,6 +69,10 @@ public class Entry {
 		}
 	}
 
+	public Long getId() {
+		return this.id;
+	}
+	
 	public Dinghy getDinghy() {
 		return dinghy;
 	}

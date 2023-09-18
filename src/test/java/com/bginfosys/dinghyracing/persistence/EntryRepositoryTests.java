@@ -1,6 +1,8 @@
 package com.bginfosys.dinghyracing.persistence;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -48,6 +50,35 @@ public class EntryRepositoryTests {
 		Entry entry = new Entry(competitor, dinghy, race);
 		Entry insertedEntry = entryRepository.save(entry);
 		assertThat(entityManager.find(Entry.class, entityManager.getId(insertedEntry))).isEqualTo(entry);
+	}
+	
+	@Test
+	void given_entryHasNotBeenSaved_when_idIsRequested_then_returnsNull() {
+		Competitor competitor = new Competitor();
+		Dinghy dinghy = new Dinghy();
+		Race race = new Race();
+		
+		entityManager.persist(competitor);
+		entityManager.persist(dinghy);
+		entityManager.persist(race);
+		
+		Entry entry = new Entry(competitor, dinghy, race);
+		assertNull(entry.getId());
+	}
+	
+	@Test
+	void given_entryHasBeenSaved_when_idIsRequested_then_returnsId() {
+		Competitor competitor = new Competitor();
+		Dinghy dinghy = new Dinghy();
+		Race race = new Race();
+		
+		entityManager.persist(competitor);
+		entityManager.persist(dinghy);
+		entityManager.persist(race);
+		
+		Entry entry = new Entry(competitor, dinghy, race);
+		Entry insertedEntry = entryRepository.save(entry);
+		assertEquals(entityManager.getId(insertedEntry), insertedEntry.getId());
 	}
 	
 	@Test
