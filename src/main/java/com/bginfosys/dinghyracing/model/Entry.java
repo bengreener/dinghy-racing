@@ -142,4 +142,14 @@ public class Entry {
 	public boolean removeLap(Lap lap) {
 		return this.laps.remove(lap);
 	}
+	
+	// only the last recorded lap can be updated
+	public void updateLap(Lap lap) {
+		if (lap.getNumber() != laps.size()) {
+			throw new IllegalArgumentException("Only the last recoded lap for an entry can be removed.");
+		}
+		laps.remove(laps.last());
+		laps.add(lap);
+	}
+		
 }
