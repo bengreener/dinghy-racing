@@ -317,7 +317,9 @@ public class EntryTests {
 		
 		Lap newLap5 = new Lap(5, Duration.ofMinutes(15));
 		entry.updateLap(newLap5);
-		assertEquals(newLap5, entry.getLaps().last());	
+		// swapping out old and new laps was causing a referential integrity error after EntryController method completed :-(
+//		assertEquals(newLap5, entry.getLaps().last());
+		assertEquals(newLap5.getTime(), entry.getLaps().last().getTime());	
 	}
 	
 	@Test

@@ -105,4 +105,22 @@ public class EntryController implements ApplicationEventPublisherAware {
 			return new ResponseEntity<Entry>(HttpStatus.NOT_FOUND);
 		}
 	}
+	
+	@Transactional
+	@PatchMapping(path = "/entries/{entryId}/updateLap", consumes = "application/json")
+	public ResponseEntity<Entry> updateLap(@PathVariable Long entryId, @RequestBody LapDTO lapDTO) {
+		Entry entry = entryRepository.findById(entryId).orElseThrow();
+		
+		Lap newLap = new Lap(lapDTO.getNumber(), lapDTO.getTime());
+		publisher.publishEvent(new BeforeCreateEvent(newLap));
+		Lap savedLap = lapRepository.save(newLap);
+		publisher.publishEvent(new AfterCreateEvent(savedLap));
+		
+		entry.updateLap(newLap);
+		publisher.publishEvent(new BeforeLinkSaveEvent(entry, entry.getLaps()));
+		Entry savedEntry = entryRepository.save(entry);
+		publisher.publishEvent(new AfterLinkSaveEvent(savedEntry, savedEntry.getLaps()));
+		entryRepository.findById(entryId).orElseThrow();
+		return new ResponseEntity<Entry>(HttpStatus.NO_CONTENT);
+	}
 }
