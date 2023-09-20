@@ -146,12 +146,10 @@ public class Entry {
 	// only the last recorded lap can be updated
 	public void updateLap(Lap lap) {
 		if (lap.getNumber() != laps.size()) {
-			throw new IllegalArgumentException("Only the last recoded lap for an entry can be removed.");
+			throw new IllegalArgumentException("Only the last recorded lap for an entry can be changed.");
 		}
 		// swapping out old and new laps was causing a referential integrity error after controller method returned :-(
 		// appeared to be caused by system trying to delete the original referenced lap before updating the reference in the database to the new lap; original lap is not deleted as it is still recorded as a mapped to the entry
-//		laps.remove(laps.last());
-//		laps.add(lap);
 		laps.last().setTime(lap.getTime());
 	}
 		
