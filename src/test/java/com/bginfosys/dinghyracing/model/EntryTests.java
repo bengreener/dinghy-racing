@@ -293,12 +293,53 @@ public class EntryTests {
 		Lap lap5 = new Lap(5, Duration.ofMinutes(14));
 		
 		entry.addLap(lap1);
-		entry.addLap(lap3);
-		entry.addLap(lap5);
 		entry.addLap(lap2);
+		entry.addLap(lap3);
 		entry.addLap(lap4);
+		entry.addLap(lap5);
 		
 		assertEquals(entry.getAverageLapTime(), Duration.ofSeconds(912));
+	}
+	
+	@Test
+	void given_anEntryHasLapsRecorded_then_updatesLastLap() {
+		Entry entry = new Entry();
+		Lap lap1 = new Lap(1, Duration.ofMinutes(13));
+		Lap lap2 = new Lap(2, Duration.ofMinutes(16));
+		Lap lap3 = new Lap(3, Duration.ofMinutes(15));
+		Lap lap4 = new Lap(4, Duration.ofMinutes(18));
+		Lap lap5 = new Lap(5, Duration.ofMinutes(14));
+		entry.addLap(lap1);
+		entry.addLap(lap2);
+		entry.addLap(lap3);
+		entry.addLap(lap4);
+		entry.addLap(lap5);
+		
+		Lap newLap5 = new Lap(5, Duration.ofMinutes(15));
+		entry.updateLap(newLap5);
+		// swapping out old and new laps was causing a referential integrity error after EntryController method completed :-(
+//		assertEquals(newLap5, entry.getLaps().last());
+		assertEquals(newLap5.getTime(), entry.getLaps().last().getTime());	
+	}
+	
+	@Test
+	void given_anEntryHasLapsRecorded_then_ifAttemptToUpdateLapOtherThanLastThrowsIllegalArgumentException() {
+		Entry entry = new Entry();
+		Lap lap1 = new Lap(1, Duration.ofMinutes(13));
+		Lap lap2 = new Lap(2, Duration.ofMinutes(16));
+		Lap lap3 = new Lap(3, Duration.ofMinutes(15));
+		Lap lap4 = new Lap(4, Duration.ofMinutes(18));
+		Lap lap5 = new Lap(5, Duration.ofMinutes(14));
+		entry.addLap(lap1);
+		entry.addLap(lap2);
+		entry.addLap(lap3);
+		entry.addLap(lap4);
+		entry.addLap(lap5);
+		
+		Lap newLap3 = new Lap(3, Duration.ofMinutes(14));
+		assertThrows(IllegalArgumentException.class, () -> {
+			entry.updateLap(newLap3);
+		});	
 	}
 
 }
