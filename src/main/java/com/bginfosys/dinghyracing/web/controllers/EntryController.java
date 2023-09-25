@@ -52,9 +52,17 @@ public class EntryController implements ApplicationEventPublisherAware {
 		this.publisher = applicationEventPublisher;		
 	}
 	
+	/**
+	 * Add lap to entry
+	 * Will fail if a lap with the lap number has already been recorded for the entry
+	 * @param entryId
+	 * @param lapDTO
+	 * @return ResponseEntity<EntityModel<Entry>>
+	 */
 	@Transactional
 	@PatchMapping(path = "/entries/{entryId}/addLap", consumes = "application/json")
-	public ResponseEntity<EntityModel<Entry>> addLap(@PathVariable Long entryId, @RequestBody LapDTO lapDTO) {
+//	public ResponseEntity<EntityModel<Entry>> addLap(@PathVariable Long entryId, @RequestBody LapDTO lapDTO) {
+	public ResponseEntity<Object> addLap(@PathVariable Long entryId, @RequestBody LapDTO lapDTO) {
 		Optional<Entry> optEntry = entryRepository.findById(entryId);
 		Entry entry = optEntry.get();
 		
@@ -63,23 +71,29 @@ public class EntryController implements ApplicationEventPublisherAware {
 		Lap savedLap = lapRepository.save(lap);
 		publisher.publishEvent(new AfterCreateEvent(savedLap));
 		
-		entry.addLap(lap);
+		ResponseEntity<Object> responseEntity;
 		
-		publisher.publishEvent(new BeforeLinkSaveEvent(entry, entry.getLaps()));
-		Entry savedEntry = entryRepository.save(entry);
-		publisher.publishEvent(new AfterLinkSaveEvent(savedEntry, savedEntry.getLaps()));
-		
-		Class<?> type = savedEntry.getClass();
-		
-		Links links = linkCollector.getLinksFor(savedEntry);
-		EntityModel<Entry> resource = EntityModel.of(savedEntry);
-		resource.add(links);
-		resource.add(entityLinks.linkToItemResource(type, entryId));
-		
-		ResponseEntity<EntityModel<Entry>> responseEntity = ResponseEntity.ok()
-			.header("Content-Type", "application/hal+json")
-			.body(resource);
-		
+		if (entry.addLap(lap)) {
+			publisher.publishEvent(new BeforeLinkSaveEvent(entry, entry.getLaps()));
+			Entry savedEntry = entryRepository.save(entry);
+			publisher.publishEvent(new AfterLinkSaveEvent(savedEntry, savedEntry.getLaps()));
+			
+			Class<?> type = savedEntry.getClass();
+			
+			Links links = linkCollector.getLinksFor(savedEntry);
+			EntityModel<Entry> resource = EntityModel.of(savedEntry);
+			resource.add(links);
+			resource.add(entityLinks.linkToItemResource(type, entryId));
+			
+			responseEntity = ResponseEntity.ok()
+				.header("Content-Type", "application/hal+json")
+				.body(resource);	
+		}
+		else {
+			responseEntity = ResponseEntity.status(HttpStatus.CONFLICT)
+				.header("Content-Type", "application/hal+json")
+				.body(null);
+		}
 		return responseEntity;
 	}
 	

@@ -225,6 +225,36 @@ public class EntryTests {
 	}
 	
 	@Test
+	void given_lapWithLapNumberAlreadyRecorded_when_addingALapWithSameLapNumber_then_LapIsNotAdded() {
+		Entry entry = new Entry();
+		Lap lap1 = new Lap(1, Duration.ofMinutes(13));
+		Lap lap1_2 = new Lap(1, Duration.ofMinutes(11));
+		entry.addLap(lap1);
+		entry.addLap(lap1_2);
+		// assertFalse(entry.getLaps().contains(lap1_2)); // probably doesn't work as comparator is based on lap number not object equivalence
+		 assertTrue(entry.getLaps().size() == 1);
+		 assertFalse(entry.getLaps().first().getNumber() == lap1_2.getNumber() && entry.getLaps().first().getTime() == lap1_2.getTime());
+	}
+	
+	@Test
+	void when_addingALap_then_returnsTrueIfLapIsAdded() {
+		Entry entry = new Entry();
+		Lap lap = new Lap(1, Duration.ofMinutes(13));
+		boolean lapAdded = entry.addLap(lap);
+		assertTrue(lapAdded);
+	}
+	
+	@Test
+	void when_addingALap_then_returnsFalseIfLapIsNotAdded() {
+		Entry entry = new Entry();
+		Lap lap1 = new Lap(1, Duration.ofMinutes(13));
+		Lap lap1_2 = new Lap(1, Duration.ofMinutes(12));
+		entry.addLap(lap1);
+		boolean lapAdded = entry.addLap(lap1_2);
+		assertFalse(lapAdded);
+	}
+	
+	@Test
 	void when_removingALap_then_lapIsRemoved() {
 		Entry entry = new Entry();
 		Lap lap = new Lap(1, Duration.ofMinutes(13));
