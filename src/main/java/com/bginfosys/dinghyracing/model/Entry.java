@@ -135,8 +135,8 @@ public class Entry {
 		this.laps = laps;
 	}
 	
-	public void addLap(Lap lap) {
-		laps.add(lap);
+	public boolean addLap(Lap lap) {
+		return laps.add(lap);
 	}
 	
 	public boolean removeLap(Lap lap) {
