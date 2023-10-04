@@ -49,7 +49,7 @@ public class Race {
 	
 	@Column(unique=true)
 	@OneToMany(mappedBy = "race", cascade = CascadeType.ALL, orphanRemoval = true)
-	private Set<Entry> signedUp;
+	private Set<Entry> signedUp = new HashSet<Entry>(64);
 	
 	//Required by JPA
 	//Not recommended by Spring Data
@@ -119,6 +119,9 @@ public class Race {
 	}
 
 	public Set<Entry> getSignedUp() {
+		if (signedUp == null) {
+			signedUp = new HashSet<Entry>(64);
+		}
 		return signedUp;
 	}
 	
@@ -134,15 +137,18 @@ public class Race {
 	}
 	
 	public Integer leadEntrylapsCompleted() {
-		return signedUp.stream().mapToInt(entry -> entry.getLaps().size()).max().orElse(0);
+		return signedUp != null ? signedUp.stream().mapToInt(entry -> entry.getLaps().size()).max().orElse(0) : 0;
 	}
 	
 	public Entry getLeadEntry() {
-		// get entries that have completed the same number of laps as lead boat
-		Integer leadLapCount = this.leadEntrylapsCompleted(); 
-		Stream<Entry> entriesOnLeadLap = signedUp.stream().filter(entry -> entry.getLaps().size() == leadLapCount);
-		// return entry on lead lap with lowest sum of lap times
-		return entriesOnLeadLap.min(Comparator.comparing(Entry::getSumOfLapTimes)).orElse(null);
+		if (signedUp != null ) {
+			// get entries that have completed the same number of laps as lead boat
+			Integer leadLapCount = this.leadEntrylapsCompleted(); 
+			Stream<Entry> entriesOnLeadLap = signedUp.stream().filter(entry -> entry.getLaps().size() == leadLapCount);
+			// return entry on lead lap with lowest sum of lap times
+			return entriesOnLeadLap.min(Comparator.comparing(Entry::getSumOfLapTimes)).orElse(null);	
+		}
+		return null;
 	}
 	
 	/**

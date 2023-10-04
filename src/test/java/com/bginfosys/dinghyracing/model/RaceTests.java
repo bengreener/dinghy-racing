@@ -4,7 +4,7 @@ import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.junit.jupiter.api.Test;
@@ -106,6 +106,17 @@ class RaceTests {
 	}
 	
 	@Test
+	void given_noLapsCompleted_when_requestNumberOfLapsCompletedByLeadEntry_then_returnsZero() {
+		Competitor competitor1 = new Competitor("Competitor One");
+		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
+		Entry entry1 = new Entry(competitor1, dinghy1, race);
+		
+		race.signUp(entry1);
+				
+		assertEquals(0, race.leadEntrylapsCompleted());		
+	}
+	
+	@Test
 	void given_TwoEntriesHaveCompletedTheSameNumberOfLaps_when_requestNumberOfLapsCompletedByLeadEntry_then_returnsNumberOFLaps() {
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("competitor Two");
@@ -188,6 +199,11 @@ class RaceTests {
 	}
 	
 	@Test
+	void given_NoBoatsHaveSignedUp_when_requestLeadEntryInRace_then_returnsNull() {	
+		assertNull(race.getLeadEntry());		
+	}
+	
+	@Test
 	void given_noLapsHaveBeenCompleted_when_requestLapsForecast_then_returnsNumberOfPlannedLaps() {
 		race.setPlannedLaps(5);
 		Competitor competitor1 = new Competitor("Competitor One");
@@ -222,5 +238,11 @@ class RaceTests {
 		entry2.addLap(new Lap(2, Duration.ofMinutes(15)));
 		
 		assertEquals(18D/13D + 2, race.getLapForecast());
+	}
+	
+	@Test
+	void given_NoBoatsHaveSignedUp_when_requestLapsForecast_then_returnsNumberOfPlannedLaps() {	
+		race.setPlannedLaps(5);		
+		assertEquals(5, race.getLapForecast());		
 	}
 }
