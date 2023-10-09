@@ -1,32 +1,26 @@
 package com.bginfosys.dinghyracing.model;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.hamcrest.MatcherAssert.assertThat;
 
-//import static org.hamcrest.Matchers.contains;
-//import static org.hamcrest.MatcherAssert.assertThat;
-//import static org.hamcrest.CoreMatchers.equalTo;
-
-//import org.assertj.core.util.Arrays;
 import org.junit.jupiter.api.Test;
 
-//import com.bginfosys.dinghyracing.model.Dinghy;
-//import com.bginfosys.dinghyracing.model.DinghyClass;
-//import com.bginfosys.dinghyracing.model.Race;
-
-//import java.time.LocalDate;
-//import java.time.LocalTime;
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 class RaceTests {
 
 	//private Race race = new Race("Test Race", LocalDate.of(2021, 10, 14), LocalTime.of(14, 10), new DinghyClass("Test"));
-	private Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), new DinghyClass("Test"));
+	private DinghyClass dinghyClass = new DinghyClass("Test");
+	private Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), dinghyClass, Duration.ofMinutes(45));
 	
 	@Test
 	void raceCreated() {
-		assertThat(race).isNotNull();
+		assertThat(race, notNullValue());
 	}
 		
 	@Test
@@ -60,16 +54,195 @@ class RaceTests {
 	}
 	
 	@Test
+	void setDuration() {
+		race.setDuration(Duration.ofMillis(1000));
+		assertEquals(race.getDuration(), Duration.ofSeconds(1));
+	}
+
+	@Test
 	void plannedStartTimeIsLocalDateTime() {
 		race.setPlannedStartTime(LocalDateTime.of(2021, 9, 27, 16, 47));
 		assertTrue(race.getPlannedStartTime() instanceof LocalDateTime);
 	}
 	
 	@Test
-	void signUpDinghy() {
-		DinghyClass dc = new DinghyClass("Scorpion");
-		Dinghy d = new Dinghy("1234", dc);
-		race.signUpDinghy(d);
-		//assertThat(race.getSignedUp(), contains(Arrays.asList(equalTo(d))));
+	void when_entryAddedViaSignUp_the_addedToSignedUp() {
+		Race race = new Race();
+		Entry entry = new Entry();
+		race.signUp(entry);
+		assertThat(race.getSignedUp(), hasItem(entry));
+	}
+
+	@Test
+	void when_startingARace_then_startTimeIsSet() {
+		race.setActualStartTime(LocalDateTime.of(2023,  8, 12, 15, 00));
+		assertEquals(race.getActualStartTime(), LocalDateTime.of(2023,  8, 12, 15, 00));
+	}
+
+	@Test
+	void when_creating_Race_then_setPlannedLaps () {
+		race.setPlannedLaps(3);
+		assertEquals(race.getPlannedLaps(), 3);
+	}
+	
+	@Test
+	void when_requestNumberOfLapsCompletedByLeadEntry_then_returnsInteger() {
+		Competitor competitor1 = new Competitor("Competitor One");
+		Competitor competitor2 = new Competitor("competitor Two");
+		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
+		Dinghy dinghy2 = new Dinghy("4567", dinghyClass);
+		Entry entry1 = new Entry(competitor1, dinghy1, race);
+		Entry entry2 = new Entry(competitor2, dinghy2, race);
+		
+		race.signUp(entry1);
+		race.signUp(entry2);
+		
+		entry1.addLap(new Lap(1, Duration.ofMinutes(14)));
+		entry2.addLap(new Lap(1, Duration.ofMinutes(15)));
+		entry1.addLap(new Lap(2, Duration.ofMinutes(14)));
+		entry2.addLap(new Lap(2, Duration.ofMinutes(15)));
+		
+		assertTrue(race.leadEntrylapsCompleted() instanceof Integer);		
+	}
+	
+	@Test
+	void given_noLapsCompleted_when_requestNumberOfLapsCompletedByLeadEntry_then_returnsZero() {
+		Competitor competitor1 = new Competitor("Competitor One");
+		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
+		Entry entry1 = new Entry(competitor1, dinghy1, race);
+		
+		race.signUp(entry1);
+				
+		assertEquals(0, race.leadEntrylapsCompleted());		
+	}
+	
+	@Test
+	void given_TwoEntriesHaveCompletedTheSameNumberOfLaps_when_requestNumberOfLapsCompletedByLeadEntry_then_returnsNumberOFLaps() {
+		Competitor competitor1 = new Competitor("Competitor One");
+		Competitor competitor2 = new Competitor("competitor Two");
+		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
+		Dinghy dinghy2 = new Dinghy("4567", dinghyClass);
+		Entry entry1 = new Entry(competitor1, dinghy1, race);
+		Entry entry2 = new Entry(competitor2, dinghy2, race);
+		
+		race.signUp(entry1);
+		race.signUp(entry2);
+		
+		entry1.addLap(new Lap(1, Duration.ofMinutes(14)));
+		entry2.addLap(new Lap(1, Duration.ofMinutes(15)));
+		entry1.addLap(new Lap(2, Duration.ofMinutes(14)));
+		entry2.addLap(new Lap(2, Duration.ofMinutes(15)));
+		
+		assertEquals(race.leadEntrylapsCompleted(), 2);		
+	}
+
+	@Test
+	void given_OneEntryHasCompletedMoreLaps_when_requestNumberOfLapsCompletedByLeadEntry_then_returnsNumberOfLaps() {
+		Competitor competitor1 = new Competitor("Competitor One");
+		Competitor competitor2 = new Competitor("competitor Two");
+		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
+		Dinghy dinghy2 = new Dinghy("4567", dinghyClass);
+		Entry entry1 = new Entry(competitor1, dinghy1, race);
+		Entry entry2 = new Entry(competitor2, dinghy2, race);
+		
+		race.signUp(entry1);
+		race.signUp(entry2);
+		
+		entry1.addLap(new Lap(1, Duration.ofMinutes(14)));
+		entry2.addLap(new Lap(1, Duration.ofMinutes(15)));
+		entry1.addLap(new Lap(2, Duration.ofMinutes(14)));
+		entry2.addLap(new Lap(2, Duration.ofMinutes(15)));
+		entry2.addLap(new Lap(3, Duration.ofMinutes(15)));	
+		
+		assertEquals(3, race.leadEntrylapsCompleted());		
+	}
+	
+	@Test
+	void given_TwoEntriesHaveCompletedTheSameNumberOfLaps_when_requestLeadEntryInRace_then_returnsLeadEntryInRace() {
+		Competitor competitor1 = new Competitor("Competitor One");
+		Competitor competitor2 = new Competitor("competitor Two");
+		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
+		Dinghy dinghy2 = new Dinghy("4567", dinghyClass);
+		Entry entry1 = new Entry(competitor1, dinghy1, race);
+		Entry entry2 = new Entry(competitor2, dinghy2, race);
+		
+		race.signUp(entry1);
+		race.signUp(entry2);
+		
+		entry1.addLap(new Lap(1, Duration.ofMinutes(14)));
+		entry2.addLap(new Lap(1, Duration.ofMinutes(15)));
+		entry1.addLap(new Lap(2, Duration.ofMinutes(14)));
+		entry2.addLap(new Lap(2, Duration.ofMinutes(15)));
+		
+		assertEquals(entry1, race.getLeadEntry());		
+	}
+	
+	@Test
+	void given_OneEntryHasCompletedMoreLaps_when_requestLeadEntryInRace_then_returnsLeadEntryInRace() {
+		Competitor competitor1 = new Competitor("Competitor One");
+		Competitor competitor2 = new Competitor("competitor Two");
+		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
+		Dinghy dinghy2 = new Dinghy("4567", dinghyClass);
+		Entry entry1 = new Entry(competitor1, dinghy1, race);
+		Entry entry2 = new Entry(competitor2, dinghy2, race);
+		
+		race.signUp(entry1);
+		race.signUp(entry2);
+		
+		entry1.addLap(new Lap(1, Duration.ofMinutes(14)));
+		entry2.addLap(new Lap(1, Duration.ofMinutes(15)));
+		entry1.addLap(new Lap(2, Duration.ofMinutes(14)));
+		entry2.addLap(new Lap(2, Duration.ofMinutes(15)));
+		entry2.addLap(new Lap(3, Duration.ofMinutes(15)));		
+		
+		assertEquals(entry2, race.getLeadEntry());
+	}
+	
+	@Test
+	void given_NoBoatsHaveSignedUp_when_requestLeadEntryInRace_then_returnsNull() {	
+		assertNull(race.getLeadEntry());		
+	}
+	
+	@Test
+	void given_noLapsHaveBeenCompleted_when_requestLapsForecast_then_returnsNumberOfPlannedLaps() {
+		race.setPlannedLaps(5);
+		Competitor competitor1 = new Competitor("Competitor One");
+		Competitor competitor2 = new Competitor("competitor Two");
+		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
+		Dinghy dinghy2 = new Dinghy("4567", dinghyClass);
+		Entry entry1 = new Entry(competitor1, dinghy1, race);
+		Entry entry2 = new Entry(competitor2, dinghy2, race);
+		
+		race.signUp(entry1);
+		race.signUp(entry2);
+		
+		assertEquals(5, race.getLapForecast());
+	}
+	
+	@Test
+	void given_lapsHaveBeenCompleted_when_requestLapsForecast_then_returnsNumberOfTotalLapsForecastToBeCompleted() {
+		race.setPlannedLaps(5);
+		Competitor competitor1 = new Competitor("Competitor One");
+		Competitor competitor2 = new Competitor("competitor Two");
+		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
+		Dinghy dinghy2 = new Dinghy("4567", dinghyClass);
+		Entry entry1 = new Entry(competitor1, dinghy1, race);
+		Entry entry2 = new Entry(competitor2, dinghy2, race);
+		
+		race.signUp(entry1);
+		race.signUp(entry2);
+		
+		entry1.addLap(new Lap(1, Duration.ofMinutes(14)));
+		entry2.addLap(new Lap(1, Duration.ofMinutes(15)));
+		entry1.addLap(new Lap(2, Duration.ofMinutes(13)));
+		entry2.addLap(new Lap(2, Duration.ofMinutes(15)));
+		
+		assertEquals(18D/13D + 2, race.getLapForecast());
+	}
+	
+	@Test
+	void given_NoBoatsHaveSignedUp_when_requestLapsForecast_then_returnsNumberOfPlannedLaps() {	
+		race.setPlannedLaps(5);		
+		assertEquals(5, race.getLapForecast());		
 	}
 }

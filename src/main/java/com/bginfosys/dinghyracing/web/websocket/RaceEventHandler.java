@@ -1,8 +1,7 @@
 package com.bginfosys.dinghyracing.web.websocket;
 
-import static com.bginfosys.dinghyracing.web.websocket.RaceWebSocketConfiguration.MESSAGE_PREFIX;
+import static com.bginfosys.dinghyracing.web.websocket.WebSocketConfiguration.MESSAGE_PREFIX;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.core.annotation.HandleAfterCreate;
 import org.springframework.data.rest.core.annotation.HandleAfterDelete;
 import org.springframework.data.rest.core.annotation.HandleAfterSave;
@@ -21,7 +20,6 @@ public class RaceEventHandler {
 	
 	private final EntityLinks entityLinks;
 	
-	@Autowired
 	public RaceEventHandler(SimpMessagingTemplate websocket, EntityLinks entityLinks) {
 		this.websocket = websocket;
 		this.entityLinks = entityLinks;

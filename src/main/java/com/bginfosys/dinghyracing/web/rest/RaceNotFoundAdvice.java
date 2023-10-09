@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.bginfosys.dinghyracing.model.RaceNotFoundException;
+import com.bginfosys.dinghyracing.exceptions.RaceNotFoundException;
 
 @RestControllerAdvice
 public class RaceNotFoundAdvice {
