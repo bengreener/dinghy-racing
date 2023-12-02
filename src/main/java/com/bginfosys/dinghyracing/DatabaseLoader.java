@@ -46,8 +46,8 @@ public class DatabaseLoader implements CommandLineRunner {
 		this.dinghyRepository.save(d1);
 		this.dinghyRepository.save(d2);
 		
-		Race r = new Race("Scorpion A", LocalDateTime.of(2023, 10, 14, 14, 10), dc, Duration.ofMinutes(45));
-		r.setPlannedLaps(5);
+		Race r = new Race("Scorpion A", LocalDateTime.of(2024, 10, 14, 14, 10), dc, Duration.ofMinutes(45), 5);
+//		r.setPlannedLaps(5);
 		this.raceRepository.save(r);
 		
 		DinghyClass dc2 = new DinghyClass("Graduate");
@@ -56,8 +56,8 @@ public class DatabaseLoader implements CommandLineRunner {
 		Dinghy d3 = new Dinghy("2726", dc2);
 		this.dinghyRepository.save(d3);
 		
-		Race r2 = new Race("Graduate A", LocalDateTime.of(2023, 10, 14, 10, 30), dc2, Duration.ofMinutes(35));
-		r2.setPlannedLaps(4);
+		Race r2 = new Race("Graduate A", LocalDateTime.of(2024, 10, 14, 10, 30), dc2, Duration.ofMinutes(35), 3);
+//		r2.setPlannedLaps(4);
 		this.raceRepository.save(r2);
 		
 		Competitor c1 = new Competitor("Chris Marshall");
