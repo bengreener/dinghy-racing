@@ -163,7 +163,7 @@ public class EntryRepositoryTests {
 		DinghyClass dinghyClass = new DinghyClass("Test Dinghyclass");
 		entityManager.persist(dinghyClass);
 		
-		Race race = new Race("Race A", LocalDateTime.of(2023, 7, 25, 11, 54, 30), null, Duration.ofMinutes(45));
+		Race race = new Race("Race A", LocalDateTime.of(2023, 7, 25, 11, 54, 30), null, Duration.ofMinutes(45), 5);
 		entityManager.persist(race);
 		
 		Dinghy dinghy = new Dinghy("1234", dinghyClass);
@@ -185,7 +185,7 @@ public class EntryRepositoryTests {
 		entityManager.persist(dinghyClass1);
 		entityManager.persist(dinghyClass2);
 		
-		Race race = new Race("Race A", LocalDateTime.of(2023, 7, 25, 11, 54, 30), dinghyClass2, Duration.ofMinutes(45));
+		Race race = new Race("Race A", LocalDateTime.of(2023, 7, 25, 11, 54, 30), dinghyClass2, Duration.ofMinutes(45), 5);
 		entityManager.persist(race);
 		
 		Dinghy dinghy = new Dinghy("1234", dinghyClass1);
@@ -204,7 +204,7 @@ public class EntryRepositoryTests {
 		entityManager.persist(competitor);
 		DinghyClass dinghyClass = new DinghyClass("Scorpion");
 		entityManager.persist(dinghyClass);
-		Race race = new Race("A race", LocalDateTime.of(2023,  3, 24, 12, 30, 00), dinghyClass, Duration.ofMinutes(45));
+		Race race = new Race("A race", LocalDateTime.of(2023,  3, 24, 12, 30, 00), dinghyClass, Duration.ofMinutes(45), 5);
 		entityManager.persist(race);
 		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
 		entityManager.persist(dinghy1);
@@ -231,7 +231,7 @@ public class EntryRepositoryTests {
 		entityManager.persist(competitor2);
 		DinghyClass dinghyClass = new DinghyClass("Scorpion");
 		entityManager.persist(dinghyClass);
-		Race race = new Race("A race", LocalDateTime.of(2023,  3, 24, 12, 30, 00), dinghyClass, Duration.ofMinutes(45));
+		Race race = new Race("A race", LocalDateTime.of(2023,  3, 24, 12, 30, 00), dinghyClass, Duration.ofMinutes(45), 5);
 		entityManager.persist(race);
 		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
 		entityManager.persist(dinghy1);
@@ -253,7 +253,7 @@ public class EntryRepositoryTests {
 		entityManager.persist(competitor1);
 		DinghyClass dinghyClass = new DinghyClass("Scorpion");
 		entityManager.persist(dinghyClass);
-		Race race = new Race("A race", LocalDateTime.of(2023,  3, 24, 12, 30, 00), dinghyClass, Duration.ofMinutes(45));
+		Race race = new Race("A race", LocalDateTime.of(2023,  3, 24, 12, 30, 00), dinghyClass, Duration.ofMinutes(45), 5);
 		entityManager.persist(race);
 		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
 		entityManager.persist(dinghy1);
@@ -281,7 +281,7 @@ public class EntryRepositoryTests {
 		Dinghy d2 = new Dinghy("2", dc1);
 		entityManager.persist(d1);
 		entityManager.persist(d2);
-		Race r1 = new Race("Race One", LocalDateTime.of(2023, 5, 13, 12, 00), dc1, Duration.ofMinutes(45));
+		Race r1 = new Race("Race One", LocalDateTime.of(2023, 5, 13, 12, 00), dc1, Duration.ofMinutes(45), 5);
 		entityManager.persist(r1);
 		Entry e1 = new Entry(c1, d1, r1);
 		Entry e2 = new Entry(c2, d2, r1);

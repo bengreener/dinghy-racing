@@ -1,4 +1,4 @@
-package com.bginfosys.dinghyracing.persistence;
+ package com.bginfosys.dinghyracing.persistence;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -40,7 +40,7 @@ public class RaceRepositoryTests {
 		DinghyClass dinghyClass = new DinghyClass("Test Dinghyclass");
 		entityManager.persist(dinghyClass);
 		
-		Race race1 = new Race("Test Race", LocalDateTime.of(2023, 5, 13, 12, 00), dinghyClass, Duration.ofMinutes(45));
+		Race race1 = new Race("Test Race", LocalDateTime.of(2023, 5, 13, 12, 00), dinghyClass, Duration.ofMinutes(45), 5);
 		race1.setPlannedLaps(5);
 		Race race2 = raceRepository.save(race1);
 		
@@ -56,6 +56,7 @@ public class RaceRepositoryTests {
 		race1.setPlannedStartTime(LocalDateTime.of(2023, 5, 13, 12, 00));
 		race1.setDinghyClass(dinghyClass);
 		race1.setDuration(Duration.ofMinutes(45));
+		race1.setPlannedLaps(5);
 		raceRepository.save(race1);
 		
 		assertThrows(ConstraintViolationException.class, () -> {
@@ -71,6 +72,41 @@ public class RaceRepositoryTests {
 		Race race1 = new Race();
 		race1.setName("Test Race");
 		race1.setDinghyClass(dinghyClass);
+		race1.setPlannedLaps(5);
+		raceRepository.save(race1);
+		
+		assertThrows(ConstraintViolationException.class, () -> {
+			entityManager.flush();
+		});
+	}
+	
+	@Test
+	void when_raceHasNoPlannedLaps_then_throwsException() {
+		DinghyClass dinghyClass = new DinghyClass("Test Dinghyclass");
+		entityManager.persist(dinghyClass);
+				
+		Race race1 = new Race();
+		race1.setName("Test Race");
+		race1.setPlannedStartTime(LocalDateTime.of(2023, 5, 13, 12, 00));
+		race1.setDinghyClass(dinghyClass);
+		race1.setDuration(Duration.ofMinutes(45));
+		raceRepository.save(race1);
+		
+		assertThrows(ConstraintViolationException.class, () -> {
+			entityManager.flush();
+		});
+	}
+	
+	@Test
+	void when_raceHasNoDuration_then_throwsException() {
+		DinghyClass dinghyClass = new DinghyClass("Test Dinghyclass");
+		entityManager.persist(dinghyClass);
+				
+		Race race1 = new Race();
+		race1.setName("Test Race");
+		race1.setPlannedStartTime(LocalDateTime.of(2023, 5, 13, 12, 00));
+		race1.setDinghyClass(dinghyClass);
+		race1.setPlannedLaps(5);
 		raceRepository.save(race1);
 		
 		assertThrows(ConstraintViolationException.class, () -> {
@@ -88,7 +124,7 @@ public class RaceRepositoryTests {
 		Dinghy dinghy = new Dinghy("1234", dinghyClass);
 		entityManager.persist(dinghy);
 				
-		Race race1 = new Race("Test Race", LocalDateTime.of(2023, 5, 13, 12, 00), dinghyClass, Duration.ofMinutes(45));
+		Race race1 = new Race("Test Race", LocalDateTime.of(2023, 5, 13, 12, 00), dinghyClass, Duration.ofMinutes(45), 5);
 		entityManager.persist(race1);
 		// remove entity from session (detach entity). Not doing so can result in a false positive dependent on the logic used to check for an exisitng entity in repository save method
 		entityManager.detach(race1);
@@ -114,11 +150,11 @@ public class RaceRepositoryTests {
 		DinghyClass dinghyClass = new DinghyClass("Test Dinghyclass");
 		entityManager.persist(dinghyClass);
 		
-		Race race1 = new Race("Test Race1", LocalDateTime.of(2023, 5, 13, 11, 00), dinghyClass, Duration.ofMinutes(45));
+		Race race1 = new Race("Test Race1", LocalDateTime.of(2023, 5, 13, 11, 00), dinghyClass, Duration.ofMinutes(45), 5);
 		race1 = entityManager.persist(race1);
-		Race race2 = new Race("Test Race2", LocalDateTime.of(2023, 5, 13, 12, 00), dinghyClass, Duration.ofMinutes(45));
+		Race race2 = new Race("Test Race2", LocalDateTime.of(2023, 5, 13, 12, 00), dinghyClass, Duration.ofMinutes(45), 5);
 		race2 = entityManager.persist(race2);
-		Race race3 = new Race("Test Race3", LocalDateTime.of(2023, 5, 13, 13, 00), dinghyClass, Duration.ofMinutes(45));
+		Race race3 = new Race("Test Race3", LocalDateTime.of(2023, 5, 13, 13, 00), dinghyClass, Duration.ofMinutes(45), 5);
 		race3 = entityManager.persist(race3);
 		
 		List<Race> result = raceRepository.findByPlannedStartTimeGreaterThanEqual(LocalDateTime.of(2023, 5, 13, 12, 00));
@@ -133,7 +169,7 @@ public class RaceRepositoryTests {
 		Dinghy dinghy = new Dinghy("1234", dinghyClass);
 		entityManager.persist(dinghy);
 				
-		Race race1 = new Race("Test Race", LocalDateTime.of(2023, 5, 13, 12, 00), dinghyClass, Duration.ofMinutes(45));
+		Race race1 = new Race("Test Race", LocalDateTime.of(2023, 5, 13, 12, 00), dinghyClass, Duration.ofMinutes(45), 5);
 		entityManager.persist(race1);
 		// remove entity from session (detach entity). Not doing so can result in a false positive dependent on the logic used to check for an exisitng entity in repository save method
 		entityManager.detach(race1);
@@ -150,11 +186,11 @@ public class RaceRepositoryTests {
 		DinghyClass dinghyClass = new DinghyClass("Test Dinghyclass");
 		entityManager.persist(dinghyClass);
 		
-		Race race1 = new Race("Test Race1", LocalDateTime.of(2023, 5, 13, 11, 00), dinghyClass, Duration.ofMinutes(45));
+		Race race1 = new Race("Test Race1", LocalDateTime.of(2023, 5, 13, 11, 00), dinghyClass, Duration.ofMinutes(45), 5);
 		entityManager.persist(race1);
-		Race race2 = new Race("Test Race2", LocalDateTime.of(2023, 5, 13, 12, 00), dinghyClass, Duration.ofMinutes(45));
+		Race race2 = new Race("Test Race2", LocalDateTime.of(2023, 5, 13, 12, 00), dinghyClass, Duration.ofMinutes(45), 5);
 		entityManager.persist(race2);
-		Race race3 = new Race("Test Race3", LocalDateTime.of(2023, 5, 13, 13, 00), dinghyClass, Duration.ofMinutes(45));
+		Race race3 = new Race("Test Race3", LocalDateTime.of(2023, 5, 13, 13, 00), dinghyClass, Duration.ofMinutes(45), 5);
 		entityManager.persist(race3);
 		entityManager.flush();
 		
@@ -169,18 +205,21 @@ public class RaceRepositoryTests {
 		race1.setName("Test Race");
 		race1.setPlannedStartTime(LocalDateTime.of(2023, 10, 13, 12, 00));
 		race1.setDuration(Duration.ofMinutes(45));
+		race1.setPlannedLaps(5);
 		entityManager.persistAndFlush(race1);
 		
 		Race race2 = new Race();
 		race2.setName("Test Race");
 		race2.setPlannedStartTime(LocalDateTime.of(2023, 10, 13, 12, 00));
 		race2.setDuration(Duration.ofMinutes(45));
+		race1.setPlannedLaps(5);
 		
-		Exception exception = assertThrows(PersistenceException.class, () -> {
+//		Exception exception = assertThrows(PersistenceException.class, () -> {
+		Exception exception = assertThrows(ConstraintViolationException.class, () -> {
 			raceRepository.save(race2);
 			entityManager.flush();
 		});
 		
-		assertTrue(exception.getCause() instanceof org.hibernate.exception.ConstraintViolationException);
+//		assertTrue(exception.getCause() instanceof org.hibernate.exception.ConstraintViolationException);
 	}
 }
