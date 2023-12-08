@@ -1,11 +1,14 @@
 package com.bginfosys.dinghyracing.model;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Duration;
 
 import org.junit.jupiter.api.Test;
+
+import com.bginfosys.dinghyracing.exceptions.LapZeroOrLessTimeException;
 
 public class LapTests {
 
@@ -46,10 +49,28 @@ public class LapTests {
 	}
 	
 	@Test
-	void when_settingTime_then_LapNumberSetToValueProvided() {
+	void when_settingTimeToPositiveValueGreaterThanZero_then_LapNumberSetToValueProvided() {
 		Lap lap = new Lap();
 		lap.setTime(Duration.ofMinutes(14));
 		
 		assertEquals(lap.getTime(), Duration.ofMinutes(14));
+	}
+	
+	@Test
+	void when_settingTimeToZero_then_errorIsThrown() {
+		Lap lap = new Lap();
+		
+		assertThrows(LapZeroOrLessTimeException.class, () -> {
+			lap.setTime(Duration.ofMinutes(0));
+		});	
+	}
+
+	@Test
+	void when_settingTimeToLessThanZero_then_errorIsThrown() {
+		Lap lap = new Lap();
+		
+		assertThrows(LapZeroOrLessTimeException.class, () -> {
+			lap.setTime(Duration.ofMinutes(-1));
+		});	
 	}
 }
