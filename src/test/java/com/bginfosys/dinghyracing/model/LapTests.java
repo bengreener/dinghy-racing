@@ -22,14 +22,14 @@ public class LapTests {
 	@Test
 	void when_creatingALapWithArgumentsConstructor_then_errorIsThrown() {
 		assertThrows(LapZeroOrLessTimeException.class, () -> {
-			Lap lap = new Lap(1, Duration.ofMinutes(0));
+			new Lap(1, Duration.ofMinutes(0));
 		});
 	}
 	
 	@Test
 	void when_creatingALapWithZeroTime_then_errorIsThrown() {
 		assertThrows(LapZeroOrLessTimeException.class, () -> {
-			Lap lap = new Lap(1, Duration.ofMinutes(-15));
+			new Lap(1, Duration.ofMinutes(-15));
 		});
 	}
 	
