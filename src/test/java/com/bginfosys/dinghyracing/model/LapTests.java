@@ -20,7 +20,21 @@ public class LapTests {
 	}
 	
 	@Test
-	void when_creatingALapWithArgumentsConstructor_then_getALap() {
+	void when_creatingALapWithArgumentsConstructor_then_errorIsThrown() {
+		assertThrows(LapZeroOrLessTimeException.class, () -> {
+			Lap lap = new Lap(1, Duration.ofMinutes(0));
+		});
+	}
+	
+	@Test
+	void when_creatingALapWithZeroTime_then_errorIsThrown() {
+		assertThrows(LapZeroOrLessTimeException.class, () -> {
+			Lap lap = new Lap(1, Duration.ofMinutes(-15));
+		});
+	}
+	
+	@Test
+	void when_creatingALapWithNegativeTime_then_getALap() {
 		Lap lap = new Lap(1, Duration.ofMinutes(15));
 		
 		assertTrue(lap instanceof Lap);
