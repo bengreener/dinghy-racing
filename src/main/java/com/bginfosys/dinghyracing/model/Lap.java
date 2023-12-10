@@ -32,8 +32,8 @@ public class Lap implements Comparable<Lap> {
 	public Lap() {};
 	
 	public Lap(Integer number, Duration time) {
-		this.number = number;
-		this.time = time;
+		this.setNumber(number);
+		this.setTime(time);
 	}
 
 	public Long getId() {
