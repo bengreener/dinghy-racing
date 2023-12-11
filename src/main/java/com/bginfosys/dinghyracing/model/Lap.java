@@ -8,7 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
-import com.bginfosys.dinghyracing.exceptions.LapZeroOrLessTimeException;
+//import com.bginfosys.dinghyracing.exceptions.LapZeroOrLessTimeException;
+import com.bginfosys.dinghyracing.validation.constraints.DurationPositive;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
@@ -26,14 +27,15 @@ public class Lap implements Comparable<Lap> {
 	@NotNull
 	private Integer number;
 	
-	@NotNull
+//	@NotNull
+	@DurationPositive
 	private Duration time;
 
 	public Lap() {};
 	
 	public Lap(Integer number, Duration time) {
-		this.setNumber(number);
-		this.setTime(time);
+		this.number = number;
+		this.time = time;
 	}
 
 	public Long getId() {
@@ -61,9 +63,6 @@ public class Lap implements Comparable<Lap> {
 	 * @param time a positive value greater than zero
 	 */
 	public void setTime(Duration time) {
-		if (time.isNegative() || time.isZero()) {
-			throw new LapZeroOrLessTimeException("A lap should take longer than zero seconds");
-		}
 		this.time = time;
 	}
 
