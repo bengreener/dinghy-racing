@@ -3,7 +3,6 @@
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -17,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
-import javax.persistence.PersistenceException;
 import javax.validation.ConstraintViolationException;
 
 import com.bginfosys.dinghyracing.model.Race;
@@ -214,12 +212,9 @@ public class RaceRepositoryTests {
 		race2.setDuration(Duration.ofMinutes(45));
 		race1.setPlannedLaps(5);
 		
-//		Exception exception = assertThrows(PersistenceException.class, () -> {
-		Exception exception = assertThrows(ConstraintViolationException.class, () -> {
+		assertThrows(ConstraintViolationException.class, () -> {
 			raceRepository.save(race2);
 			entityManager.flush();
 		});
-		
-//		assertTrue(exception.getCause() instanceof org.hibernate.exception.ConstraintViolationException);
 	}
 }
