@@ -18,11 +18,11 @@ public class LapTests {
 	
 	@Test
 	void when_creatingALapWithArgumentsConstructor_then_getALap() {
-		Lap lap = new Lap(1, Duration.ofMillis(145626584));
+		Lap lap = new Lap(1, Duration.ofMinutes(15));
 		
 		assertTrue(lap instanceof Lap);
 	}
-			
+	
 	@Test
 	void when_requestingLapNumber_then_getAnInteger() {
 		Lap lap = new Lap(1, Duration.ofMinutes(15));
@@ -46,7 +46,7 @@ public class LapTests {
 	}
 	
 	@Test
-	void when_settingTimeToPositiveValueGreaterThanZero_then_LapNumberSetToValueProvided() {
+	void when_settingTime_then_LapNumberSetToValueProvided() {
 		Lap lap = new Lap();
 		lap.setTime(Duration.ofMinutes(14));
 		

@@ -45,7 +45,6 @@ public class Race {
 	@NotNull
 	private Duration duration;
 	
-	@NotNull
 	private Integer plannedLaps;
 	
 	@Column(unique=true)
@@ -56,12 +55,11 @@ public class Race {
 	//Not recommended by Spring Data
 	public Race() {}
 	
-	public Race(String name, LocalDateTime plannedStartTime, DinghyClass dinghyClass, Duration duration, Integer plannedLaps) {
+	public Race(String name, LocalDateTime plannedStartTime, DinghyClass dinghyClass, Duration duration) {
 		this.name = name;
 		this.plannedStartTime = plannedStartTime;
 		this.dinghyClass = dinghyClass;
 		this.duration = duration;
-		this.plannedLaps = plannedLaps;
 	}
 	
 	public Long getId() {
