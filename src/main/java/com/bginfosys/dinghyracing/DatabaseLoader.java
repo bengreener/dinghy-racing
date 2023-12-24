@@ -38,29 +38,26 @@ public class DatabaseLoader implements CommandLineRunner {
 	
 	@Override
 	public void run(String... args) throws Exception {
-		DinghyClass dc = new DinghyClass("Scorpion");
+		DinghyClass dc = new DinghyClass("Scorpion", 2);
 		this.dinghyClassRepository.save(dc);
 		
 		Dinghy d1 = new Dinghy("1234", dc);
 		Dinghy d2 = new Dinghy("6745", dc);
 		this.dinghyRepository.save(d1);
 		this.dinghyRepository.save(d2);
-		
-//		Race r = new Race("Scorpion A", LocalDateTime.of(2024, 10, 14, 14, 10), dc, Duration.ofMinutes(45), 5);
+
 		LocalDateTime now = LocalDateTime.now();
-		Race r = new Race("Scorpion A", LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), now.getHour(), now.getMinute() + 2), dc, Duration.ofMinutes(45), 5);
-//		r.setPlannedLaps(5);
+		now = now.minusNanos(now.getNano()); // avoid precision issues saving and retrieving from database
+		Race r = new Race("Scorpion A", now.plusMinutes(2L), dc, Duration.ofMinutes(45), 5);
 		this.raceRepository.save(r);
 		
-		DinghyClass dc2 = new DinghyClass("Graduate");
+		DinghyClass dc2 = new DinghyClass("Graduate", 2);
 		this.dinghyClassRepository.save(dc2);
 		
 		Dinghy d3 = new Dinghy("2726", dc2);
 		this.dinghyRepository.save(d3);
 		
-//		Race r2 = new Race("Graduate A", LocalDateTime.of(2024, 10, 14, 10, 30), dc2, Duration.ofMinutes(35), 3);
-		Race r2 = new Race("Graduate A", LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), now.getHour(), now.getMinute() + 7), dc2, Duration.ofMinutes(35), 3);
-//		r2.setPlannedLaps(4);
+		Race r2 = new Race("Graduate A", now.plusMinutes(7L), dc2, Duration.ofMinutes(35), 3);
 		this.raceRepository.save(r2);
 		
 		Competitor c1 = new Competitor("Chris Marshall");

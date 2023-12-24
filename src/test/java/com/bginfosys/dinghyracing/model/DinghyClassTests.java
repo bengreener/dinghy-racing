@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 public class DinghyClassTests {
 	
-	private DinghyClass dinghyClass = new DinghyClass("Test Class");
+	private DinghyClass dinghyClass = new DinghyClass("Test Class", 1);
 	
 	@Test
 	void DinghyClassCreated() {
@@ -29,5 +29,14 @@ public class DinghyClassTests {
 		assertTrue(dinghyClass.getName() instanceof String);
 	}
 	
+	@Test
+	void setSize() {
+		dinghyClass.setCrewSize(2);
+		assertEquals(dinghyClass.getCrewSize(), 2);
+	}
 	
+	@Test
+	void sizeIsInteger() {
+		assertTrue(dinghyClass.getCrewSize() instanceof Integer);
+	}	
 }

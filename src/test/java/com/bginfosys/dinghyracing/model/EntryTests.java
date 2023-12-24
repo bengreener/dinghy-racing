@@ -39,8 +39,8 @@ public class EntryTests {
 	
 	@Test
 	void when_constructorCalledWithArgumentsAndRaceDinghyClassIsNotNullAndDoesNotMatchDinghyDinghyClass_then_throwsDinghyClassMismatchException() {
-		DinghyClass dc1 = new DinghyClass("Scorpion");
-		DinghyClass dc2 = new DinghyClass("Graduate");
+		DinghyClass dc1 = new DinghyClass("Scorpion", 2);
+		DinghyClass dc2 = new DinghyClass("Graduate", 2);
 		Competitor competitor = new Competitor();
 		Dinghy dinghy = new Dinghy();
 		dinghy.setDinghyClass(dc1);
@@ -54,7 +54,7 @@ public class EntryTests {
 	
 	@Test
 	void when_constructorCalledWithArgumentsAndRaceDinghyClassIsNullAndDoesNotMatchDinghyDinghyClass_then_itInstantiatesAndSetsPropertyValues() {
-		DinghyClass dc1 = new DinghyClass("Scorpion");
+		DinghyClass dc1 = new DinghyClass("Scorpion", 2);
 		Competitor competitor = new Competitor();
 		Dinghy dinghy = new Dinghy();
 		dinghy.setDinghyClass(dc1);
@@ -78,7 +78,7 @@ public class EntryTests {
 	
 	@Test
 	void when_settingDinghyAndDinghyDinghyClassEqualsRaceDinghyClass_then_itSetsDinghy() {
-		DinghyClass dinghyClass = new DinghyClass("Scorpion");
+		DinghyClass dinghyClass = new DinghyClass("Scorpion", 2);
 		Race race = new Race();
 		race.setDinghyClass(dinghyClass);
 		Entry entry = new Entry();
@@ -91,8 +91,8 @@ public class EntryTests {
 	
 	@Test
 	void when_settingDinghyAndDinghyDinghyClassDoesNotMatchRaceDinghyClass_then_throwsDinghyClassMismatchException() {
-		DinghyClass dc1 = new DinghyClass("Scorpion");
-		DinghyClass dc2 = new DinghyClass("Graduate");
+		DinghyClass dc1 = new DinghyClass("Scorpion", 2);
+		DinghyClass dc2 = new DinghyClass("Graduate", 2);
 		Race race = new Race();
 		race.setDinghyClass(dc1);
 		
@@ -109,7 +109,7 @@ public class EntryTests {
 	
 	@Test
 	void when_settingDinghyAndRaceDinghyClassIsNull_then_setsDinghy() {
-		DinghyClass dinghyClass = new DinghyClass("Scorpion");
+		DinghyClass dinghyClass = new DinghyClass("Scorpion", 2);
 		Race race = new Race();
 		Entry entry = new Entry();
 		entry.setRace(race);
@@ -122,7 +122,7 @@ public class EntryTests {
 	
 	@Test
 	void when_settingDinghyAndDinghyDinghyClassIsNotNullAndRaceisNull_then_setsDinghy() {
-		DinghyClass dinghyClass = new DinghyClass("Scorpion");
+		DinghyClass dinghyClass = new DinghyClass("Scorpion", 2);
 		Entry entry = new Entry();
 		Dinghy dinghy = new Dinghy();
 		dinghy.setDinghyClass(dinghyClass);
@@ -151,7 +151,7 @@ public class EntryTests {
 
 	@Test
 	void when_settingRaceAndRaceDinghyClassIsNotNullAndDinghyIsNull_then_setsRace() {
-		DinghyClass dinghyClass = new DinghyClass("Scorpion");
+		DinghyClass dinghyClass = new DinghyClass("Scorpion", 2);
 		Race race = new Race();
 		race.setDinghyClass(dinghyClass);
 		
@@ -161,7 +161,7 @@ public class EntryTests {
 	
 	@Test
 	void when_settingRaceAndRaceDinghyClassIsNotNullAndMatchesDinghyDinghyClass_then_setsRace() {
-		DinghyClass dinghyClass = new DinghyClass("Scorpion");
+		DinghyClass dinghyClass = new DinghyClass("Scorpion", 2);
 		Dinghy dinghy = new Dinghy();
 		dinghy.setDinghyClass(dinghyClass);
 		Race race = new Race();
@@ -174,8 +174,8 @@ public class EntryTests {
 	
 	@Test
 	void when_settingRaceAndRaceDinghyClassIsNotNullAndDinghyDinghyClassIsNotNullAndRaceDinghyClassDoesNotMatchDinghyDinghyClass_then_throwsDinghyMismAtchException() {
-		DinghyClass dc1 = new DinghyClass("Scorpion");
-		DinghyClass dc2 = new DinghyClass("Graduate");
+		DinghyClass dc1 = new DinghyClass("Scorpion", 2);
+		DinghyClass dc2 = new DinghyClass("Graduate", 2);
 		Dinghy dinghy = new Dinghy();
 		dinghy.setDinghyClass(dc1);
 		Race race = new Race();
@@ -191,7 +191,7 @@ public class EntryTests {
 	
 	@Test
 	void when_settingRaceAndRaceDinghyClassIsNullAndDoesNotMatchDinghyDinghyClass_then_setsRace() {
-		DinghyClass dinghyClass = new DinghyClass("Scorpion");
+		DinghyClass dinghyClass = new DinghyClass("Scorpion", 2);
 		Dinghy dinghy = new Dinghy();
 		dinghy.setDinghyClass(dinghyClass);
 		Race race = new Race();

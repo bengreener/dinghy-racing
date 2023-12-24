@@ -137,7 +137,7 @@ public class EntryRepositoryTests {
 	
 	@Test
 	void when_dinghyDinghyClassMatchesRaceDinghyClass_then_savesRace() {
-		DinghyClass dinghyClass = new DinghyClass("Scorpion");
+		DinghyClass dinghyClass = new DinghyClass("Scorpion", 2);
 		entityManager.persist(dinghyClass);
 		
 		Competitor competitor = new Competitor();
@@ -160,7 +160,7 @@ public class EntryRepositoryTests {
 		Competitor competitor = new Competitor("A Competitor");
 		entityManager.persist(competitor);
 		
-		DinghyClass dinghyClass = new DinghyClass("Test Dinghyclass");
+		DinghyClass dinghyClass = new DinghyClass("Test Dinghyclass", 1);
 		entityManager.persist(dinghyClass);
 		
 		Race race = new Race("Race A", LocalDateTime.of(2023, 7, 25, 11, 54, 30), null, Duration.ofMinutes(45), 5);
@@ -180,8 +180,8 @@ public class EntryRepositoryTests {
 		Competitor competitor = new Competitor("A Competitor");
 		entityManager.persist(competitor);
 		
-		DinghyClass dinghyClass1 = new DinghyClass("Test Dinghyclass");
-		DinghyClass dinghyClass2 = new DinghyClass("Different Dinghyclass");
+		DinghyClass dinghyClass1 = new DinghyClass("Test Dinghyclass", 1);
+		DinghyClass dinghyClass2 = new DinghyClass("Different Dinghyclass", 1);
 		entityManager.persist(dinghyClass1);
 		entityManager.persist(dinghyClass2);
 		
@@ -202,7 +202,7 @@ public class EntryRepositoryTests {
 	void givenEntryExistsForACompetitor_when_newEntryForCompetitorIsAttemptedForSameRace_then_creationOfEntryFails() {
 		Competitor competitor = new Competitor("A Competitor");
 		entityManager.persist(competitor);
-		DinghyClass dinghyClass = new DinghyClass("Scorpion");
+		DinghyClass dinghyClass = new DinghyClass("Scorpion", 2);
 		entityManager.persist(dinghyClass);
 		Race race = new Race("A race", LocalDateTime.of(2023,  3, 24, 12, 30, 00), dinghyClass, Duration.ofMinutes(45), 5);
 		entityManager.persist(race);
@@ -229,7 +229,7 @@ public class EntryRepositoryTests {
 		entityManager.persist(competitor1);
 		Competitor competitor2 = new Competitor("B Competitor");
 		entityManager.persist(competitor2);
-		DinghyClass dinghyClass = new DinghyClass("Scorpion");
+		DinghyClass dinghyClass = new DinghyClass("Scorpion", 2);
 		entityManager.persist(dinghyClass);
 		Race race = new Race("A race", LocalDateTime.of(2023,  3, 24, 12, 30, 00), dinghyClass, Duration.ofMinutes(45), 5);
 		entityManager.persist(race);
@@ -251,7 +251,7 @@ public class EntryRepositoryTests {
 	void givenAnEntryAlreadyExistsForARace_when_aNewEntryForTheSameCompetitorAndDinghyIsAttempted_then_creationOfEntryFails() {
 		Competitor competitor1 = new Competitor("A Competitor");
 		entityManager.persist(competitor1);
-		DinghyClass dinghyClass = new DinghyClass("Scorpion");
+		DinghyClass dinghyClass = new DinghyClass("Scorpion", 2);
 		entityManager.persist(dinghyClass);
 		Race race = new Race("A race", LocalDateTime.of(2023,  3, 24, 12, 30, 00), dinghyClass, Duration.ofMinutes(45), 5);
 		entityManager.persist(race);
@@ -275,7 +275,7 @@ public class EntryRepositoryTests {
 		Competitor c2 = new Competitor("Competitor Two");
 		entityManager.persist(c1);
 		entityManager.persist(c2);
-		DinghyClass dc1 = new DinghyClass("Dinghy Class One");
+		DinghyClass dc1 = new DinghyClass("Dinghy Class One", 1);
 		entityManager.persist(dc1);
 		Dinghy d1 = new Dinghy("1", dc1);
 		Dinghy d2 = new Dinghy("2", dc1);

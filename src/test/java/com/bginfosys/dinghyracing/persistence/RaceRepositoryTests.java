@@ -35,7 +35,7 @@ public class RaceRepositoryTests {
 
 	@Test
 	void when_providedWithValidRace_then_savesRace() {
-		DinghyClass dinghyClass = new DinghyClass("Test Dinghyclass");
+		DinghyClass dinghyClass = new DinghyClass("Test Dinghyclass", 1);
 		entityManager.persist(dinghyClass);
 		
 		Race race1 = new Race("Test Race", LocalDateTime.of(2023, 5, 13, 12, 00), dinghyClass, Duration.ofMinutes(45), 5);
@@ -47,7 +47,7 @@ public class RaceRepositoryTests {
 	
 	@Test
 	void when_raceHasNoName_then_throwsException() {
-		DinghyClass dinghyClass = new DinghyClass("Test Dinghyclass");
+		DinghyClass dinghyClass = new DinghyClass("Test Dinghyclass", 1);
 		entityManager.persist(dinghyClass);
 				
 		Race race1 = new Race();
@@ -64,7 +64,7 @@ public class RaceRepositoryTests {
 	
 	@Test
 	void when_raceHasNoPlannedStartTime_then_throwsException() {
-		DinghyClass dinghyClass = new DinghyClass("Test Dinghyclass");
+		DinghyClass dinghyClass = new DinghyClass("Test Dinghyclass", 1);
 		entityManager.persist(dinghyClass);
 				
 		Race race1 = new Race();
@@ -80,7 +80,7 @@ public class RaceRepositoryTests {
 	
 	@Test
 	void when_raceHasNoPlannedLaps_then_throwsException() {
-		DinghyClass dinghyClass = new DinghyClass("Test Dinghyclass");
+		DinghyClass dinghyClass = new DinghyClass("Test Dinghyclass", 1);
 		entityManager.persist(dinghyClass);
 				
 		Race race1 = new Race();
@@ -97,7 +97,7 @@ public class RaceRepositoryTests {
 	
 	@Test
 	void when_raceHasNoDuration_then_throwsException() {
-		DinghyClass dinghyClass = new DinghyClass("Test Dinghyclass");
+		DinghyClass dinghyClass = new DinghyClass("Test Dinghyclass", 1);
 		entityManager.persist(dinghyClass);
 				
 		Race race1 = new Race();
@@ -117,7 +117,7 @@ public class RaceRepositoryTests {
 		Competitor competitor = new Competitor();
 		entityManager.persist(competitor);
 		
-		DinghyClass dinghyClass = new DinghyClass("Test Dinghyclass");
+		DinghyClass dinghyClass = new DinghyClass("Test Dinghyclass", 1);
 		entityManager.persist(dinghyClass);
 		Dinghy dinghy = new Dinghy("1234", dinghyClass);
 		entityManager.persist(dinghy);
@@ -145,7 +145,7 @@ public class RaceRepositoryTests {
 
 	@Test
 	void when_aCollectionOfRacesAfterACertainTimeIsRequested_then_ACollectionContainingOnlyRacesThatStartAtOrAfterThatTimeIsReturned() {
-		DinghyClass dinghyClass = new DinghyClass("Test Dinghyclass");
+		DinghyClass dinghyClass = new DinghyClass("Test Dinghyclass", 1);
 		entityManager.persist(dinghyClass);
 		
 		Race race1 = new Race("Test Race1", LocalDateTime.of(2023, 5, 13, 11, 00), dinghyClass, Duration.ofMinutes(45), 5);
@@ -162,7 +162,7 @@ public class RaceRepositoryTests {
 	
 	@Test
 	void when_raceIsStarted_then_savesRaceWIthActualStartTime() {
-		DinghyClass dinghyClass = new DinghyClass("Test Dinghyclass");
+		DinghyClass dinghyClass = new DinghyClass("Test Dinghyclass", 1);
 		entityManager.persist(dinghyClass);
 		Dinghy dinghy = new Dinghy("1234", dinghyClass);
 		entityManager.persist(dinghy);
@@ -181,7 +181,7 @@ public class RaceRepositoryTests {
 	
 	@Test
 	void when_raceIsRequestedByNameAndPlannedStartTime_then_raceIsReturned() {
-		DinghyClass dinghyClass = new DinghyClass("Test Dinghyclass");
+		DinghyClass dinghyClass = new DinghyClass("Test Dinghyclass", 1);
 		entityManager.persist(dinghyClass);
 		
 		Race race1 = new Race("Test Race1", LocalDateTime.of(2023, 5, 13, 11, 00), dinghyClass, Duration.ofMinutes(45), 5);
@@ -220,7 +220,7 @@ public class RaceRepositoryTests {
 
 	@Test
 	void when_aCollectionOfRacesBetweenCertainTimesIsRequested_then_ACollectionContainingOnlyRacesBetweenThomseTimesAreReturned() {
-		DinghyClass dinghyClass = new DinghyClass("Test Dinghyclass");
+		DinghyClass dinghyClass = new DinghyClass("Test Dinghyclass", 1);
 		entityManager.persist(dinghyClass);
 		
 		Race race1 = new Race("Test Race1", LocalDateTime.of(2023, 5, 13, 11, 59), dinghyClass, Duration.ofMinutes(45), 5);
