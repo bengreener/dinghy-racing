@@ -14,7 +14,8 @@ CREATE TABLE competitor (
 ) engine=InnoDB;
 CREATE TABLE dinghy_class (
 	id BIGINT NOT NULL, 
-	name VARCHAR(255) NOT NULL, 
+	name VARCHAR(255) NOT NULL,
+    crew_size TINYINT NOT NULL,
 	version BIGINT, 
 	CONSTRAINT PK_dinghy_class_id PRIMARY KEY (id),
 	CONSTRAINT UK_dinghy_class_name UNIQUE (name)
