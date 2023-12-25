@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.SortedSet;
 import java.util.concurrent.ConcurrentSkipListSet;
 
@@ -106,7 +107,7 @@ public class EntryTests {
 			entry.setDinghy(dinghy);
 		});
 	}
-	
+		
 	@Test
 	void when_settingDinghyAndRaceDinghyClassIsNull_then_setsDinghy() {
 		DinghyClass dinghyClass = new DinghyClass("Scorpion", 2);
@@ -132,7 +133,7 @@ public class EntryTests {
 	}
 	
 	@Test
-	void when_settingCompetitor_then_itRecordsNewValue() {
+	void when_settingHelm_then_itRecordsNewValue() {
 		Entry entry = new Entry();
 		Competitor helm = new Competitor();
 		
@@ -372,4 +373,21 @@ public class EntryTests {
 		});	
 	}
 
+	@Test
+	void when_settingCrew_then_itRecordsNewValue() {
+		Entry entry = new Entry();
+		Competitor crew = new Competitor();
+		
+		entry.setCrew(crew);
+		assertEquals(entry.getCrew(), crew);
+	}
+	
+	@Test
+	void when_gettingCrew_then_returnsCompetitor() {
+		Entry entry = new Entry();
+		Competitor crew = new Competitor();
+		
+		entry.setCrew(crew);
+		assertTrue(entry.getCrew() instanceof Competitor);
+	}
 }

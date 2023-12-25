@@ -82,7 +82,7 @@ public class EntryRepositoryTests {
 	}
 	
 	@Test
-	void when_entryHasNoCompetitor_then_throwsException() {
+	void when_entryHasNoHelm_then_throwsException() {
 		Dinghy dinghy = new Dinghy();
 		Race race = new Race();
 		
@@ -193,8 +193,8 @@ public class EntryRepositoryTests {
 		
 		assertThrows(DinghyClassMismatchException.class, () -> {
 			Entry entry = new Entry(helm, dinghy, race);
-			entityManager.persist(entry);
-			entityManager.flush();
+//			entityManager.persist(entry);
+//			entityManager.flush();
 		});
 	}
 	
@@ -330,5 +330,64 @@ public class EntryRepositoryTests {
 		entry.setLaps(laps);
 		Entry insertedEntry = entryRepository.save(entry);
 		assertThat(entityManager.find(Entry.class, entityManager.getId(insertedEntry))).isEqualTo(entry);
+	}
+
+	@Test
+	void when_entryIncludesCrew_then_savesEntry() {
+		
+	}
+	
+	@Test
+	void when_addingEntries_then_savesMultipleEntriesWithoutCrew() {
+		Competitor helmA = new Competitor("A Competitor");
+		Competitor helmB = new Competitor("B Competitor");
+		entityManager.persist(helmA);
+		entityManager.persist(helmB);
+		DinghyClass dinghyClass = new DinghyClass("Laser", 1);
+		entityManager.persist(dinghyClass);
+		Race race = new Race("A race", LocalDateTime.of(2023,  3, 24, 12, 30, 00), dinghyClass, Duration.ofMinutes(45), 5);
+		entityManager.persist(race);
+		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
+		Dinghy dinghy2 = new Dinghy("5678", dinghyClass);
+		entityManager.persist(dinghy1);
+		entityManager.persist(dinghy2);
+		Entry entry1 = new Entry(helmA, dinghy1, race);
+		entityManager.persist(entry1);
+		Entry entry2 = new Entry(helmB, dinghy2, race);
+		entryRepository.save(entry2);
+		entityManager.flush();
+		
+		Page<Entry> entries = entryRepository.findByRace(race, null);
+		assertThat(entries).contains(entry1, entry2);
+	}
+	
+	@Test
+	void givenEntryExistsForACrew_when_newEntryForCrewIsAttemptedForSameRace_then_creationOfEntryFails() {
+		Competitor helmA = new Competitor("A Competitor");
+		Competitor helmB = new Competitor("B Competitor");
+		Competitor crew = new Competitor("Crew");
+		entityManager.persist(helmA);
+		entityManager.persist(helmB);
+		entityManager.persist(crew);
+		DinghyClass dinghyClass = new DinghyClass("Scorpion", 2);
+		entityManager.persist(dinghyClass);
+		Race race = new Race("A race", LocalDateTime.of(2023,  3, 24, 12, 30, 00), dinghyClass, Duration.ofMinutes(45), 5);
+		entityManager.persist(race);
+		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
+		Dinghy dinghy2 = new Dinghy("5678", dinghyClass);
+		entityManager.persist(dinghy1);
+		entityManager.persist(dinghy2);
+		Entry entry1 = new Entry(helmA, dinghy1, race);
+		entry1.setCrew(crew);
+		entityManager.persist(entry1);
+		Entry entry2 = new Entry(helmB, dinghy2, race);
+		entry2.setCrew(crew);
+		
+		Exception e = assertThrows(PersistenceException.class, () -> {
+			entryRepository.save(entry2);
+			entityManager.flush();
+		});
+
+		assertTrue(e.getCause() instanceof org.hibernate.exception.ConstraintViolationException);
 	}
 }

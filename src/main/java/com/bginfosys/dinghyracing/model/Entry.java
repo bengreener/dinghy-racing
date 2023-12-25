@@ -25,7 +25,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Table(uniqueConstraints = {
 		@UniqueConstraint(columnNames = {"helm_id", "race_id"}), 
-		@UniqueConstraint(columnNames = {"dinghy_id", "race_id"})
+		@UniqueConstraint(columnNames = {"dinghy_id", "race_id"}),
+		@UniqueConstraint (columnNames = {"crew_id", "race_id"})
 })
 public class Entry {
 
@@ -41,6 +42,9 @@ public class Entry {
 	@NotNull
 	@OneToOne
 	private Competitor helm;
+	
+	@OneToOne
+	private Competitor crew;
 	
 	@NaturalId
 	@NotNull
@@ -94,6 +98,14 @@ public class Entry {
 		this.helm = helm;
 	}
 	
+	public Competitor getCrew() {
+		return crew;
+	}
+
+	public void setCrew(Competitor crew) {
+		this.crew = crew;
+	}
+
 	public Race getRace() {
 		return race;
 	}
