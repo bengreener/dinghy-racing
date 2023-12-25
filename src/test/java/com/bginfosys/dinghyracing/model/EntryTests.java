@@ -26,14 +26,14 @@ public class EntryTests {
 	
 	@Test
 	void when_constructorCalledWithArguments_then_itInstantiatesAndSetsPropertyValues() {
-		Competitor competitor = new Competitor();
+		Competitor helm = new Competitor();
 		Dinghy dinghy = new Dinghy();
 		Race race = new Race();
 		
-		Entry entry = new Entry(competitor, dinghy, race);
+		Entry entry = new Entry(helm, dinghy, race);
 		assertTrue(entry instanceof Entry);
 		assertEquals(entry.getDinghy(), dinghy);
-		assertEquals(entry.getCompetitor(), competitor);
+		assertEquals(entry.getHelm(), helm);
 		assertEquals(entry.getRace(), race);
 	}
 	
@@ -41,29 +41,29 @@ public class EntryTests {
 	void when_constructorCalledWithArgumentsAndRaceDinghyClassIsNotNullAndDoesNotMatchDinghyDinghyClass_then_throwsDinghyClassMismatchException() {
 		DinghyClass dc1 = new DinghyClass("Scorpion", 2);
 		DinghyClass dc2 = new DinghyClass("Graduate", 2);
-		Competitor competitor = new Competitor();
+		Competitor helm = new Competitor();
 		Dinghy dinghy = new Dinghy();
 		dinghy.setDinghyClass(dc1);
 		Race race = new Race();
 		race.setDinghyClass(dc2);
 		
 		assertThrows(DinghyClassMismatchException.class, () -> {
-			new Entry(competitor, dinghy, race);	
+			new Entry(helm, dinghy, race);	
 		});
 	}
 	
 	@Test
 	void when_constructorCalledWithArgumentsAndRaceDinghyClassIsNullAndDoesNotMatchDinghyDinghyClass_then_itInstantiatesAndSetsPropertyValues() {
 		DinghyClass dc1 = new DinghyClass("Scorpion", 2);
-		Competitor competitor = new Competitor();
+		Competitor helm = new Competitor();
 		Dinghy dinghy = new Dinghy();
 		dinghy.setDinghyClass(dc1);
 		Race race = new Race();
 		
-		Entry entry = new Entry(competitor, dinghy, race);
+		Entry entry = new Entry(helm, dinghy, race);
 		assertTrue(entry instanceof Entry);
 		assertEquals(entry.getDinghy(), dinghy);
-		assertEquals(entry.getCompetitor(), competitor);
+		assertEquals(entry.getHelm(), helm);
 		assertEquals(entry.getRace(), race);
 	}
 	
@@ -134,10 +134,10 @@ public class EntryTests {
 	@Test
 	void when_settingCompetitor_then_itRecordsNewValue() {
 		Entry entry = new Entry();
-		Competitor competitor = new Competitor();
+		Competitor helm = new Competitor();
 		
-		entry.setCompetitor(competitor);
-		assertEquals(entry.getCompetitor(), competitor);
+		entry.setHelm(helm);
+		assertEquals(entry.getHelm(), helm);
 	}
 	
 	@Test
@@ -231,9 +231,9 @@ public class EntryTests {
 		Lap lap1_2 = new Lap(1, Duration.ofMinutes(11));
 		entry.addLap(lap1);
 		entry.addLap(lap1_2);
-		// assertFalse(entry.getLaps().contains(lap1_2)); // probably doesn't work as comparator is based on lap number not object equivalence
-		 assertTrue(entry.getLaps().size() == 1);
-		 assertFalse(entry.getLaps().first().getNumber() == lap1_2.getNumber() && entry.getLaps().first().getTime() == lap1_2.getTime());
+		
+		assertTrue(entry.getLaps().size() == 1);
+		assertFalse(entry.getLaps().first().getNumber() == lap1_2.getNumber() && entry.getLaps().first().getTime() == lap1_2.getTime());
 	}
 	
 	@Test

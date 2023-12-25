@@ -45,14 +45,14 @@ CREATE TABLE race (
 CREATE TABLE entry (
 	id BIGINT NOT NULL, 
 	version BIGINT, 
-	competitor_id BIGINT NOT NULL, 
+	helm_id BIGINT NOT NULL, 
 	dinghy_id BIGINT NOT NULL, 
 	race_id BIGINT NOT NULL, 
 	CONSTRAINT PK_entry_id PRIMARY KEY (id),
-	CONSTRAINT UK_entry_competitor_id_dinghy_id_race_id UNIQUE (competitor_id, dinghy_id, race_id),
-	CONSTRAINT UK_entry_competitor_id_race_id UNIQUE (competitor_id, race_id),
+	CONSTRAINT UK_entry_helm_id_dinghy_id_race_id UNIQUE (helm_id, dinghy_id, race_id),
+	CONSTRAINT UK_entry_helm_id_race_id UNIQUE (helm_id, race_id),
 	CONSTRAINT UK_entry_dinghy_id_race_id UNIQUE (dinghy_id, race_id),
-	CONSTRAINT FK_entry_competitor_id FOREIGN KEY (competitor_id) REFERENCES competitor (id),
+	CONSTRAINT FK_entry_helm_id FOREIGN KEY (helm_id) REFERENCES competitor (id),
 	CONSTRAINT FK_entry_dinghy_id FOREIGN KEY (dinghy_id) REFERENCES dinghy (id),
 	CONSTRAINT FK_entry_race_id FOREIGN KEY (race_id) REFERENCES race (id)
 ) engine=InnoDB;

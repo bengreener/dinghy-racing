@@ -60,13 +60,13 @@ public class DatabaseLoader implements CommandLineRunner {
 		Race r2 = new Race("Graduate A", now.plusMinutes(7L), dc2, Duration.ofMinutes(35), 3);
 		this.raceRepository.save(r2);
 		
-		Competitor c1 = new Competitor("Chris Marshall");
-		Competitor c2 = new Competitor("Sarah Pascal");
-		competitorRepository.save(c1);
-		competitorRepository.save(c2);
+		Competitor helm1 = new Competitor("Chris Marshall");
+		Competitor helm2 = new Competitor("Sarah Pascal");
+		competitorRepository.save(helm1);
+		competitorRepository.save(helm2);
 		
-		Entry e1 = new Entry(c1, d1, r);
-		Entry e2 = new Entry(c2, d2, r);
+		Entry e1 = new Entry(helm1, d1, r);
+		Entry e2 = new Entry(helm2, d2, r);
 		entryRepository.save(e1);
 		entryRepository.save(e2);
 		
