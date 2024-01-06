@@ -31,7 +31,7 @@ public class DinghyClassRepositoryTests {
 		DinghyClass dc1;
 		DinghyClass dc2;
 				
-		dc1 = new DinghyClass("TestClass");
+		dc1 = new DinghyClass("TestClass", 1);
 		dc2 = dinghyClassRepository.save(dc1);
 		
 		assertThat(entityManager.find(DinghyClass.class, entityManager.getId(dc2))).isEqualTo(dc1);
@@ -39,11 +39,11 @@ public class DinghyClassRepositoryTests {
 	
 	@Test
 	void nameIsUnique() {
-		DinghyClass dc1 = new DinghyClass("TestClass");
+		DinghyClass dc1 = new DinghyClass("TestClass", 1);
 		entityManager.persist(dc1);
 				
 		Exception e = assertThrows(PersistenceException.class, () -> {
-			DinghyClass dc2 = new DinghyClass("TestClass");
+			DinghyClass dc2 = new DinghyClass("TestClass", 1);
 			dinghyClassRepository.save(dc2);
 			entityManager.flush();
 		});
@@ -53,12 +53,31 @@ public class DinghyClassRepositoryTests {
 	
 	@Test
 	void when_searchingForADinghyClassByName_then_returnsDinghyClass() {
-		DinghyClass dc1 = new DinghyClass("TestClass");
+		DinghyClass dc1 = new DinghyClass("TestClass", 1);
 		entityManager.persist(dc1);
 		
 		DinghyClass dc2 = dinghyClassRepository.findByName("TestClass");
 		
-		assertThat(dc1).isEqualTo(dc2);
-				
+		assertThat(dc1).isEqualTo(dc2);			
+	}
+	
+	@Test
+	void when_savingDInghyClass_crewSizeCannotBeNull() {
+		assertThrows(javax.validation.ConstraintViolationException.class, () -> {
+			DinghyClass dc = new DinghyClass();
+			dc.setName("Test Class");
+			dinghyClassRepository.save(dc);
+			entityManager.flush();
+		});
+	}
+	
+	@Test
+	void when_savingDInghyClass_nameCannotBeNull() {
+		assertThrows(javax.validation.ConstraintViolationException.class, () -> {
+			DinghyClass dc = new DinghyClass();
+			dc.setCrewSize(1);
+			dinghyClassRepository.save(dc);
+			entityManager.flush();
+		});
 	}
 }

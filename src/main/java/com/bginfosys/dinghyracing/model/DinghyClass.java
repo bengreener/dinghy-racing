@@ -20,13 +20,17 @@ public class DinghyClass {
 	@Column(unique=true)
 	private String name;
 
+	@NotNull
+	private Integer crewSize; 
+	
 	//Required by JPA
 	//Not recommended by Spring Data
 	public DinghyClass() {}
 	
-	public DinghyClass(String name) {
-		this.name = name;	
-	}
+	public DinghyClass(String name, Integer crewSize) {
+		this.name = name;
+		this.crewSize = crewSize;
+	}	
 	
 	public Long getId() {
 		return id;
@@ -42,5 +46,13 @@ public class DinghyClass {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	public Integer getCrewSize() {
+		return this.crewSize;
+	}
+	
+	public void setCrewSize(Integer crewSize) {
+		this.crewSize = crewSize;
 	}
 }

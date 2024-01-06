@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 class RaceTests {
 
 	//private Race race = new Race("Test Race", LocalDate.of(2021, 10, 14), LocalTime.of(14, 10), new DinghyClass("Test"));
-	private DinghyClass dinghyClass = new DinghyClass("Test");
+	private DinghyClass dinghyClass = new DinghyClass("Test", 1);
 	private Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), dinghyClass, Duration.ofMinutes(45), 5);
 	
 	@Test
