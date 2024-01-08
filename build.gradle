@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'com.bginfosys'
-version = '2023.12.1.dev'
+version = '2023.12.2.dev'
 //sourceCompatibility = '16'
 sourceCompatibility = '11'
 
