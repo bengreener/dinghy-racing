@@ -11,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.Version;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import java.util.Set;
 import java.util.stream.Stream;
@@ -19,22 +21,21 @@ import java.util.HashSet;
 
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.annotations.NaturalId;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
+@Table(uniqueConstraints = {
+		@UniqueConstraint(columnNames = {"name", "plannedStartTime"})
+})
 public class Race {
 	
 	private @Id @GeneratedValue Long id;
 	private @Version @JsonIgnore Long version;
 	
 	@NotNull
-	@NaturalId
 	private String name;
 	
 	@NotNull
-	@NaturalId
 	private LocalDateTime plannedStartTime;
 	
 	private LocalDateTime actualStartTime;
