@@ -26,7 +26,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Table(uniqueConstraints = {
 		@UniqueConstraint(columnNames = {"helm_id", "race_id"}), 
 		@UniqueConstraint(columnNames = {"dinghy_id", "race_id"}),
-		@UniqueConstraint (columnNames = {"crew_id", "race_id"})
+		@UniqueConstraint(columnNames = {"crew_id", "race_id"})
 })
 public class Entry {
 
