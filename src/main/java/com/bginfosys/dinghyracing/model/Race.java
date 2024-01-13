@@ -155,17 +155,22 @@ public class Race {
 	}
 	
 	/**
-	 * Return an estimate of the number of laps that will be completed given the pace per lap, number of laps completed, and the race duration
+	 * Return an estimate of the number of laps that will be completed given the time for the lead boats last lap, number of laps completed, and the race duration
+	 *     lapForecast = (remainingTime/ lastLapTime) + lapsCompleted
+	 * If the lead boat has sailed for the planned duration of the race or longer the lap forecast will be the number of laps completed by the lead boat
 	 * If no laps have been completed will return the number of laps set for the race
-	 * @return
+	 * @return a double representing the estimate of the number of laps that will be completed
 	 */
 	public Double getLapForecast() {
 		Entry leadEntry = this.getLeadEntry();
 		if (leadEntry == null || leadEntry.getLaps().size() == 0) {
-			return (double)this.getPlannedLaps();
+			return (double) this.getPlannedLaps();
 		}
 		Duration remainingTime = this.getDuration().minus(leadEntry.getSumOfLapTimes());
-		Double lapsEstimate = (double)remainingTime.toSeconds() / (double)leadEntry.getLastLapTime().toSeconds();
+		if (remainingTime.isNegative() || remainingTime.isZero()) {
+			return (double) leadEntry.getLaps().size();
+		}
+		Double lapsEstimate = (double) remainingTime.toSeconds() / (double)leadEntry.getLastLapTime().toSeconds();
 		return leadEntry.getLaps().size() + lapsEstimate;
 	}
 	
