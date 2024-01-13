@@ -245,4 +245,29 @@ class RaceTests {
 		race.setPlannedLaps(5);		
 		assertEquals(5, race.getLapForecast());		
 	}
+
+	@Test
+	void given_raceDurationHasElapsedAndABoatHasCrossedTheLineOnAfterDurationElapsed_when_requestLapsForecast_then_returnNumberOfLapsCompletedByLeadBoat() {
+		race.setPlannedLaps(5);
+		Competitor competitor1 = new Competitor("Competitor One");
+		Competitor competitor2 = new Competitor("competitor Two");
+		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
+		Dinghy dinghy2 = new Dinghy("4567", dinghyClass);
+		Entry entry1 = new Entry(competitor1, dinghy1, race);
+		Entry entry2 = new Entry(competitor2, dinghy2, race);
+		
+		race.signUp(entry1);
+		race.signUp(entry2);
+		
+		entry1.addLap(new Lap(1, Duration.ofMinutes(14)));
+		entry2.addLap(new Lap(1, Duration.ofMinutes(15)));
+		entry1.addLap(new Lap(2, Duration.ofMinutes(13)));
+		entry2.addLap(new Lap(2, Duration.ofMinutes(15)));
+		entry1.addLap(new Lap(3, Duration.ofMinutes(14)));
+		entry2.addLap(new Lap(3, Duration.ofMinutes(15)));
+		entry1.addLap(new Lap(4, Duration.ofMinutes(15)));
+		
+		assertEquals(4D, race.getLapForecast());
+	}
+	
 }
