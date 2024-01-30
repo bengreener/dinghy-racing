@@ -59,7 +59,8 @@ public class DatabaseLoader implements CommandLineRunner {
 		LocalDateTime now = LocalDateTime.now();
 		now = now.minusNanos(now.getNano()); // avoid precision issues saving and retrieving from database
 		
-		Race r1 = new Race("Scorpion A", now.plusMinutes(2L), dc1, Duration.ofMinutes(45), 5);
+//		Race r1 = new Race("Scorpion A", now.plusMinutes(2L), dc1, Duration.ofMinutes(45), 5);
+		Race r1 = new Race("Scorpion A", now.plusMinutes(0L), dc1, Duration.ofMinutes(2), 5);
 		Race r2 = new Race("Graduate A", now.plusMinutes(7L), dc2, Duration.ofMinutes(35), 3);
 		Race r3 = new Race("Comet A", now.plusMinutes(7L), dc3, Duration.ofMinutes(35), 3);
 		
