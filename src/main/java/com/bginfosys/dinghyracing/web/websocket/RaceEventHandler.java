@@ -2,6 +2,8 @@ package com.bginfosys.dinghyracing.web.websocket;
 
 import static com.bginfosys.dinghyracing.web.websocket.WebSocketConfiguration.MESSAGE_PREFIX;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.rest.core.annotation.HandleAfterCreate;
 import org.springframework.data.rest.core.annotation.HandleAfterDelete;
 import org.springframework.data.rest.core.annotation.HandleAfterSave;
@@ -16,6 +18,8 @@ import com.bginfosys.dinghyracing.model.Race;
 @RepositoryEventHandler(Race.class)
 public class RaceEventHandler {
 	
+	Logger logger = LoggerFactory.getLogger(RaceEventHandler.class);
+	
 	private final SimpMessagingTemplate websocket;
 	
 	private final EntityLinks entityLinks;
@@ -27,30 +31,35 @@ public class RaceEventHandler {
 
 	@HandleAfterCreate
 	public void newRace(Race race) {
-		this.websocket.convertAndSend(
-				MESSAGE_PREFIX + "/newRace", getPath(race));
+		if (logger.isDebugEnabled()) {
+			logger.debug("New race: " + race.toString());
+		}
+		this.websocket.convertAndSend(MESSAGE_PREFIX + "/newRace", getURI(race));
 	}
 
 	@HandleAfterDelete
 	public void deleteRace(Race race) {
-		this.websocket.convertAndSend(
-				MESSAGE_PREFIX + "/deleteRace", getPath(race));
+		if (logger.isDebugEnabled()) {
+			logger.debug("Delete race: " + race.toString());
+		}
+		this.websocket.convertAndSend(MESSAGE_PREFIX + "/deleteRace", getURI(race));
 	}
 
 	@HandleAfterSave
 	public void updateRace(Race race) {
+		if (logger.isDebugEnabled()) {
+			logger.debug("Update race: " + race.toString());
+		}
 		this.websocket.convertAndSend(
-				MESSAGE_PREFIX + "/updateRace", getPath(race));
+				MESSAGE_PREFIX + "/updateRace", getURI(race));
 	}
-
+	
 	/**
 	 * Take an {@link Race} and get the URI using Spring Data REST's {@link EntityLinks}.
 	 *
 	 * @param race
 	 */
-	private String getPath(Race race) {
-		return this.entityLinks.linkForItemResource(race.getClass(),
-				race.getId()).toUri().getPath();
+	private String getURI(Race race) {
+		return this.entityLinks.linkToItemResource(race.getClass(), race.getId()).toUri().toString();
 	}
-	
 }

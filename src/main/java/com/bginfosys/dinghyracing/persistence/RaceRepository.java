@@ -22,4 +22,7 @@ public interface RaceRepository extends PagingAndSortingRepository<Race, Long> {
 	List<Race> findByPlannedStartTimeGreaterThanEqual(@Param("time") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime time);
 	
 	Race findByNameAndPlannedStartTime(@Param("name") String name, @Param("time") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime time);
+	
+	List<Race> findByPlannedStartTimeBetween(@Param("startTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime, 
+			@Param("endTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endTime);
 }

@@ -11,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.Version;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import java.util.Set;
 import java.util.stream.Stream;
@@ -19,22 +21,21 @@ import java.util.HashSet;
 
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.annotations.NaturalId;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
+@Table(uniqueConstraints = {
+		@UniqueConstraint(columnNames = {"name", "plannedStartTime"})
+})
 public class Race {
 	
 	private @Id @GeneratedValue Long id;
 	private @Version @JsonIgnore Long version;
 	
 	@NotNull
-	@NaturalId
 	private String name;
 	
 	@NotNull
-	@NaturalId
 	private LocalDateTime plannedStartTime;
 	
 	private LocalDateTime actualStartTime;
@@ -45,6 +46,7 @@ public class Race {
 	@NotNull
 	private Duration duration;
 	
+	@NotNull
 	private Integer plannedLaps;
 	
 	@Column(unique=true)
@@ -55,11 +57,12 @@ public class Race {
 	//Not recommended by Spring Data
 	public Race() {}
 	
-	public Race(String name, LocalDateTime plannedStartTime, DinghyClass dinghyClass, Duration duration) {
+	public Race(String name, LocalDateTime plannedStartTime, DinghyClass dinghyClass, Duration duration, Integer plannedLaps) {
 		this.name = name;
 		this.plannedStartTime = plannedStartTime;
 		this.dinghyClass = dinghyClass;
 		this.duration = duration;
+		this.plannedLaps = plannedLaps;
 	}
 	
 	public Long getId() {
@@ -152,17 +155,22 @@ public class Race {
 	}
 	
 	/**
-	 * Return an estimate of the number of laps that will be completed given the pace per lap, number of laps completed, and the race duration
+	 * Return an estimate of the number of laps that will be completed given the time for the lead boats last lap, number of laps completed, and the race duration
+	 *     lapForecast = (remainingTime/ lastLapTime) + lapsCompleted
+	 * If the lead boat has sailed for the planned duration of the race or longer the lap forecast will be the number of laps completed by the lead boat
 	 * If no laps have been completed will return the number of laps set for the race
-	 * @return
+	 * @return a double representing the estimate of the number of laps that will be completed
 	 */
 	public Double getLapForecast() {
 		Entry leadEntry = this.getLeadEntry();
 		if (leadEntry == null || leadEntry.getLaps().size() == 0) {
-			return (double)this.getPlannedLaps();
+			return (double) this.getPlannedLaps();
 		}
 		Duration remainingTime = this.getDuration().minus(leadEntry.getSumOfLapTimes());
-		Double lapsEstimate = (double)remainingTime.toSeconds() / (double)leadEntry.getLastLapTime().toSeconds();
+		if (remainingTime.isNegative() || remainingTime.isZero()) {
+			return (double) leadEntry.getLaps().size();
+		}
+		Double lapsEstimate = (double) remainingTime.toSeconds() / (double)leadEntry.getLastLapTime().toSeconds();
 		return leadEntry.getLaps().size() + lapsEstimate;
 	}
 	

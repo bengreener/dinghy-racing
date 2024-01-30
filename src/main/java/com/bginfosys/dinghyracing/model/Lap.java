@@ -8,8 +8,13 @@ import javax.persistence.Id;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
+//import com.bginfosys.dinghyracing.exceptions.LapZeroOrLessTimeException;
+import com.bginfosys.dinghyracing.validation.constraints.DurationPositive;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+/**
+ * Records a lap time for an {@link com.bginfosys.dinghyracing.model.Entry Entry}
+ */
 @Entity
 public class Lap implements Comparable<Lap> {
 	
@@ -22,7 +27,8 @@ public class Lap implements Comparable<Lap> {
 	@NotNull
 	private Integer number;
 	
-	@NotNull
+//	@NotNull
+	@DurationPositive
 	private Duration time;
 
 	public Lap() {};
@@ -52,6 +58,10 @@ public class Lap implements Comparable<Lap> {
 		return time;
 	}
 
+	/**
+	 * Set time for the lap. 
+	 * @param time a positive value greater than zero
+	 */
 	public void setTime(Duration time) {
 		this.time = time;
 	}

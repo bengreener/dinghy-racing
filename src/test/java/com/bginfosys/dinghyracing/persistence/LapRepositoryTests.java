@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
+import java.lang.reflect.Field;
+
 import com.bginfosys.dinghyracing.model.Lap;
 
 @DataJpaTest
@@ -47,6 +49,48 @@ public class LapRepositoryTests {
 	void when_timeIsNull_then_throwsException() {
 		Lap lap = new Lap();
 		lap.setNumber(1);
+		
+		lapRepository.save(lap);
+		
+		assertThrows(ConstraintViolationException.class, () -> {
+			entityManager.flush();
+		});
+	}
+	
+	@Test
+	void when_timeIsZero_then_throwsException() {
+		Lap lap = new Lap();
+		lap.setNumber(1);
+		
+		try {
+			Field fld = lap.getClass().getDeclaredField("time");
+			fld.setAccessible(true);
+			fld.set(lap, Duration.ofMinutes(0));
+		}
+		catch (Throwable e) {
+			System.err.println(e);
+		}
+		
+		lapRepository.save(lap);
+		
+		assertThrows(ConstraintViolationException.class, () -> {
+			entityManager.flush();
+		});
+	}
+	
+	@Test
+	void when_timeIsNegative_then_throwsException() {
+		Lap lap = new Lap();
+		lap.setNumber(1);
+		
+		try {
+			Field fld = lap.getClass().getDeclaredField("time");
+			fld.setAccessible(true);
+			fld.set(lap, Duration.ofMinutes(-15));
+		}
+		catch (Throwable e) {
+			System.err.println(e);
+		}
 		
 		lapRepository.save(lap);
 		
