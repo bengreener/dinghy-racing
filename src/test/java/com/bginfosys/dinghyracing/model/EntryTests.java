@@ -399,7 +399,7 @@ public class EntryTests {
 		entry.setRace(race);
 		entry.addLap(new Lap(1, Duration.ofMinutes(3L)));
 		
-		assertTrue(entry.onLastLap());
+		assertTrue(entry.getOnLastLap());
 	}
 	
 	@Test
@@ -411,6 +411,6 @@ public class EntryTests {
 		entry.setRace(race);
 		entry.addLap(new Lap(1, Duration.ofMinutes(3L)));
 		
-		assertFalse(entry.onLastLap());
+		assertFalse(entry.getOnLastLap());
 	}
 }

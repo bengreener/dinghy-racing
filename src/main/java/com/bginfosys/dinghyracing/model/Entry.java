@@ -168,7 +168,7 @@ public class Entry {
 	/**
 	 * Return true of the boat is on it's last lap of the race
 	 */
-	public boolean onLastLap() {
+	public boolean getOnLastLap() {
 		if (laps.size() == race.getPlannedLaps() - 1) {
 			return true;
 		}
