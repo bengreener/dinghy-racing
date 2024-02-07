@@ -8,7 +8,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.SortedSet;
 import java.util.concurrent.ConcurrentSkipListSet;
 
@@ -389,5 +388,29 @@ public class EntryTests {
 		
 		entry.setCrew(crew);
 		assertTrue(entry.getCrew() instanceof Competitor);
+	}
+
+	@Test
+	void when_onLastLapOfRace_then_returnsTrueForOnLastLap() {
+		Race race = new Race();
+		race.setPlannedLaps(2);
+		
+		Entry entry = new Entry();
+		entry.setRace(race);
+		entry.addLap(new Lap(1, Duration.ofMinutes(3L)));
+		
+		assertTrue(entry.getOnLastLap());
+	}
+	
+	@Test
+	void when_notOnLastLapOfRace_then_returnsFalseForOnLastLap() {
+		Race race = new Race();
+		race.setPlannedLaps(3);
+		
+		Entry entry = new Entry();
+		entry.setRace(race);
+		entry.addLap(new Lap(1, Duration.ofMinutes(3L)));
+		
+		assertFalse(entry.getOnLastLap());
 	}
 }

@@ -165,4 +165,13 @@ public class Entry {
 		laps.last().setTime(lap.getTime());
 	}
 		
+	/**
+	 * Return true of the boat is on it's last lap of the race
+	 */
+	public boolean getOnLastLap() {
+		if (laps.size() == race.getPlannedLaps() - 1) {
+			return true;
+		}
+		return false;
+	}
 }
