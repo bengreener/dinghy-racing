@@ -147,7 +147,13 @@ public class Entry {
 		this.laps = laps;
 	}
 	
+	/**
+	 * If boat has not finished the race add a new lap
+	 */
 	public boolean addLap(Lap lap) {
+		if (getFinishedRace()) {
+			return false;
+		}
 		return laps.add(lap);
 	}
 	
@@ -174,4 +180,15 @@ public class Entry {
 		}
 		return false;
 	}
+	
+	/**
+	 * Return true if the boat has finished the race
+	 */
+	public boolean getFinishedRace() {
+		if (laps.size() == race.getPlannedLaps()) {
+			return true;
+		}
+		return false;
+	}
+	
 }
