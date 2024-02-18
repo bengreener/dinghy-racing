@@ -147,7 +147,13 @@ public class Entry {
 		this.laps = laps;
 	}
 	
+	/**
+	 * If boat has not finished the race add a new lap
+	 */
 	public boolean addLap(Lap lap) {
+		if (getFinishedRace()) {
+			return false;
+		}
 		return laps.add(lap);
 	}
 	
@@ -165,4 +171,24 @@ public class Entry {
 		laps.last().setTime(lap.getTime());
 	}
 		
+	/**
+	 * Return true of the boat is on it's last lap of the race
+	 */
+	public boolean getOnLastLap() {
+		if (laps.size() == race.getPlannedLaps() - 1) {
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Return true if the boat has finished the race
+	 */
+	public boolean getFinishedRace() {
+		if (laps.size() == race.getPlannedLaps()) {
+			return true;
+		}
+		return false;
+	}
+	
 }

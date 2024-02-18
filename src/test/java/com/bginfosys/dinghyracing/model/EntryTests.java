@@ -8,7 +8,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.SortedSet;
 import java.util.concurrent.ConcurrentSkipListSet;
 
@@ -220,6 +219,9 @@ public class EntryTests {
 	@Test
 	void when_addingALap_then_lapIsAddedToLaps() {
 		Entry entry = new Entry();
+		Race race = new Race();
+		race.setPlannedLaps(5);
+		entry.setRace(race);
 		Lap lap = new Lap(1, Duration.ofMinutes(13));
 		entry.addLap(lap);
 		assertTrue(entry.getLaps().contains(lap));
@@ -228,6 +230,9 @@ public class EntryTests {
 	@Test
 	void given_lapWithLapNumberAlreadyRecorded_when_addingALapWithSameLapNumber_then_LapIsNotAdded() {
 		Entry entry = new Entry();
+		Race race = new Race();
+		race.setPlannedLaps(5);
+		entry.setRace(race);
 		Lap lap1 = new Lap(1, Duration.ofMinutes(13));
 		Lap lap1_2 = new Lap(1, Duration.ofMinutes(11));
 		entry.addLap(lap1);
@@ -240,6 +245,9 @@ public class EntryTests {
 	@Test
 	void when_addingALap_then_returnsTrueIfLapIsAdded() {
 		Entry entry = new Entry();
+		Race race = new Race();
+		race.setPlannedLaps(5);
+		entry.setRace(race);
 		Lap lap = new Lap(1, Duration.ofMinutes(13));
 		boolean lapAdded = entry.addLap(lap);
 		assertTrue(lapAdded);
@@ -248,6 +256,9 @@ public class EntryTests {
 	@Test
 	void when_addingALap_then_returnsFalseIfLapIsNotAdded() {
 		Entry entry = new Entry();
+		Race race = new Race();
+		race.setPlannedLaps(5);
+		entry.setRace(race);
 		Lap lap1 = new Lap(1, Duration.ofMinutes(13));
 		Lap lap1_2 = new Lap(1, Duration.ofMinutes(12));
 		entry.addLap(lap1);
@@ -258,6 +269,9 @@ public class EntryTests {
 	@Test
 	void when_removingALap_then_lapIsRemoved() {
 		Entry entry = new Entry();
+		Race race = new Race();
+		race.setPlannedLaps(5);
+		entry.setRace(race);
 		Lap lap = new Lap(1, Duration.ofMinutes(13));
 		entry.addLap(lap);
 		entry.removeLap(new Lap(1, Duration.ofMinutes(13)));
@@ -267,6 +281,9 @@ public class EntryTests {
 	@Test
 	void when_requestingTotalLapTime_then_returnsSumOfRecordedLapTimes() {
 		Entry entry = new Entry();
+		Race race = new Race();
+		race.setPlannedLaps(5);
+		entry.setRace(race);
 		Lap lap1 = new Lap(1, Duration.ofMinutes(13));
 		Lap lap2 = new Lap(2, Duration.ofMinutes(16));
 		Lap lap3 = new Lap(3, Duration.ofMinutes(15));
@@ -292,6 +309,9 @@ public class EntryTests {
 	@Test
 	void given_anEntryHasCompletedMoreThanOneLap_then_returnsTheLastLapTime() {
 		Entry entry = new Entry();
+		Race race = new Race();
+		race.setPlannedLaps(5);
+		entry.setRace(race);
 		Lap lap1 = new Lap(1, Duration.ofMinutes(13));
 		Lap lap2 = new Lap(2, Duration.ofMinutes(16));
 		Lap lap3 = new Lap(3, Duration.ofMinutes(15));
@@ -317,6 +337,9 @@ public class EntryTests {
 	@Test
 	void given_anEntryHasCompletedMoreThanOneLap_then_returnsTheAverageLapTime() {
 		Entry entry = new Entry();
+		Race race = new Race();
+		race.setPlannedLaps(5);
+		entry.setRace(race);
 		Lap lap1 = new Lap(1, Duration.ofMinutes(13));
 		Lap lap2 = new Lap(2, Duration.ofMinutes(16));
 		Lap lap3 = new Lap(3, Duration.ofMinutes(15));
@@ -335,6 +358,9 @@ public class EntryTests {
 	@Test
 	void given_anEntryHasLapsRecorded_then_updatesLastLap() {
 		Entry entry = new Entry();
+		Race race = new Race();
+		race.setPlannedLaps(5);
+		entry.setRace(race);
 		Lap lap1 = new Lap(1, Duration.ofMinutes(13));
 		Lap lap2 = new Lap(2, Duration.ofMinutes(16));
 		Lap lap3 = new Lap(3, Duration.ofMinutes(15));
@@ -356,6 +382,9 @@ public class EntryTests {
 	@Test
 	void given_anEntryHasLapsRecorded_then_ifAttemptToUpdateLapOtherThanLastThrowsIllegalArgumentException() {
 		Entry entry = new Entry();
+		Race race = new Race();
+		race.setPlannedLaps(5);
+		entry.setRace(race);
 		Lap lap1 = new Lap(1, Duration.ofMinutes(13));
 		Lap lap2 = new Lap(2, Duration.ofMinutes(16));
 		Lap lap3 = new Lap(3, Duration.ofMinutes(15));
@@ -389,5 +418,70 @@ public class EntryTests {
 		
 		entry.setCrew(crew);
 		assertTrue(entry.getCrew() instanceof Competitor);
+	}
+
+	@Test
+	void when_onLastLapOfRace_then_returnsTrueForOnLastLap() {
+		Race race = new Race();
+		race.setPlannedLaps(2);
+		
+		Entry entry = new Entry();
+		entry.setRace(race);
+		entry.addLap(new Lap(1, Duration.ofMinutes(3L)));
+		
+		assertTrue(entry.getOnLastLap());
+	}
+	
+	@Test
+	void when_notOnLastLapOfRace_then_returnsFalseForOnLastLap() {
+		Race race = new Race();
+		race.setPlannedLaps(3);
+		
+		Entry entry = new Entry();
+		entry.setRace(race);
+		entry.addLap(new Lap(1, Duration.ofMinutes(3L)));
+		
+		assertFalse(entry.getOnLastLap());
+	}
+
+	@Test
+	void when_finishedRace_then_returnsTrueForFinishedRace() {
+		Race race = new Race();
+		race.setPlannedLaps(2);
+		
+		Entry entry = new Entry();
+		entry.setRace(race);
+		entry.addLap(new Lap(1, Duration.ofMinutes(3L)));
+		entry.addLap(new Lap(2, Duration.ofMinutes(3L)));
+		
+		assertTrue(entry.getFinishedRace());
+	}
+	
+	@Test 
+	void when_notFinishedRace_then_returnsFalseForNotFinishedRace() {
+		Race race = new Race();
+		race.setPlannedLaps(3);
+		
+		Entry entry = new Entry();
+		entry.setRace(race);
+		entry.addLap(new Lap(1, Duration.ofMinutes(3L)));
+		
+		assertFalse(entry.getFinishedRace());
+	}
+	
+	@Test
+	void when_finishedRace_then_doesNotAddAdditionalLaps() {
+		Race race = new Race();
+		race.setPlannedLaps(2);
+		
+		Entry entry = new Entry();
+		entry.setRace(race);
+		entry.addLap(new Lap(1, Duration.ofMinutes(3L)));
+		entry.addLap(new Lap(2, Duration.ofMinutes(3L)));
+		
+		Lap lap = new Lap(3, Duration.ofMinutes(3L));
+		
+		assertFalse(entry.addLap(lap));
+		assertFalse(entry.getLaps().contains(lap));
 	}
 }
