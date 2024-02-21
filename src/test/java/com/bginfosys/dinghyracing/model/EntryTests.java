@@ -484,4 +484,12 @@ public class EntryTests {
 		assertFalse(entry.addLap(lap));
 		assertFalse(entry.getLaps().contains(lap));
 	}
+
+	@Test
+	void setsAndGetsScoringAbbreviation() {
+		Entry entry = new Entry();
+		entry.setScoringAbbreviation("XYZ");
+		
+		assertTrue(entry.getScoringAbbreviation() == "XYZ");
+	}
 }

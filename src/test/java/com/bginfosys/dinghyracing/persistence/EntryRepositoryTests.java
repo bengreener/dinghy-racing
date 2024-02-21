@@ -390,4 +390,24 @@ public class EntryRepositoryTests {
 
 		assertTrue(e.getCause() instanceof org.hibernate.exception.ConstraintViolationException);
 	}
+
+	@Test
+	void when_scoringAbbreviationLessThan3Characters_then_throwsValidationError() {
+		Entry entry = new Entry();
+		entry.setScoringAbbreviation("A");
+		assertThrows(ConstraintViolationException.class, () -> {
+			entryRepository.save(entry);
+			entityManager.flush();
+		});
+	}
+	
+	@Test
+	void when_scoringAbbreviationMoreThan3Characters_then_throwsValidationError() {
+		Entry entry = new Entry();
+		entry.setScoringAbbreviation("AYZD");
+		assertThrows(ConstraintViolationException.class, () -> {
+			entryRepository.save(entry);
+			entityManager.flush();
+		});
+	}
 }

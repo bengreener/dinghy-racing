@@ -16,6 +16,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.NaturalId;
 
@@ -59,6 +60,9 @@ public class Entry {
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@OrderBy("number")
 	private SortedSet<Lap> laps = new ConcurrentSkipListSet<Lap>();
+	
+	@Size(min = 3, max = 3)
+	private String scoringAbbreviation;
 	
 	public Entry() {}
 	
@@ -147,6 +151,16 @@ public class Entry {
 		this.laps = laps;
 	}
 	
+	public String getScoringAbbreviation() {
+		return scoringAbbreviation;
+	}
+	
+
+	public void setScoringAbbreviation(String scoringAbbreviation) {
+		this.scoringAbbreviation = scoringAbbreviation;
+	}
+	
+
 	/**
 	 * If boat has not finished the race add a new lap
 	 */
