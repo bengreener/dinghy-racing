@@ -1,3 +1,4 @@
+-- v2024.2.2
 USE dinghy_racing;
 
 CREATE TABLE hibernate_sequence (
