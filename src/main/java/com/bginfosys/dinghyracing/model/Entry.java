@@ -1,6 +1,7 @@
 package com.bginfosys.dinghyracing.model;
 
 import java.time.Duration;
+import java.util.Objects;
 import java.util.SortedSet;
 import java.util.concurrent.ConcurrentSkipListSet;
 
@@ -165,7 +166,7 @@ public class Entry {
 	 * If boat has not finished the race add a new lap
 	 */
 	public boolean addLap(Lap lap) {
-		if (scoringAbbreviation == "DNS" || getFinishedRace()) {
+		if (Objects.equals("DNS", scoringAbbreviation) || getFinishedRace()) {
 			return false;
 		}
 		return laps.add(lap);
