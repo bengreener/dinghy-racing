@@ -44,6 +44,7 @@ CREATE TABLE entry (
 	competitor_id BIGINT NOT NULL, 
 	dinghy_id BIGINT NOT NULL, 
 	race_id BIGINT NOT NULL, 
+	scoring_abbreviation CHAR(3) NULL, 
 	CONSTRAINT PK_entry_id PRIMARY KEY (id),
 	CONSTRAINT UK_entry_competitor_id_dinghy_id_race_id UNIQUE (competitor_id, dinghy_id, race_id),
 	CONSTRAINT UK_entry_competitor_id_race_id UNIQUE (competitor_id, race_id),
