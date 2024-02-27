@@ -166,7 +166,7 @@ public class Entry {
 	 * If boat has not finished the race add a new lap
 	 */
 	public boolean addLap(Lap lap) {
-		if (Objects.equals("DNS", scoringAbbreviation) || getFinishedRace()) {
+		if (getFinishedRace() || Objects.equals("DNS", scoringAbbreviation) || Objects.equals("RET", scoringAbbreviation)) {
 			return false;
 		}
 		return laps.add(lap);
