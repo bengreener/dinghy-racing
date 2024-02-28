@@ -484,4 +484,57 @@ public class EntryTests {
 		assertFalse(entry.addLap(lap));
 		assertFalse(entry.getLaps().contains(lap));
 	}
+
+	@Test
+	void setsAndGetsScoringAbbreviation() {
+		Entry entry = new Entry();
+		entry.setScoringAbbreviation("XYZ");
+		
+		assertTrue(entry.getScoringAbbreviation() == "XYZ");
+	}
+
+	@Test
+	void when_DNS_thenDoesNotAddLaps() {
+		Race race = new Race();
+		race.setPlannedLaps(2);
+		
+		Entry entry = new Entry();
+		entry.setRace(race);
+		entry.setScoringAbbreviation("DNS");
+		
+		Lap lap = new Lap(1, Duration.ofMinutes(1L));
+		
+		assertFalse(entry.addLap(lap));
+		assertFalse(entry.getLaps().contains(lap));
+	}
+	
+	@Test
+	void when_RET_thenDoesNotAddLaps() {
+		Race race = new Race();
+		race.setPlannedLaps(2);
+		
+		Entry entry = new Entry();
+		entry.setRace(race);
+		entry.setScoringAbbreviation("RET");
+		
+		Lap lap = new Lap(1, Duration.ofMinutes(1L));
+		
+		assertFalse(entry.addLap(lap));
+		assertFalse(entry.getLaps().contains(lap));
+	}
+	
+	@Test
+	void when_DSQ_thenDoesNotAddLaps() {
+		Race race = new Race();
+		race.setPlannedLaps(2);
+		
+		Entry entry = new Entry();
+		entry.setRace(race);
+		entry.setScoringAbbreviation("DSQ");
+		
+		Lap lap = new Lap(1, Duration.ofMinutes(1L));
+		
+		assertFalse(entry.addLap(lap));
+		assertFalse(entry.getLaps().contains(lap));
+	}
 }

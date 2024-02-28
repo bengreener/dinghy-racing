@@ -1,3 +1,4 @@
+-- v2024.2.2
 USE dinghy_racing;
 
 CREATE TABLE hibernate_sequence (
@@ -49,6 +50,7 @@ CREATE TABLE entry (
     crew_id BIGINT NULL, 
 	dinghy_id BIGINT NOT NULL, 
 	race_id BIGINT NOT NULL, 
+	scoring_abbreviation CHAR(3) NULL, 	
 	CONSTRAINT PK_entry_id PRIMARY KEY (id),
 	CONSTRAINT UK_entry_helm_id_dinghy_id_race_id UNIQUE (helm_id, dinghy_id, race_id),
 	CONSTRAINT UK_entry_helm_id_race_id UNIQUE (helm_id, race_id),
