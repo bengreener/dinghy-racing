@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 
 import java.util.Set;
 import java.util.HashSet;
-import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -234,8 +233,8 @@ public class RaceRepositoryTests {
 		Race race4 = new Race("Test Race4", LocalDateTime.of(2023, 5, 13, 13, 01), dinghyClass, Duration.ofMinutes(45), 5);
 		race4 = entityManager.persist(race4);
 		
-		List<Race> result = raceRepository.findByPlannedStartTimeBetween(LocalDateTime.of(2023, 5, 13, 12, 00), 
-				LocalDateTime.of(2023, 5, 13, 13, 00));
+		Page<Race> result = raceRepository.findByPlannedStartTimeBetween(LocalDateTime.of(2023, 5, 13, 12, 00), 
+				LocalDateTime.of(2023, 5, 13, 13, 00), Pageable.ofSize(5));
 		
 		assertThat(result).contains(race2, race3);
 		assertThat(result).doesNotContain(race1, race4);

@@ -1,7 +1,6 @@
 package com.bginfosys.dinghyracing.persistence;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +22,6 @@ public interface RaceRepository extends PagingAndSortingRepository<Race, Long> {
 	
 	Race findByNameAndPlannedStartTime(@Param("name") String name, @Param("time") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime time);
 	
-	List<Race> findByPlannedStartTimeBetween(@Param("startTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime, 
-			@Param("endTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endTime);
+	Page<Race> findByPlannedStartTimeBetween(@Param("startTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime, 
+			@Param("endTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endTime, Pageable pageable);
 }
