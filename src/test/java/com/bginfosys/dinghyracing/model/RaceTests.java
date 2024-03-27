@@ -5,6 +5,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.junit.jupiter.api.Test;
@@ -270,4 +271,10 @@ class RaceTests {
 		assertEquals(4D, race.getLapForecast());
 	}
 	
+	@Test
+	void given_raceExists_when_validStartSequenceStateProvided_then_setsStartSequenceStateToSuppliedValue() {
+		race.setStartSequenceState(StartSequence.ONEMINUTE);
+		
+		assertEquals(race.getStartSequenceState(), StartSequence.ONEMINUTE);
+	}
 }

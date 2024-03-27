@@ -20,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import javax.validation.ConstraintViolationException;
 
 import com.bginfosys.dinghyracing.model.Race;
+import com.bginfosys.dinghyracing.model.StartSequence;
 import com.bginfosys.dinghyracing.model.Dinghy;
 import com.bginfosys.dinghyracing.model.DinghyClass;
 import com.bginfosys.dinghyracing.model.Entry;
@@ -240,4 +241,21 @@ public class RaceRepositoryTests {
 		assertThat(result).doesNotContain(race1, race4);
 	}
 
+	@Test
+	void when_aNewStartSequenceStateIsSet_then_savesWithNewStartSequenceState() {
+		DinghyClass dinghyClass = new DinghyClass("Test Dinghyclass", 1);
+		entityManager.persist(dinghyClass);
+		Dinghy dinghy = new Dinghy("1234", dinghyClass);
+		entityManager.persist(dinghy);
+				
+		Race race1 = new Race("Test Race", LocalDateTime.of(2023, 5, 13, 12, 00), dinghyClass, Duration.ofMinutes(45), 5);
+		entityManager.persist(race1);
+		// remove entity from session (detach entity). Not doing so can result in a false positive dependent on the logic used to check for an exisitng entity in repository save method
+		entityManager.detach(race1);
+		
+		race1.setStartSequenceState(StartSequence.STARTINGSIGNAL);
+		Race race2 = raceRepository.save(race1);
+		
+		assertThat(race1.getStartSequenceState() == race2.getStartSequenceState());
+	}
 }

@@ -53,6 +53,8 @@ public class Race {
 	@OneToMany(mappedBy = "race", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<Entry> signedUp = new HashSet<Entry>(64);
 	
+	private StartSequence startSequenceState;
+	
 	//Required by JPA
 	//Not recommended by Spring Data
 	public Race() {}
@@ -132,6 +134,14 @@ public class Race {
 		this.signedUp = signedUp;
 	}
 	
+	public StartSequence getStartSequenceState() {
+		return startSequenceState;
+	}
+
+	public void setStartSequenceState(StartSequence startSequenceState) {
+		this.startSequenceState = startSequenceState;
+	}
+
 	public void signUp(Entry entry) {
 		if (signedUp == null) {
 			signedUp = new HashSet<Entry>(64);
