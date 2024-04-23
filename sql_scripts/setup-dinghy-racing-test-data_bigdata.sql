@@ -1,3 +1,4 @@
+-- v2024.3.1
 USE dinghy_racing;
 
 -- clear existing data
@@ -1427,10 +1428,10 @@ INSERT INTO competitor (id, name, version) VALUES (1412, "Zoe Little", 0);
 INSERT INTO competitor (id, name, version) VALUES (1413, "Zohaan Coulson", 0);
 INSERT INTO competitor (id, name, version) VALUES (1414, "Zuri Bennett", 0);
 
-INSERT INTO race (id, name, duration, planned_laps, planned_start_time, dinghy_class_id, version) VALUES (1415, "Scorpion A", 2700000000000, 5, "2024-01-07 10:10:00", 43, 0);
-INSERT INTO race (id, name, duration, planned_laps, planned_start_time, dinghy_class_id, version) VALUES (1416, "Graduate A", 2700000000000, 5, "2024-01-07 10:15:00", 13, 0);
-INSERT INTO race (id, name, duration, planned_laps, planned_start_time, dinghy_class_id, version) VALUES (1417, "Comet A", 2100000000000, 4, "2024-01-07 10:20:00", 5, 0);
-INSERT INTO race (id, name, duration, planned_laps, planned_start_time, dinghy_class_id, version) VALUES (1418, "Handicap A", 2100000000000, 4, "2024-01-07 14:00:00", null, 0);
+INSERT INTO race (id, name, duration, planned_laps, planned_start_time, dinghy_class_id, start_sequence_state, version) VALUES (1415, "Scorpion A", 2700000000000, 5, "2024-01-07 10:10:00", 43, start_sequence_state = "NONE", 0);
+INSERT INTO race (id, name, duration, planned_laps, planned_start_time, dinghy_class_id, start_sequence_state, version) VALUES (1416, "Graduate A", 2700000000000, 5, "2024-01-07 10:15:00", 13, start_sequence_state = "NONE", 0);
+INSERT INTO race (id, name, duration, planned_laps, planned_start_time, dinghy_class_id, start_sequence_state, version) VALUES (1417, "Comet A", 2100000000000, 4, "2024-01-07 10:20:00", 5, start_sequence_state = "NONE", 0);
+INSERT INTO race (id, name, duration, planned_laps, planned_start_time, dinghy_class_id, start_sequence_state, version) VALUES (1418, "Handicap A", 2100000000000, 4, "2024-01-07 14:00:00", null, start_sequence_state = "NONE", 0);
 
 INSERT INTO entry (id, helm_id, dinghy_id, race_id, crew_id, version) VALUES (1419, 1063, 606, 1415, 1050, 0);
 INSERT INTO entry (id, helm_id, dinghy_id, race_id, crew_id, version) VALUES (1420, 1054, 607, 1415, 1088, 0);
