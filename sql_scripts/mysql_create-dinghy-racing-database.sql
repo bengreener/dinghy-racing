@@ -1,10 +1,13 @@
--- v2024.2.2
+-- v2024.3.1
+CREATE DATABASE `dinghy_racing` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+
 USE dinghy_racing;
 
 CREATE TABLE hibernate_sequence (
 	next_val BIGINT
 ) engine=InnoDB;
 INSERT INTO hibernate_sequence VALUES ( 1 );
+
 
 CREATE TABLE competitor (
 	id BIGINT NOT NULL, 
@@ -37,6 +40,7 @@ CREATE TABLE race (
 	name VARCHAR(255) NOT NULL, 
 	planned_laps integer NOT NULL, 
 	planned_start_time DATETIME(6) NOT NULL, 
+	start_sequence_state VARCHAR(50),
 	version BIGINT, 
 	dinghy_class_id BIGINT, 
 	CONSTRAINT PK_race_id PRIMARY KEY (id),

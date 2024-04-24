@@ -60,10 +60,12 @@ public class DatabaseLoader implements CommandLineRunner {
 		now = now.minusNanos(now.getNano()); // avoid precision issues saving and retrieving from database
 		
 //		Race r1 = new Race("Scorpion A", now.plusMinutes(2L), dc1, Duration.ofMinutes(45), 5);
-		Race r1 = new Race("Scorpion A", now.plusMinutes(1L), dc1, Duration.ofMinutes(45), 5);
+//		Race r1 = new Race("Scorpion A", now.plusMinutes(1L), dc1, Duration.ofMinutes(45), 5);
+		Race r1 = new Race("Scorpion A", now.plusMinutes(0L), dc1, Duration.ofMinutes(45), 5);
 		Race r2 = new Race("Graduate A", now.plusMinutes(6L), dc2, Duration.ofMinutes(35), 4);
 		Race r3 = new Race("Comet A", now.plusMinutes(11L), dc3, Duration.ofMinutes(35), 4);
-		Race r4 = new Race("Handicap A", now.plusMinutes(16L), null, Duration.ofMinutes(35), 4);
+//		Race r4 = new Race("Handicap A", now.plusMinutes(16L), null, Duration.ofMinutes(35), 4);
+		Race r4 = new Race("Handicap A", now.plusMinutes(1L), null, Duration.ofMinutes(35), 4);
 		
 		this.raceRepository.save(r1);
 		this.raceRepository.save(r2);

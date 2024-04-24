@@ -9,16 +9,18 @@ import java.time.LocalDateTime;
 
 import java.util.Set;
 import java.util.HashSet;
-import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import javax.validation.ConstraintViolationException;
 
 import com.bginfosys.dinghyracing.model.Race;
+import com.bginfosys.dinghyracing.model.StartSequence;
 import com.bginfosys.dinghyracing.model.Dinghy;
 import com.bginfosys.dinghyracing.model.DinghyClass;
 import com.bginfosys.dinghyracing.model.Entry;
@@ -155,7 +157,7 @@ public class RaceRepositoryTests {
 		Race race3 = new Race("Test Race3", LocalDateTime.of(2023, 5, 13, 13, 00), dinghyClass, Duration.ofMinutes(45), 5);
 		race3 = entityManager.persist(race3);
 		
-		List<Race> result = raceRepository.findByPlannedStartTimeGreaterThanEqual(LocalDateTime.of(2023, 5, 13, 12, 00));
+		Page<Race> result = raceRepository.findByPlannedStartTimeGreaterThanEqual(LocalDateTime.of(2023, 5, 13, 12, 00), Pageable.ofSize(5));
 		
 		assertThat(result).contains(race2, race3);
 	}
@@ -232,11 +234,28 @@ public class RaceRepositoryTests {
 		Race race4 = new Race("Test Race4", LocalDateTime.of(2023, 5, 13, 13, 01), dinghyClass, Duration.ofMinutes(45), 5);
 		race4 = entityManager.persist(race4);
 		
-		List<Race> result = raceRepository.findByPlannedStartTimeBetween(LocalDateTime.of(2023, 5, 13, 12, 00), 
-				LocalDateTime.of(2023, 5, 13, 13, 00));
+		Page<Race> result = raceRepository.findByPlannedStartTimeBetween(LocalDateTime.of(2023, 5, 13, 12, 00), 
+				LocalDateTime.of(2023, 5, 13, 13, 00), Pageable.ofSize(5));
 		
 		assertThat(result).contains(race2, race3);
 		assertThat(result).doesNotContain(race1, race4);
 	}
 
+	@Test
+	void when_aNewStartSequenceStateIsSet_then_savesWithNewStartSequenceState() {
+		DinghyClass dinghyClass = new DinghyClass("Test Dinghyclass", 1);
+		entityManager.persist(dinghyClass);
+		Dinghy dinghy = new Dinghy("1234", dinghyClass);
+		entityManager.persist(dinghy);
+				
+		Race race1 = new Race("Test Race", LocalDateTime.of(2023, 5, 13, 12, 00), dinghyClass, Duration.ofMinutes(45), 5);
+		entityManager.persist(race1);
+		// remove entity from session (detach entity). Not doing so can result in a false positive dependent on the logic used to check for an exisitng entity in repository save method
+		entityManager.detach(race1);
+		
+		race1.setStartSequenceState(StartSequence.STARTINGSIGNAL);
+		Race race2 = raceRepository.save(race1);
+		
+		assertThat(race1.getStartSequenceState() == race2.getStartSequenceState());
+	}
 }
