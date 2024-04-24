@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Version;
@@ -52,6 +54,9 @@ public class Race {
 	@Column(unique=true)
 	@OneToMany(mappedBy = "race", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<Entry> signedUp = new HashSet<Entry>(64);
+	
+	@Enumerated(EnumType.STRING)
+	private StartSequence startSequenceState;
 	
 	//Required by JPA
 	//Not recommended by Spring Data
@@ -132,6 +137,14 @@ public class Race {
 		this.signedUp = signedUp;
 	}
 	
+	public StartSequence getStartSequenceState() {
+		return startSequenceState;
+	}
+
+	public void setStartSequenceState(StartSequence startSequenceState) {
+		this.startSequenceState = startSequenceState;
+	}
+
 	public void signUp(Entry entry) {
 		if (signedUp == null) {
 			signedUp = new HashSet<Entry>(64);
