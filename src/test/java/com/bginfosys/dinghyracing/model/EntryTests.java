@@ -553,4 +553,28 @@ public class EntryTests {
 		assertFalse(entry.addLap(lap));
 		assertFalse(entry.getLaps().contains(lap));
 	}
+
+	@Test
+	void given_hasNotSailedALap_then_returnsZeroFtoNumberOfLapsSailed() {
+		Entry entry = new Entry();
+		Race race = new Race();
+		race.setPlannedLaps(5);
+		entry.setRace(race);
+		
+		assertEquals(entry.getLapsSailed(), 0);
+	}
+	
+	@Test
+	void given_hasSailedTwoLaps_then_returnsNumberOfLapsSailed() {
+		Entry entry = new Entry();
+		Race race = new Race();
+		race.setPlannedLaps(5);
+		entry.setRace(race);
+		Lap lap1 = new Lap(1, Duration.ofMinutes(13));
+		Lap lap2 = new Lap(2, Duration.ofMinutes(16));
+		entry.addLap(lap1);
+		entry.addLap(lap2);
+		
+		assertEquals(entry.getLapsSailed(), 2);
+	}
 }
