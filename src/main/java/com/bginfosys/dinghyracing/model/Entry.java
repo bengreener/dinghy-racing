@@ -172,12 +172,10 @@ public class Entry {
 		return scoringAbbreviation;
 	}
 	
-
 	public void setScoringAbbreviation(String scoringAbbreviation) {
 		this.scoringAbbreviation = scoringAbbreviation;
 	}
 	
-
 	/**
 	 * If boat has not finished the race add a new lap
 	 */
@@ -222,4 +220,10 @@ public class Entry {
 		return false;
 	}
 	
+	/**
+	 * Get the number of laps sailed by this entry
+	 */
+	public int getLapsSailed() {
+		return laps.size();
+	}
 }
