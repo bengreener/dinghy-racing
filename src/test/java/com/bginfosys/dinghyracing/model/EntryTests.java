@@ -1,3 +1,19 @@
+/*
+ * Copyright 2022-2024 BG Information Systems Ltd
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License. 
+ */
+   
 package com.bginfosys.dinghyracing.model;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -536,5 +552,29 @@ public class EntryTests {
 		
 		assertFalse(entry.addLap(lap));
 		assertFalse(entry.getLaps().contains(lap));
+	}
+
+	@Test
+	void given_hasNotSailedALap_then_returnsZeroFtoNumberOfLapsSailed() {
+		Entry entry = new Entry();
+		Race race = new Race();
+		race.setPlannedLaps(5);
+		entry.setRace(race);
+		
+		assertEquals(entry.getLapsSailed(), 0);
+	}
+	
+	@Test
+	void given_hasSailedTwoLaps_then_returnsNumberOfLapsSailed() {
+		Entry entry = new Entry();
+		Race race = new Race();
+		race.setPlannedLaps(5);
+		entry.setRace(race);
+		Lap lap1 = new Lap(1, Duration.ofMinutes(13));
+		Lap lap2 = new Lap(2, Duration.ofMinutes(16));
+		entry.addLap(lap1);
+		entry.addLap(lap2);
+		
+		assertEquals(entry.getLapsSailed(), 2);
 	}
 }
