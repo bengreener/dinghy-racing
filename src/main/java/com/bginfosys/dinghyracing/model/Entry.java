@@ -56,7 +56,7 @@ public class Entry {
 	@JsonIgnore
 	private Long version;
 
-	@NaturalId
+	@NaturalId (mutable = true)
 	@NotNull
 	@OneToOne
 	private Competitor helm;
@@ -64,12 +64,12 @@ public class Entry {
 	@OneToOne
 	private Competitor crew;
 	
-	@NaturalId
+	@NaturalId (mutable = true)
 	@NotNull
 	@OneToOne
 	private Dinghy dinghy;
 	
-	@NaturalId
+	@NaturalId (mutable = true)
 	@NotNull
 	@ManyToOne
 	private Race race;
