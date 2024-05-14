@@ -208,9 +208,7 @@ public class EntryRepositoryTests {
 		entityManager.persist(dinghy);
 		
 		assertThrows(DinghyClassMismatchException.class, () -> {
-			Entry entry = new Entry(helm, dinghy, race);
-//			entityManager.persist(entry);
-//			entityManager.flush();
+			new Entry(helm, dinghy, race);
 		});
 	}
 	
