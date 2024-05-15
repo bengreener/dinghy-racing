@@ -16,12 +16,12 @@
    
 package com.bginfosys.dinghyracing.persistence;
 
-import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.query.Param;
 
 import com.bginfosys.dinghyracing.model.DinghyClass;
 
-public interface DinghyClassRepository extends PagingAndSortingRepository<DinghyClass, Long> {
+public interface DinghyClassRepository extends JpaRepository<DinghyClass, Long> {
 
 	@SuppressWarnings("unchecked")
 	@Override

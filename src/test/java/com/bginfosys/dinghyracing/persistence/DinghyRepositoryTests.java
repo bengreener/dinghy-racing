@@ -30,8 +30,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import javax.persistence.PersistenceException;
-import javax.validation.ConstraintViolationException;
+import jakarta.persistence.PersistenceException;
+import jakarta.validation.ConstraintViolationException;
 
 import com.bginfosys.dinghyracing.model.Dinghy;
 import com.bginfosys.dinghyracing.model.DinghyClass;
@@ -80,15 +80,12 @@ public class DinghyRepositoryTests {
 		entityManager.persist(d1);
 		// force flush of memory to DB
 		entityManager.flush();
-					
-		// confirm creating duplicate throws DataIntgrityViolationException
-		Exception e = assertThrows(PersistenceException.class, () -> {
+
+		Exception e = assertThrows(org.hibernate.exception.ConstraintViolationException.class, () -> {
 			dinghyRepository.save(d2);
 			// force flush of memory to database
 			entityManager.flush();
 		});
-		
-		assertTrue(e.getCause() instanceof org.hibernate.exception.ConstraintViolationException);
 	}
 	
 	@Test

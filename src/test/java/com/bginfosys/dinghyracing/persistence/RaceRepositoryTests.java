@@ -33,7 +33,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import javax.validation.ConstraintViolationException;
+import jakarta.validation.ConstraintViolationException;
 
 import com.bginfosys.dinghyracing.model.Race;
 import com.bginfosys.dinghyracing.model.StartSequence;

@@ -18,13 +18,12 @@ package com.bginfosys.dinghyracing.model;
 
 import java.time.Duration;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Version;
-import javax.validation.constraints.NotNull;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Version;
+import jakarta.validation.constraints.NotNull;
 
-//import com.bginfosys.dinghyracing.exceptions.LapZeroOrLessTimeException;
 import com.bginfosys.dinghyracing.validation.constraints.DurationPositive;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

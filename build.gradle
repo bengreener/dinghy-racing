@@ -1,12 +1,14 @@
 plugins {
-	id 'org.springframework.boot' version '2.7.5'
+	id 'org.springframework.boot' version '3.2.5'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
 }
 
 group = 'com.bginfosys'
 version = '2024.5.2.dev'
-sourceCompatibility = '11'
+java {
+	sourceCompatibility = '17'
+}
 
 
 repositories {

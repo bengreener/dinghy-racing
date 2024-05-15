@@ -20,13 +20,13 @@ import java.time.LocalDateTime;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.bginfosys.dinghyracing.model.Race;
 
-public interface RaceRepository extends PagingAndSortingRepository<Race, Long> {
+public interface RaceRepository extends JpaRepository<Race, Long> {
 
 	@Override
 	void deleteById(@Param("id") Long id);

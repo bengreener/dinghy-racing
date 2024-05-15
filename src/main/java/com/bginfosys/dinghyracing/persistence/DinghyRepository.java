@@ -18,14 +18,13 @@ package com.bginfosys.dinghyracing.persistence;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
-import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.query.Param;
 
 import com.bginfosys.dinghyracing.model.Dinghy;
 import com.bginfosys.dinghyracing.model.DinghyClass;
 
-public interface DinghyRepository extends PagingAndSortingRepository<Dinghy, Long> {
+public interface DinghyRepository extends JpaRepository<Dinghy, Long> {
 	
 	@SuppressWarnings("unchecked")
 	@Override
