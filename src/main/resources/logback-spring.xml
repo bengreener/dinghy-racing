@@ -14,7 +14,7 @@
         <encoder
             class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <Pattern>
-            	%d %p %C [%t] %m%n
+            	%d{ISO8601} %-5level [%t] %C: %msg%n%throwable
             </Pattern>
         </encoder>
 
