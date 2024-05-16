@@ -27,8 +27,8 @@ import java.time.LocalDateTime;
 import java.util.SortedSet;
 import java.util.concurrent.ConcurrentSkipListSet;
 
-import javax.persistence.PersistenceException;
-import javax.validation.ConstraintViolationException;
+import jakarta.persistence.PersistenceException;
+import jakarta.validation.ConstraintViolationException;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -208,9 +208,7 @@ public class EntryRepositoryTests {
 		entityManager.persist(dinghy);
 		
 		assertThrows(DinghyClassMismatchException.class, () -> {
-			Entry entry = new Entry(helm, dinghy, race);
-//			entityManager.persist(entry);
-//			entityManager.flush();
+			new Entry(helm, dinghy, race);
 		});
 	}
 	
@@ -229,14 +227,11 @@ public class EntryRepositoryTests {
 		Dinghy dinghy2 = new Dinghy("6789", dinghyClass);
 		entityManager.persist(dinghy2);
 		
-		
-		Exception e = assertThrows(PersistenceException.class, () -> {
+		Exception e = assertThrows(org.hibernate.exception.ConstraintViolationException.class, () -> {
 			Entry entry2 = new Entry(helm, dinghy2, race);
 			entryRepository.save(entry2);
 			entityManager.flush();
 		});
-
-		assertTrue(e.getCause() instanceof org.hibernate.exception.ConstraintViolationException);
 	}
 	
 	@Test
@@ -254,13 +249,11 @@ public class EntryRepositoryTests {
 		Entry entry1 = new Entry(helm1, dinghy1, race);
 		entityManager.persist(entry1);
 		
-		Exception e = assertThrows(PersistenceException.class, () -> {
+		Exception e = assertThrows(org.hibernate.exception.ConstraintViolationException.class, () -> {
 			Entry entry2 = new Entry(helm2, dinghy1, race);
 			entryRepository.save(entry2);
 			entityManager.flush();
 		});
-
-		assertTrue(e.getCause() instanceof org.hibernate.exception.ConstraintViolationException);
 	}
 	
 	@Test
@@ -276,13 +269,11 @@ public class EntryRepositoryTests {
 		Entry entry1 = new Entry(helm1, dinghy1, race);
 		entityManager.persist(entry1);
 		
-		Exception e = assertThrows(PersistenceException.class, () -> {
+		Exception e = assertThrows(org.hibernate.exception.ConstraintViolationException.class, () -> {
 			Entry entry2 = new Entry(helm1, dinghy1, race);
 			entryRepository.save(entry2);
 			entityManager.flush();
 		});
-
-		assertTrue(e.getCause() instanceof org.hibernate.exception.ConstraintViolationException);
 	}
 	
 	@Test
@@ -399,12 +390,10 @@ public class EntryRepositoryTests {
 		Entry entry2 = new Entry(helmB, dinghy2, race);
 		entry2.setCrew(crew);
 		
-		Exception e = assertThrows(PersistenceException.class, () -> {
+		Exception e = assertThrows(org.hibernate.exception.ConstraintViolationException.class, () -> {
 			entryRepository.save(entry2);
 			entityManager.flush();
 		});
-
-		assertTrue(e.getCause() instanceof org.hibernate.exception.ConstraintViolationException);
 	}
 
 	@Test

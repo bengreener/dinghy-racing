@@ -27,7 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
-import javax.persistence.PersistenceException;
+import jakarta.persistence.PersistenceException;
 
 import org.hibernate.exception.ConstraintViolationException;
 
@@ -57,14 +57,12 @@ public class DinghyClassRepositoryTests {
 	void nameIsUnique() {
 		DinghyClass dc1 = new DinghyClass("TestClass", 1);
 		entityManager.persist(dc1);
-				
-		Exception e = assertThrows(PersistenceException.class, () -> {
+		
+		Exception e = assertThrows(ConstraintViolationException.class, () -> {
 			DinghyClass dc2 = new DinghyClass("TestClass", 1);
 			dinghyClassRepository.save(dc2);
 			entityManager.flush();
 		});
-		
-		assertTrue(e.getCause() instanceof ConstraintViolationException);
 	}
 	
 	@Test
@@ -79,7 +77,7 @@ public class DinghyClassRepositoryTests {
 	
 	@Test
 	void when_savingDInghyClass_crewSizeCannotBeNull() {
-		assertThrows(javax.validation.ConstraintViolationException.class, () -> {
+		assertThrows(jakarta.validation.ConstraintViolationException.class, () -> {
 			DinghyClass dc = new DinghyClass();
 			dc.setName("Test Class");
 			dinghyClassRepository.save(dc);
@@ -89,7 +87,7 @@ public class DinghyClassRepositoryTests {
 	
 	@Test
 	void when_savingDInghyClass_nameCannotBeNull() {
-		assertThrows(javax.validation.ConstraintViolationException.class, () -> {
+		assertThrows(jakarta.validation.ConstraintViolationException.class, () -> {
 			DinghyClass dc = new DinghyClass();
 			dc.setCrewSize(1);
 			dinghyClassRepository.save(dc);
