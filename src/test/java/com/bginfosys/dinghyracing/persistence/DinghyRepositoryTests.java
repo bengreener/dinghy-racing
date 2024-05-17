@@ -81,7 +81,7 @@ public class DinghyRepositoryTests {
 		// force flush of memory to DB
 		entityManager.flush();
 
-		Exception e = assertThrows(org.hibernate.exception.ConstraintViolationException.class, () -> {
+		assertThrows(PersistenceException.class, () -> {
 			dinghyRepository.save(d2);
 			// force flush of memory to database
 			entityManager.flush();

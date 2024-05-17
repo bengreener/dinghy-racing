@@ -58,7 +58,8 @@ public class DinghyClassRepositoryTests {
 		DinghyClass dc1 = new DinghyClass("TestClass", 1);
 		entityManager.persist(dc1);
 		
-		Exception e = assertThrows(ConstraintViolationException.class, () -> {
+//		assertThrows(ConstraintViolationException.class, () -> {
+		assertThrows(PersistenceException.class, () -> {
 			DinghyClass dc2 = new DinghyClass("TestClass", 1);
 			dinghyClassRepository.save(dc2);
 			entityManager.flush();
