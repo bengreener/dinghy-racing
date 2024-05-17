@@ -1,13 +1,37 @@
--- v2024.3.1
+-- v2024.5.2
 CREATE DATABASE `dinghy_racing` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
 
 USE dinghy_racing;
 
-CREATE TABLE hibernate_sequence (
+CREATE TABLE competitor_seq (
 	next_val BIGINT
 ) engine=InnoDB;
-INSERT INTO hibernate_sequence VALUES ( 1 );
+INSERT INTO competitor_seq VALUES ( 1 );
 
+CREATE TABLE dinghy_seq (
+	next_val BIGINT
+) engine=InnoDB;
+INSERT INTO dinghy_seq VALUES ( 1 );
+
+CREATE TABLE dinghy_class_seq (
+	next_val BIGINT
+) engine=InnoDB;
+INSERT INTO dinghy_class_seq VALUES ( 1 );
+
+CREATE TABLE entry_seq (
+	next_val BIGINT
+) engine=InnoDB;
+INSERT INTO entry_seq VALUES ( 1 );
+
+CREATE TABLE lap_seq (
+	next_val BIGINT
+) engine=InnoDB;
+INSERT INTO lap_seq VALUES ( 1 );
+
+CREATE TABLE race_seq (
+	next_val BIGINT
+) engine=InnoDB;
+INSERT INTO race_seq VALUES ( 1 );
 
 CREATE TABLE competitor (
 	id BIGINT NOT NULL, 
