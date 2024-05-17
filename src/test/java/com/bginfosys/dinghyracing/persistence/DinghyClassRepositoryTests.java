@@ -27,7 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
-import jakarta.persistence.PersistenceException;
+import javax.persistence.PersistenceException;
 
 import org.hibernate.exception.ConstraintViolationException;
 
@@ -77,7 +77,7 @@ public class DinghyClassRepositoryTests {
 	
 	@Test
 	void when_savingDInghyClass_crewSizeCannotBeNull() {
-		assertThrows(jakarta.validation.ConstraintViolationException.class, () -> {
+		assertThrows(javax.validation.ConstraintViolationException.class, () -> {
 			DinghyClass dc = new DinghyClass();
 			dc.setName("Test Class");
 			dinghyClassRepository.save(dc);
@@ -87,7 +87,7 @@ public class DinghyClassRepositoryTests {
 	
 	@Test
 	void when_savingDInghyClass_nameCannotBeNull() {
-		assertThrows(jakarta.validation.ConstraintViolationException.class, () -> {
+		assertThrows(javax.validation.ConstraintViolationException.class, () -> {
 			DinghyClass dc = new DinghyClass();
 			dc.setCrewSize(1);
 			dinghyClassRepository.save(dc);

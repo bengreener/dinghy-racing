@@ -18,8 +18,8 @@ package com.bginfosys.dinghyracing.validation;
 
 import java.time.Duration;
 
-import jakarta.validation.ConstraintValidator;
-import jakarta.validation.ConstraintValidatorContext;
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
 
 import com.bginfosys.dinghyracing.validation.constraints.DurationPositive;
 

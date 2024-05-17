@@ -27,8 +27,8 @@ import java.time.LocalDateTime;
 import java.util.SortedSet;
 import java.util.concurrent.ConcurrentSkipListSet;
 
-import jakarta.persistence.PersistenceException;
-import jakarta.validation.ConstraintViolationException;
+import javax.persistence.PersistenceException;
+import javax.validation.ConstraintViolationException;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
