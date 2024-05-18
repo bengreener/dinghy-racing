@@ -1,3 +1,5 @@
+-- v2024.5.2
+
 ALTER TABLE dinghy DROP CONSTRAINT FK_dinghy_dinghy_class_id;
 ALTER TABLE entry DROP CONSTRAINT FK_entry_helm_id;
 ALTER TABLE entry DROP CONSTRAINT FK_entry_dinghy_id;
@@ -16,7 +18,13 @@ ALTER TABLE entry_laps DROP CONSTRAINT UK_entry_laps_laps_id;
 ALTER TABLE race DROP CONSTRAINT UK_race_name_planned_start_time;
 ALTER TABLE entry DROP CONSTRAINT UK_entry_crew_id_race_id;
 
-DROP TABLE hibernate_sequence;
+DROP TABLE competitor_seq;
+DROP TABLE dinghy_seq;
+DROP TABLE dinghy_class_seq;
+DROP TABLE lap_seq;
+DROP TABLE entry_seq;
+DROP TABLE race_seq;
+
 DROP TABLE competitor;
 DROP TABLE dinghy;
 DROP TABLE dinghy_class;
