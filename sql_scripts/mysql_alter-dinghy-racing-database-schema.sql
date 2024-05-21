@@ -30,3 +30,8 @@ CREATE TABLE race_seq (next_val BIGINT) engine=InnoDB;
 INSERT INTO race_seq (next_val) SELECT MAX(id) + 50 FROM race;
 
 DROP TABLE hibernate_sequence;
+
+-- v2024.5.2 to v2024.5.3
+USE dinghy_racing;
+
+ALTER TABLE race DROP COLUMN actual_start_time;

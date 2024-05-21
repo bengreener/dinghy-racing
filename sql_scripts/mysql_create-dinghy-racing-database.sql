@@ -1,4 +1,4 @@
--- v2024.5.2
+-- v2024.5.3
 CREATE DATABASE IF NOT EXISTS `dinghy_racing` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
 
 USE dinghy_racing;
@@ -59,7 +59,6 @@ CREATE TABLE dinghy (
 ) engine=InnoDB;
 CREATE TABLE race (
 	id BIGINT NOT NULL, 
-	actual_start_time DATETIME(6), 
 	duration BIGINT NOT NULL, 
 	name VARCHAR(255) NOT NULL, 
 	planned_laps integer NOT NULL, 

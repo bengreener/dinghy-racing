@@ -90,12 +90,6 @@ class RaceTests {
 	}
 
 	@Test
-	void when_startingARace_then_startTimeIsSet() {
-		race.setActualStartTime(LocalDateTime.of(2023,  8, 12, 15, 00));
-		assertEquals(race.getActualStartTime(), LocalDateTime.of(2023,  8, 12, 15, 00));
-	}
-
-	@Test
 	void when_creating_Race_then_setPlannedLaps () {
 		race.setPlannedLaps(3);
 		assertEquals(race.getPlannedLaps(), 3);

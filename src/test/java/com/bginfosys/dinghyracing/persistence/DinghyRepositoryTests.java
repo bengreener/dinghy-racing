@@ -20,7 +20,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
@@ -30,7 +29,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import jakarta.persistence.PersistenceException;
 import jakarta.validation.ConstraintViolationException;
 
 import com.bginfosys.dinghyracing.model.Dinghy;
@@ -81,7 +79,7 @@ public class DinghyRepositoryTests {
 		// force flush of memory to DB
 		entityManager.flush();
 
-		Exception e = assertThrows(org.hibernate.exception.ConstraintViolationException.class, () -> {
+		assertThrows(org.hibernate.exception.ConstraintViolationException.class, () -> {
 			dinghyRepository.save(d2);
 			// force flush of memory to database
 			entityManager.flush();
