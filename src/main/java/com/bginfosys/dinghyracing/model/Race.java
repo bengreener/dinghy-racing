@@ -55,9 +55,7 @@ public class Race {
 	
 	@NotNull
 	private LocalDateTime plannedStartTime;
-	
-	private LocalDateTime actualStartTime;
-	
+		
 	@ManyToOne
 	private DinghyClass dinghyClass;
 	
@@ -108,14 +106,6 @@ public class Race {
 
 	public void setPlannedStartTime(LocalDateTime plannedStartTime) {
 		this.plannedStartTime = plannedStartTime;
-	}
-	
-	public LocalDateTime getActualStartTime() {
-		return actualStartTime;
-	}
-
-	public void setActualStartTime(LocalDateTime actualStartTime) {
-		this.actualStartTime = actualStartTime;
 	}
 
 	public DinghyClass getDinghyClass() {
