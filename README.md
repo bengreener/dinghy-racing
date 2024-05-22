@@ -2,7 +2,7 @@
   
 A REST based web service to support the running of sail boat races.  
   
-Currently supports small boat sailing for boats with a 1 or 2 person crew.  
+Supports small boat sailing for boats with a 1 or 2 person crew.  
   
 - Enables the creation of race events.  
   
