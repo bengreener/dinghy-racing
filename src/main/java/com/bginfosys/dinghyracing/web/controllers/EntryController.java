@@ -77,8 +77,7 @@ public class EntryController implements ApplicationEventPublisherAware {
 	 */
 	@Transactional
 	@PatchMapping(path = "/entries/{entryId}/addLap", consumes = "application/json")
-//	public ResponseEntity<EntityModel<Entry>> addLap(@PathVariable Long entryId, @RequestBody LapDTO lapDTO) {
-	public ResponseEntity<Object> addLap(@PathVariable Long entryId, @RequestBody LapDTO lapDTO) {
+	public ResponseEntity<Object> addLap(@PathVariable("entryId") Long entryId, @RequestBody LapDTO lapDTO) {
 		Optional<Entry> optEntry = entryRepository.findById(entryId);
 		Entry entry = optEntry.get();
 		
@@ -115,7 +114,7 @@ public class EntryController implements ApplicationEventPublisherAware {
 	
 	@Transactional
 	@PatchMapping(path = "/entries/{entryId}/removeLap", consumes = "application/json")
-	public ResponseEntity<Entry> removeLap(@PathVariable Long entryId, @RequestBody LapDTO lapDTO) {
+	public ResponseEntity<Entry> removeLap(@PathVariable("entryId") Long entryId, @RequestBody LapDTO lapDTO) {
 		Optional<Entry> optEntry = entryRepository.findById(entryId);
 		
 		if (optEntry.isPresent()) {
@@ -138,7 +137,7 @@ public class EntryController implements ApplicationEventPublisherAware {
 	
 	@Transactional
 	@PatchMapping(path = "/entries/{entryId}/updateLap", consumes = "application/json")
-	public ResponseEntity<Entry> updateLap(@PathVariable Long entryId, @RequestBody LapDTO lapDTO) {
+	public ResponseEntity<Entry> updateLap(@PathVariable("entryId") Long entryId, @RequestBody LapDTO lapDTO) {
 		Entry entry = entryRepository.findById(entryId).orElseThrow();
 		Lap newLap = new Lap(lapDTO.getNumber(), lapDTO.getTime());
 		

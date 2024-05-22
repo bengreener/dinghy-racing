@@ -5,11 +5,10 @@ plugins {
 }
 
 group = 'com.bginfosys'
-version = '2024.5.2'
+version = '2024.5.3.dev'
 java {
 	sourceCompatibility = '17'
 }
-
 
 repositories {
 	mavenCentral()

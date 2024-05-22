@@ -20,14 +20,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.SortedSet;
 import java.util.concurrent.ConcurrentSkipListSet;
 
-import jakarta.persistence.PersistenceException;
 import jakarta.validation.ConstraintViolationException;
 
 import org.junit.jupiter.api.Test;
@@ -227,7 +225,7 @@ public class EntryRepositoryTests {
 		Dinghy dinghy2 = new Dinghy("6789", dinghyClass);
 		entityManager.persist(dinghy2);
 		
-		Exception e = assertThrows(org.hibernate.exception.ConstraintViolationException.class, () -> {
+		assertThrows(org.hibernate.exception.ConstraintViolationException.class, () -> {
 			Entry entry2 = new Entry(helm, dinghy2, race);
 			entryRepository.save(entry2);
 			entityManager.flush();
@@ -249,7 +247,7 @@ public class EntryRepositoryTests {
 		Entry entry1 = new Entry(helm1, dinghy1, race);
 		entityManager.persist(entry1);
 		
-		Exception e = assertThrows(org.hibernate.exception.ConstraintViolationException.class, () -> {
+		assertThrows(org.hibernate.exception.ConstraintViolationException.class, () -> {
 			Entry entry2 = new Entry(helm2, dinghy1, race);
 			entryRepository.save(entry2);
 			entityManager.flush();
@@ -269,7 +267,7 @@ public class EntryRepositoryTests {
 		Entry entry1 = new Entry(helm1, dinghy1, race);
 		entityManager.persist(entry1);
 		
-		Exception e = assertThrows(org.hibernate.exception.ConstraintViolationException.class, () -> {
+		assertThrows(org.hibernate.exception.ConstraintViolationException.class, () -> {
 			Entry entry2 = new Entry(helm1, dinghy1, race);
 			entryRepository.save(entry2);
 			entityManager.flush();
@@ -390,7 +388,7 @@ public class EntryRepositoryTests {
 		Entry entry2 = new Entry(helmB, dinghy2, race);
 		entry2.setCrew(crew);
 		
-		Exception e = assertThrows(org.hibernate.exception.ConstraintViolationException.class, () -> {
+		assertThrows(org.hibernate.exception.ConstraintViolationException.class, () -> {
 			entryRepository.save(entry2);
 			entityManager.flush();
 		});
