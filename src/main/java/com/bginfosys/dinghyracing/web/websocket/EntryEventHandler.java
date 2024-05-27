@@ -23,6 +23,7 @@ import java.util.SortedSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.rest.core.annotation.HandleAfterCreate;
+import org.springframework.data.rest.core.annotation.HandleAfterDelete;
 import org.springframework.data.rest.core.annotation.HandleAfterLinkSave;
 import org.springframework.data.rest.core.annotation.HandleAfterSave;
 import org.springframework.data.rest.core.annotation.RepositoryEventHandler;
@@ -50,12 +51,12 @@ public class EntryEventHandler {
 	}
 	
 	@HandleAfterCreate
-	public void newEvent(Entry entry) {
+	public void newEntry(Entry entry) {
 		if (logger.isDebugEnabled()) {
-			logger.debug("New event: " + entry.toString());
+			logger.debug("New entry: " + entry.toString());
 		}
-		this.websocket.convertAndSend(MESSAGE_PREFIX + "/newEvent", getURI(entry));
-		// notify listeners on race events that a new event has been added for the race
+		this.websocket.convertAndSend(MESSAGE_PREFIX + "/newEntry", getURI(entry));
+		// notify listeners on race events that a new entry has been added for the race
 		Race race = entry.getRace();
 		this.websocket.convertAndSend(MESSAGE_PREFIX + "/updateRace", getURI(race));
 	}
@@ -74,6 +75,17 @@ public class EntryEventHandler {
 			logger.debug("Update entry link: " + entry.toString());
 		}
 		this.websocket.convertAndSend(MESSAGE_PREFIX + "/updateEntry", getURI(entry));
+	}
+	
+	@HandleAfterDelete
+	public void deleteEntry(Entry entry) {
+		if (logger.isDebugEnabled()) {
+			logger.debug("Delete entry: " + entry.toString());
+		}
+		this.websocket.convertAndSend(MESSAGE_PREFIX + "/deleteEntry", getURI(entry));
+		// notify listeners on race events that an entry has been removed for the race
+		Race race = entry.getRace();
+		this.websocket.convertAndSend(MESSAGE_PREFIX + "/updateRace", getURI(race));
 	}
 	
 	/**
