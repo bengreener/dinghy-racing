@@ -29,6 +29,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Version;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 
@@ -67,6 +68,7 @@ public class Race {
 	
 	@Column(unique=true)
 	@OneToMany(mappedBy = "race", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OrderBy("id ASC")
 	private Set<Entry> signedUp = new HashSet<Entry>(64);
 	
 	@Enumerated(EnumType.STRING)
