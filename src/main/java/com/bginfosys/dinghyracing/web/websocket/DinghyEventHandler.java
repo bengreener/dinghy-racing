@@ -10,11 +10,11 @@ import org.springframework.hateoas.server.EntityLinks;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 
-import com.bginfosys.dinghyracing.model.Competitor;
+import com.bginfosys.dinghyracing.model.Dinghy;
 
 @Component
-@RepositoryEventHandler(Competitor.class)
-public class CompetitorEventHandler {
+@RepositoryEventHandler(Dinghy.class)
+public class DinghyEventHandler {
 
 	Logger logger = LoggerFactory.getLogger(RaceEventHandler.class);
 	
@@ -22,17 +22,17 @@ public class CompetitorEventHandler {
 	
 	private final EntityLinks entityLinks;
 	
-	public CompetitorEventHandler(SimpMessagingTemplate websocket, EntityLinks entityLinks) {
+	public DinghyEventHandler(SimpMessagingTemplate websocket, EntityLinks entityLinks) {
 		this.websocket = websocket;
 		this.entityLinks = entityLinks;
 	}
 
 	@HandleAfterCreate
-	public void newCompetitor(Competitor competitor) {
+	public void newDinghy(Dinghy dinghy) {
 		if (logger.isDebugEnabled()) {
-			logger.debug("New competitor: " + competitor.toString());
+			logger.debug("New dinghy: " + dinghy.toString());
 		}
-		this.websocket.convertAndSend(MESSAGE_PREFIX + "/newCompetitor", getURI(competitor));
+		this.websocket.convertAndSend(MESSAGE_PREFIX + "/newDinghy", getURI(dinghy));
 	}
 	
 	/**
@@ -40,7 +40,7 @@ public class CompetitorEventHandler {
 	 *
 	 * @param race
 	 */
-	private String getURI(Competitor competitor) {
-		return this.entityLinks.linkToItemResource(competitor.getClass(), competitor.getId()).toUri().toString();
+	private String getURI(Dinghy dinghy) {
+		return this.entityLinks.linkToItemResource(dinghy.getClass(), dinghy.getId()).toUri().toString();
 	}
 }
