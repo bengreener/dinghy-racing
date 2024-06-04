@@ -30,9 +30,9 @@ public class CompetitorEventHandler {
 	@HandleAfterCreate
 	public void newCompetitor(Competitor competitor) {
 		if (logger.isDebugEnabled()) {
-			logger.debug("New competitor: " + competitor.toString());
+			logger.debug("Create competitor: " + competitor.toString());
 		}
-		this.websocket.convertAndSend(MESSAGE_PREFIX + "/newCompetitor", getURI(competitor));
+		this.websocket.convertAndSend(MESSAGE_PREFIX + "/createCompetitor", getURI(competitor));
 	}
 	
 	/**

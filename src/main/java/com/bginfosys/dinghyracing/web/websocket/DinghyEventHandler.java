@@ -30,9 +30,9 @@ public class DinghyEventHandler {
 	@HandleAfterCreate
 	public void newDinghy(Dinghy dinghy) {
 		if (logger.isDebugEnabled()) {
-			logger.debug("New dinghy: " + dinghy.toString());
+			logger.debug("Create dinghy: " + dinghy.toString());
 		}
-		this.websocket.convertAndSend(MESSAGE_PREFIX + "/newDinghy", getURI(dinghy));
+		this.websocket.convertAndSend(MESSAGE_PREFIX + "/createDinghy", getURI(dinghy));
 	}
 	
 	/**
