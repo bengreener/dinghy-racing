@@ -48,9 +48,9 @@ public class RaceEventHandler {
 	@HandleAfterCreate
 	public void newRace(Race race) {
 		if (logger.isDebugEnabled()) {
-			logger.debug("New race: " + race.toString());
+			logger.debug("Create race: " + race.toString());
 		}
-		this.websocket.convertAndSend(MESSAGE_PREFIX + "/newRace", getURI(race));
+		this.websocket.convertAndSend(MESSAGE_PREFIX + "/createRace", getURI(race));
 	}
 
 	@HandleAfterDelete

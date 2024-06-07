@@ -53,9 +53,9 @@ public class EntryEventHandler {
 	@HandleAfterCreate
 	public void newEntry(Entry entry) {
 		if (logger.isDebugEnabled()) {
-			logger.debug("New entry: " + entry.toString());
+			logger.debug("Create entry: " + entry.toString());
 		}
-		this.websocket.convertAndSend(MESSAGE_PREFIX + "/newEntry", getURI(entry));
+		this.websocket.convertAndSend(MESSAGE_PREFIX + "/createEntry", getURI(entry));
 		// notify listeners on race events that a new entry has been added for the race
 		Race race = entry.getRace();
 		this.websocket.convertAndSend(MESSAGE_PREFIX + "/updateRace", getURI(race));
