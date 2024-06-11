@@ -54,5 +54,5 @@ public class DinghyClassTests {
 	@Test
 	void sizeIsInteger() {
 		assertTrue(dinghyClass.getCrewSize() instanceof Integer);
-	}	
+	}
 }

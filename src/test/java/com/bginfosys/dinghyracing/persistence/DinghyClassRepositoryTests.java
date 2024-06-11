@@ -91,4 +91,16 @@ public class DinghyClassRepositoryTests {
 			entityManager.flush();
 		});
 	}
+	
+	@Test
+	void when_savingDInghyClass_savesPortsmouthNumber() {
+		DinghyClass dc1;
+		DinghyClass dc2;
+				
+		dc1 = new DinghyClass("TestClass", 1);
+		dc1.setPortsmouthNumber(999);
+		dc2 = dinghyClassRepository.save(dc1);
+		
+		assertThat(entityManager.find(DinghyClass.class, entityManager.getId(dc2)).getPortsmouthNumber()).isEqualTo(999);
+	}
 }

@@ -37,7 +37,9 @@ public class DinghyClass {
 	private String name;
 
 	@NotNull
-	private Integer crewSize; 
+	private Integer crewSize;
+	
+	private Integer portsmouthNumber;
 	
 	//Required by JPA
 	//Not recommended by Spring Data
@@ -70,5 +72,13 @@ public class DinghyClass {
 	
 	public void setCrewSize(Integer crewSize) {
 		this.crewSize = crewSize;
+	}
+
+	public Integer getPortsmouthNumber() {
+		return portsmouthNumber;
+	}
+
+	public void setPortsmouthNumber(Integer portsmouthNumber) {
+		this.portsmouthNumber = portsmouthNumber;
 	}
 }
