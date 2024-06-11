@@ -35,3 +35,6 @@ DROP TABLE hibernate_sequence;
 USE dinghy_racing;
 
 ALTER TABLE race DROP COLUMN actual_start_time;
+
+-- v2024.5.3 to v2024.6.2
+ALTER TABLE dinghy_class ADD COLUMN portsmouth_number SMALLINT;

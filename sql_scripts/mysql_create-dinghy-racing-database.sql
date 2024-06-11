@@ -1,4 +1,4 @@
--- v2024.5.3
+-- v2024.6.2
 CREATE DATABASE IF NOT EXISTS `dinghy_racing` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
 
 USE dinghy_racing;
@@ -44,6 +44,7 @@ CREATE TABLE dinghy_class (
 	id BIGINT NOT NULL, 
 	name VARCHAR(255) NOT NULL,
     crew_size TINYINT NOT NULL,
+	portsmouth_number SMALLINT,
 	version BIGINT, 
 	CONSTRAINT PK_dinghy_class_id PRIMARY KEY (id),
 	CONSTRAINT UK_dinghy_class_name UNIQUE (name)
