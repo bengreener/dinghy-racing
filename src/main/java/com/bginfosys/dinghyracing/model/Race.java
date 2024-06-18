@@ -66,6 +66,10 @@ public class Race {
 	@NotNull
 	private Integer plannedLaps;
 	
+	@NotNull
+	@Enumerated(EnumType.STRING)
+	private RaceType type;
+	
 	@Column(unique=true)
 	@OneToMany(mappedBy = "race", cascade = CascadeType.ALL, orphanRemoval = true)
 	@OrderBy("id ASC")
@@ -78,12 +82,13 @@ public class Race {
 	//Not recommended by Spring Data
 	public Race() {}
 	
-	public Race(String name, LocalDateTime plannedStartTime, DinghyClass dinghyClass, Duration duration, Integer plannedLaps) {
+	public Race(String name, LocalDateTime plannedStartTime, DinghyClass dinghyClass, Duration duration, Integer plannedLaps, RaceType type) {
 		this.name = name;
 		this.plannedStartTime = plannedStartTime;
 		this.dinghyClass = dinghyClass;
 		this.duration = duration;
 		this.plannedLaps = plannedLaps;
+		this.type = type;
 	}
 	
 	public Long getId() {
@@ -132,6 +137,14 @@ public class Race {
 
 	public void setPlannedLaps(Integer plannedLaps) {
 		this.plannedLaps = plannedLaps;
+	}
+
+	public RaceType getType() {
+		return type;
+	}
+
+	public void setType(RaceType type) {
+		this.type = type;
 	}
 
 	public Set<Entry> getSignedUp() {
