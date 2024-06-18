@@ -64,6 +64,7 @@ CREATE TABLE race (
 	name VARCHAR(255) NOT NULL, 
 	planned_laps integer NOT NULL, 
 	planned_start_time DATETIME(6) NOT NULL, 
+	`type` VARCHAR(50) NOT NULL,
 	start_sequence_state VARCHAR(50),
 	version BIGINT, 
 	dinghy_class_id BIGINT, 

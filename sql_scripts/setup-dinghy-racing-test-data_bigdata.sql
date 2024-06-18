@@ -1428,10 +1428,10 @@ INSERT INTO competitor (id, name, version) VALUES (567, "Zoe Little", 0);
 INSERT INTO competitor (id, name, version) VALUES (568, "Zohaan Coulson", 0);
 INSERT INTO competitor (id, name, version) VALUES (569, "Zuri Bennett", 0);
 
-INSERT INTO race (id, name, duration, planned_laps, planned_start_time, dinghy_class_id, version) VALUES (1, "Scorpion A", 2700000000000, 5, "2024-03-10 10:10:00", 43, 0);
-INSERT INTO race (id, name, duration, planned_laps, planned_start_time, dinghy_class_id, version) VALUES (2, "Graduate A", 2700000000000, 5, "2024-03-10 10:15:00", 13, 0);
-INSERT INTO race (id, name, duration, planned_laps, planned_start_time, dinghy_class_id, version) VALUES (3, "Comet A", 2100000000000, 4, "2024-03-10 10:20:00", 5, 0);
-INSERT INTO race (id, name, duration, planned_laps, planned_start_time, dinghy_class_id, version) VALUES (4, "Handicap A", 2100000000000, 4, "2024-03-10 14:00:00", null, 0);
+INSERT INTO race (id, name, duration, planned_laps, planned_start_time, dinghy_class_id, `type`, version) VALUES (1, "Scorpion A", 2700000000000, 5, "2024-03-10 10:10:00", 43, "FLEET", 0);
+INSERT INTO race (id, name, duration, planned_laps, planned_start_time, dinghy_class_id, `type`, version) VALUES (2, "Graduate A", 2700000000000, 5, "2024-03-10 10:15:00", 13, "FLEET", 0);
+INSERT INTO race (id, name, duration, planned_laps, planned_start_time, dinghy_class_id, `type`, version) VALUES (3, "Comet A", 2100000000000, 4, "2024-03-10 10:20:00", 5, "FLEET", 0);
+INSERT INTO race (id, name, duration, planned_laps, planned_start_time, dinghy_class_id, `type`, version) VALUES (4, "Handicap A", 2100000000000, 4, "2024-03-10 14:00:00", null, "FLEET", 0);
 
 INSERT INTO entry (id, helm_id, dinghy_id, race_id, crew_id, version) VALUES (1, 218, 553, 1, 218, 0);
 INSERT INTO entry (id, helm_id, dinghy_id, race_id, crew_id, version) VALUES (2, 209, 554, 1, 209, 0);
