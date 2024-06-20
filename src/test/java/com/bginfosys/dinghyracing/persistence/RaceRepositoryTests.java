@@ -239,6 +239,31 @@ public class RaceRepositoryTests {
 		assertThat(result).contains(race2, race3);
 		assertThat(result).doesNotContain(race1, race4);
 	}
+	
+	@Test
+	void when_aCollectionOfRacesBetweenCertainTimesAndTypeEqualsIsRequested_then_ACollectionContainingOnlyRacesBetweenThoseTimesWithThatTypeAreReturned() {
+		DinghyClass dinghyClass = new DinghyClass("Test Dinghyclass", 1);
+		entityManager.persist(dinghyClass);
+		
+		Race race1 = new Race("Test Race1", LocalDateTime.of(2023, 5, 13, 11, 59), dinghyClass, Duration.ofMinutes(45), 5, RaceType.FLEET);
+		race1 = entityManager.persist(race1);
+		Race race2 = new Race("Test Race2", LocalDateTime.of(2023, 5, 13, 12, 00), dinghyClass, Duration.ofMinutes(45), 5, RaceType.FLEET);
+		race2 = entityManager.persist(race2);
+		Race race3 = new Race("Test Race3", LocalDateTime.of(2023, 5, 13, 13, 00), dinghyClass, Duration.ofMinutes(45), 5, RaceType.FLEET);
+		race3 = entityManager.persist(race3);
+		Race race4 = new Race("Test Race4", LocalDateTime.of(2023, 5, 13, 13, 01), dinghyClass, Duration.ofMinutes(45), 5, RaceType.FLEET);
+		race4 = entityManager.persist(race4);
+		Race race5 = new Race("Test Race5", LocalDateTime.of(2023, 5, 13, 12, 00), dinghyClass, Duration.ofMinutes(45), 5, RaceType.PURSUIT);
+		race5 = entityManager.persist(race5);
+		Race race6 = new Race("Test Race6", LocalDateTime.of(2023, 5, 13, 13, 00), dinghyClass, Duration.ofMinutes(45), 5, RaceType.PURSUIT);
+		race6 = entityManager.persist(race6);
+		
+		Page<Race> result = raceRepository.findByPlannedStartTimeBetweenAndTypeEquals(LocalDateTime.of(2023, 5, 13, 12, 00), 
+				LocalDateTime.of(2023, 5, 13, 13, 00), RaceType.FLEET, Pageable.ofSize(5));
+		
+		assertThat(result).contains(race2, race3);
+		assertThat(result).doesNotContain(race1, race4);
+	}
 
 	@Test
 	void when_aNewStartSequenceStateIsSet_then_savesWithNewStartSequenceState() {
