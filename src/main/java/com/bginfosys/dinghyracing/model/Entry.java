@@ -79,6 +79,8 @@ public class Entry {
 	@Size(min = 3, max = 3)
 	private String scoringAbbreviation;
 	
+	private Integer position;
+	
 	public Entry() {}
 	
 	public Entry(Competitor helm, Dinghy dinghy, Race race) {
@@ -174,6 +176,14 @@ public class Entry {
 		this.scoringAbbreviation = scoringAbbreviation;
 	}
 	
+	public Integer getPosition() {
+		return position;
+	}
+
+	public void setPosition(Integer position) {
+		this.position = position;
+	}
+
 	/**
 	 * If boat has not finished the race add a new lap
 	 */
