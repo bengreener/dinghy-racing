@@ -27,6 +27,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 class RaceTests {
 
@@ -286,4 +287,29 @@ class RaceTests {
 		
 		assertEquals(race.getStartSequenceState(), StartSequence.ONEMINUTE);
 	}
+
+	@Test
+	void given_raceHasEntries_when_dinghyClassesRequested_then_returnsSetOfDinghyClassesForBoatsInEntries() {
+		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), null, Duration.ofMinutes(45), 5, RaceType.FLEET);
+		Competitor competitor1 = new Competitor("Competitor One");
+		Competitor competitor2 = new Competitor("Competitor Two");
+		Competitor competitor3 = new Competitor("Competitor Three");
+		DinghyClass dc2 = new DinghyClass("Dinghy Class Two", 1);
+		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
+		Dinghy dinghy2 = new Dinghy("4567", dinghyClass);
+		Dinghy dinghy3 = new Dinghy("999", dc2);
+		
+		Entry entry1 = new Entry(competitor1, dinghy1, race);
+		Entry entry2 = new Entry(competitor2, dinghy2, race);
+		Entry entry3 = new Entry(competitor3, dinghy3, race);
+		race.signUp(entry1);
+		race.signUp(entry2);
+		race.signUp(entry3);
+		
+		Set<DinghyClass> dinghyClasses = race.getDinghyClasses();
+		assertEquals(dinghyClasses.size(), 2);
+		assertThat(dinghyClasses, hasItem(dinghyClass));
+		assertThat(dinghyClasses, hasItem(dc2));
+	}
+
 }

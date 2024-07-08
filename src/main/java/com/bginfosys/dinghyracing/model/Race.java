@@ -34,6 +34,7 @@ import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -119,6 +120,10 @@ public class Race {
 		return dinghyClass;
 	}
 
+	public Set<DinghyClass> getDinghyClasses() {
+		return signedUp.stream().map(entry -> entry.getDinghy().getDinghyClass()).distinct().collect(Collectors.toSet());
+	}
+	
 	public void setDinghyClass(DinghyClass dinghyClass) {
 		this.dinghyClass = dinghyClass;
 	}
