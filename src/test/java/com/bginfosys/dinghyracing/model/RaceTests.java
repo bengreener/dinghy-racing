@@ -312,4 +312,80 @@ class RaceTests {
 		assertThat(dinghyClasses, hasItem(dc2));
 	}
 
+	@Test
+	void given_oneEntryHasFinishedLap_then_correctly_calculatesPosition() {
+		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), null, Duration.ofMinutes(45), 5, RaceType.FLEET);
+		Competitor competitor1 = new Competitor("Competitor One");
+		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
+		Entry entry1 = new Entry(competitor1, dinghy1, race);
+		race.signUp(entry1);
+		entry1.addLap(new Lap(1, Duration.ofMinutes(14)));
+		
+		race.calculatePositions();
+		
+		assertEquals(1, entry1.getPosition());
+	}
+
+	@Test
+	void given_twoEntriesHaveFinishedDifferentNumberOfLaps_then_correctly_calculatesPositions() {
+		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), null, Duration.ofMinutes(45), 5, RaceType.FLEET);
+		Competitor competitor1 = new Competitor("Competitor One");
+		Competitor competitor2 = new Competitor("Competitor Two");
+		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
+		Dinghy dinghy2 = new Dinghy("4567", dinghyClass);
+		Entry entry1 = new Entry(competitor1, dinghy1, race);
+		Entry entry2 = new Entry(competitor2, dinghy2, race);
+		race.signUp(entry1);
+		race.signUp(entry2);
+		entry1.addLap(new Lap(1, Duration.ofSeconds(840)));
+		entry2.addLap(new Lap(1, Duration.ofSeconds(540)));
+		entry2.addLap(new Lap(2, Duration.ofSeconds(540)));
+		
+		race.calculatePositions();
+		
+		assertEquals(2, entry1.getPosition());
+		assertEquals(1, entry2.getPosition());
+	}
+		
+	@Test
+	void given_twoEntriesHaveFinishedTheSameNumberOfLaps_then_correctly_calculatesPositions() {
+		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), null, Duration.ofMinutes(45), 5, RaceType.FLEET);
+		Competitor competitor1 = new Competitor("Competitor One");
+		Competitor competitor2 = new Competitor("Competitor Two");
+		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
+		Dinghy dinghy2 = new Dinghy("4567", dinghyClass);
+		Entry entry1 = new Entry(competitor1, dinghy1, race);
+		Entry entry2 = new Entry(competitor2, dinghy2, race);
+		race.signUp(entry1);
+		race.signUp(entry2);
+		entry1.addLap(new Lap(1, Duration.ofSeconds(840)));
+		entry2.addLap(new Lap(1, Duration.ofSeconds(839)));
+		
+		race.calculatePositions();
+		
+		assertEquals(2, entry1.getPosition());
+		assertEquals(1, entry2.getPosition());
+	}
+	
+	@Test
+	void given_twoEntriesHaveFinishedTheSameNumberOfLapsAndOneHasRetired_then_correctly_calculatesPositions() {
+		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), null, Duration.ofMinutes(45), 5, RaceType.FLEET);
+		Competitor competitor1 = new Competitor("Competitor One");
+		Competitor competitor2 = new Competitor("Competitor Two");
+		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
+		Dinghy dinghy2 = new Dinghy("4567", dinghyClass);
+		Entry entry1 = new Entry(competitor1, dinghy1, race);
+		Entry entry2 = new Entry(competitor2, dinghy2, race);
+		race.signUp(entry1);
+		race.signUp(entry2);
+		entry1.addLap(new Lap(1, Duration.ofSeconds(840)));
+		entry2.addLap(new Lap(1, Duration.ofSeconds(240)));
+		entry2.setScoringAbbreviation("RET");
+		
+		race.calculatePositions();
+		
+		assertEquals(1, entry1.getPosition());
+		assertEquals(2, entry2.getPosition());
+	}
+	
 }

@@ -38,6 +38,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.List;
 
 import jakarta.validation.constraints.NotNull;
 
@@ -211,6 +212,35 @@ public class Race {
 		}
 		Double lapsEstimate = (double) remainingTime.toSeconds() / (double)leadEntry.getLastLapTime().toSeconds();
 		return leadEntry.getLaps().size() + lapsEstimate;
+	}
+	
+	/**
+	 * Calculate and set the positions of entries in the race based on the number of laps completed and the time taken to complete those laps
+	 */
+	public void calculatePositions() {
+		// from lead entry to last place entry
+		List<Entry> entriesInPosition = signedUp.stream().sorted((entry1, entry2) -> {
+			// sort entries with scoring abbreviations to the bottom
+			if ((entry1.getScoringAbbreviation() == null || entry1.getScoringAbbreviation() == "") && (entry2.getScoringAbbreviation() != null && entry2.getScoringAbbreviation() != "")) {
+				return -1;
+			}
+			if ((entry2.getScoringAbbreviation() == null || entry2.getScoringAbbreviation() == "") && (entry1.getScoringAbbreviation() != null && entry1.getScoringAbbreviation() != "")) {
+				return 1;
+			}
+			// more laps beats less laps
+			if (entry1.getLaps().size() > entry2.getLaps().size()) {
+				return -1;
+			}
+			if (entry1.getLaps().size() < entry2.getLaps().size()) {
+				return 1;
+			}
+			// resolve lap ties on time to sail laps
+			return entry1.getSumOfLapTimes().compareTo(entry2.getSumOfLapTimes());
+		}).toList();
+		
+		for (int i = 0; i < entriesInPosition.size(); i++) {
+				entriesInPosition.get(i).setPosition(i + 1);
+		}		
 	}
 	
 	public String toString() {
