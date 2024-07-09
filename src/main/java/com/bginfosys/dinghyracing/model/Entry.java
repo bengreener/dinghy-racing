@@ -191,11 +191,19 @@ public class Entry {
 		if (getFinishedRace() || Objects.equals("DNS", scoringAbbreviation) || Objects.equals("RET", scoringAbbreviation) || Objects.equals("DSQ", scoringAbbreviation)) {
 			return false;
 		}
-		return laps.add(lap);
+		boolean result = laps.add(lap); 
+		if (result) {
+			this.race.calculatePositions();
+		}
+		return result;
 	}
 	
 	public boolean removeLap(Lap lap) {
-		return this.laps.remove(lap);
+		boolean result = laps.remove(lap); 
+		if (result) {
+			this.race.calculatePositions();
+		}
+		return result;
 	}
 	
 	// only the last recorded lap can be updated
@@ -206,6 +214,7 @@ public class Entry {
 		// swapping out old and new laps was causing a referential integrity error after controller method returned :-(
 		// appeared to be caused by system trying to delete the original referenced lap before updating the reference in the database to the new lap; original lap is not deleted as it is still recorded as a mapped to the entry
 		laps.last().setTime(lap.getTime());
+		this.race.calculatePositions();
 	}
 		
 	/**
