@@ -240,7 +240,35 @@ public class Race {
 		
 		for (int i = 0; i < entriesInPosition.size(); i++) {
 				entriesInPosition.get(i).setPosition(i + 1);
-		}		
+		}
+	}
+	
+	/** 
+	 * Update the position of an entry and any other entries that have their position altered as a result
+	 */
+	public void updateEntryPosition(Entry entry, Integer newPosition) {
+		// if new position is outside number of boats in race then ignore
+		if (newPosition > signedUp.size()) {
+			return;
+		};
+		Integer oldPosition = entry.getPosition();
+		entry.setPosition(newPosition);
+		// if new position is higher than old position move down position of entries between new and old positions
+		if (oldPosition == null || newPosition < oldPosition) {
+			signedUp.forEach(entry2 -> {
+				if (!entry.equals(entry2) && entry2.getPosition() != null && entry2.getPosition() >= newPosition && entry2.getPosition() < oldPosition) {
+					entry2.setPosition(entry2.getPosition() + 1);
+				}
+			});
+		}
+		// if new position is lower than old position move up position of entries between new and old positions
+		else if (newPosition > oldPosition) {
+			signedUp.forEach(entry2 -> {
+				if (!entry.equals(entry2) && entry2.getPosition() != null && entry2.getPosition() <= newPosition && entry2.getPosition() > oldPosition) {
+					entry2.setPosition(entry2.getPosition() - 1);
+				}
+			});
+		}
 	}
 	
 	public String toString() {
