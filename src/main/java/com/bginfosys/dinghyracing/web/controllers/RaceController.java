@@ -20,11 +20,14 @@ import java.net.URI;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.data.mapping.context.PersistentEntities;
 import org.springframework.data.repository.support.RepositoryInvokerFactory;
 import org.springframework.data.rest.core.UriToEntityConverter;
+import org.springframework.data.rest.core.event.AfterSaveEvent;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
 import org.springframework.hateoas.UriTemplate;
 import org.springframework.http.HttpStatus;
@@ -40,7 +43,7 @@ import com.bginfosys.dinghyracing.persistence.RaceRepository;
 import jakarta.transaction.Transactional;
 
 @RepositoryRestController
-public class RaceController {
+public class RaceController implements ApplicationEventPublisherAware {
 	
 	private final RaceRepository raceRepository;
 	
@@ -49,6 +52,8 @@ public class RaceController {
 	private final RepositoryInvokerFactory repositoryInvokerFactory;
 	
 	private final ConversionService conversionService;
+
+	private ApplicationEventPublisher publisher;
 	
 	RaceController(RaceRepository raceRepository, PersistentEntities persistentEntities, RepositoryInvokerFactory repositoryInvokerFactory,
 			@Qualifier("mvcConversionService") ConversionService conversionService) {
@@ -56,6 +61,11 @@ public class RaceController {
 		this.persistentEntities = persistentEntities;
 		this.repositoryInvokerFactory = repositoryInvokerFactory;
 		this.conversionService = conversionService;
+	}
+
+	@Override
+	public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
+		this.publisher = applicationEventPublisher;		
 	}
 	
 	@Transactional
@@ -68,6 +78,9 @@ public class RaceController {
 		
 		Entry entry = (Entry) getEntityFromUri(UriTemplate.of(entryURI).expand(), entryType);
 		race.updateEntryPosition(entry, newPosition);
+		// relying on framework to handle actual entity save and assuming this is done
+		publisher.publishEvent(new AfterSaveEvent(entry));
+		
 		return new ResponseEntity<Race>(HttpStatus.NO_CONTENT);
 	}
 
