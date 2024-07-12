@@ -174,6 +174,7 @@ public class Entry {
 	
 	public void setScoringAbbreviation(String scoringAbbreviation) {
 		this.scoringAbbreviation = scoringAbbreviation;
+		this.race.calculatePositions();
 	}
 	
 	public Integer getPosition() {
