@@ -397,7 +397,12 @@ public class EntryRepositoryTests {
 
 	@Test
 	void when_scoringAbbreviationLessThan3Characters_then_throwsValidationError() {
+		DinghyClass dinghyClass = new DinghyClass("Scorpion", 2);
+		entityManager.persist(dinghyClass);
+		Race race = new Race("A race", LocalDateTime.of(2023,  3, 24, 12, 30, 00), dinghyClass, Duration.ofMinutes(45), 5, RaceType.FLEET);
+		entityManager.persist(race);
 		Entry entry = new Entry();
+		entry.setRace(race);
 		entry.setScoringAbbreviation("A");
 		assertThrows(ConstraintViolationException.class, () -> {
 			entryRepository.save(entry);
@@ -407,7 +412,12 @@ public class EntryRepositoryTests {
 	
 	@Test
 	void when_scoringAbbreviationMoreThan3Characters_then_throwsValidationError() {
+		DinghyClass dinghyClass = new DinghyClass("Scorpion", 2);
+		entityManager.persist(dinghyClass);
+		Race race = new Race("A race", LocalDateTime.of(2023,  3, 24, 12, 30, 00), dinghyClass, Duration.ofMinutes(45), 5, RaceType.FLEET);
+		entityManager.persist(race);
 		Entry entry = new Entry();
+		entry.setRace(race);
 		entry.setScoringAbbreviation("AYZD");
 		assertThrows(ConstraintViolationException.class, () -> {
 			entryRepository.save(entry);
