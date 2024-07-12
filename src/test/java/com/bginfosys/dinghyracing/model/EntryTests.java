@@ -503,7 +503,9 @@ public class EntryTests {
 
 	@Test
 	void setsAndGetsScoringAbbreviation() {
+		Race race = new Race();
 		Entry entry = new Entry();
+		entry.setRace(race);
 		entry.setScoringAbbreviation("XYZ");
 		
 		assertTrue(entry.getScoringAbbreviation() == "XYZ");
@@ -575,6 +577,72 @@ public class EntryTests {
 		entry.addLap(lap1);
 		entry.addLap(lap2);
 		
-		assertEquals(entry.getLapsSailed(), 2);
+		assertEquals(2, entry.getLapsSailed());
+	}
+
+	@Test
+	void when_lapAdded_then_calculatesPositionsOfEntriesInRace() {
+		Entry entry = new Entry();
+		Race race = new Race();
+		race.setPlannedLaps(5);
+		entry.setRace(race);
+		Lap lap1 = new Lap(1, Duration.ofMinutes(13));
+		entry.addLap(lap1);
+		
+		assertEquals(1, entry.getPosition());
+	}
+
+	@Test
+	void when_lapRemoved_then_calculatesPositionsOfEntriesInRace() {
+		Entry entry1 = new Entry();
+		Entry entry2 = new Entry();
+		Race race = new Race();
+		race.setPlannedLaps(5);
+		entry1.setRace(race);
+		entry2.setRace(race);
+		entry1.addLap(new Lap(1, Duration.ofMinutes(12)));
+		entry1.addLap(new Lap(2, Duration.ofMinutes(13)));
+		entry2.addLap(new Lap(1, Duration.ofMinutes(13)));
+		entry2.addLap(new Lap(2, Duration.ofMinutes(13)));
+		
+		entry1.removeLap(new Lap(2, Duration.ofMinutes(13)));
+		
+		assertEquals(2, entry1.getPosition());
+	}
+
+	@Test
+	void when_lapUpdated_then_calculatesPositionsOfEntriesInRace() {
+		Entry entry1 = new Entry();
+		Entry entry2 = new Entry();
+		Race race = new Race();
+		race.setPlannedLaps(5);
+		entry1.setRace(race);
+		entry2.setRace(race);
+		entry1.addLap(new Lap(1, Duration.ofMinutes(12)));
+		entry1.addLap(new Lap(2, Duration.ofMinutes(13)));
+		entry2.addLap(new Lap(1, Duration.ofMinutes(13)));
+		entry2.addLap(new Lap(2, Duration.ofMinutes(13)));
+		
+		entry1.updateLap(new Lap(2, Duration.ofMinutes(15)));
+		
+		assertEquals(2, entry1.getPosition());
+	}
+	
+	@Test
+	void when_scoringAbrreviationIsSet_then_recalculatesPositionOfEntriesInRace() {
+		Entry entry1 = new Entry();
+		Entry entry2 = new Entry();
+		Race race = new Race();
+		race.setPlannedLaps(5);
+		entry1.setRace(race);
+		entry2.setRace(race);
+		entry1.addLap(new Lap(1, Duration.ofMinutes(12)));
+		entry1.addLap(new Lap(2, Duration.ofMinutes(13)));
+		entry2.addLap(new Lap(1, Duration.ofMinutes(13)));
+		entry2.addLap(new Lap(2, Duration.ofMinutes(13)));
+		
+		entry1.setScoringAbbreviation("RET");
+		
+		assertEquals(2, entry1.getPosition());
 	}
 }

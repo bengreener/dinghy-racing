@@ -13,17 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-   
+
 package com.bginfosys.dinghyracing.model;
 
-public enum StartSequence {
-	NONE,
-	WARNINGSIGNAL,
-	PREPARATORYSIGNAL,
-	ONEMINUTE,
-	STARTINGSIGNAL,
-	WARNINGSIGNALCLASS,
-	PREPARATORYSIGNALCLASS,
-	ONEMINUTECLASS,
-	STARTINGSIGNALCLASS
+public enum RaceType {
+	FLEET,
+	PURSUIT
 }

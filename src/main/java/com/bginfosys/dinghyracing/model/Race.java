@@ -34,9 +34,11 @@ import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.List;
 
 import jakarta.validation.constraints.NotNull;
 
@@ -66,6 +68,10 @@ public class Race {
 	@NotNull
 	private Integer plannedLaps;
 	
+	@NotNull
+	@Enumerated(EnumType.STRING)
+	private RaceType type;
+	
 	@Column(unique=true)
 	@OneToMany(mappedBy = "race", cascade = CascadeType.ALL, orphanRemoval = true)
 	@OrderBy("id ASC")
@@ -78,12 +84,13 @@ public class Race {
 	//Not recommended by Spring Data
 	public Race() {}
 	
-	public Race(String name, LocalDateTime plannedStartTime, DinghyClass dinghyClass, Duration duration, Integer plannedLaps) {
+	public Race(String name, LocalDateTime plannedStartTime, DinghyClass dinghyClass, Duration duration, Integer plannedLaps, RaceType type) {
 		this.name = name;
 		this.plannedStartTime = plannedStartTime;
 		this.dinghyClass = dinghyClass;
 		this.duration = duration;
 		this.plannedLaps = plannedLaps;
+		this.type = type;
 	}
 	
 	public Long getId() {
@@ -114,6 +121,10 @@ public class Race {
 		return dinghyClass;
 	}
 
+	public Set<DinghyClass> getDinghyClasses() {
+		return signedUp.stream().map(entry -> entry.getDinghy().getDinghyClass()).distinct().collect(Collectors.toSet());
+	}
+	
 	public void setDinghyClass(DinghyClass dinghyClass) {
 		this.dinghyClass = dinghyClass;
 	}
@@ -132,6 +143,14 @@ public class Race {
 
 	public void setPlannedLaps(Integer plannedLaps) {
 		this.plannedLaps = plannedLaps;
+	}
+
+	public RaceType getType() {
+		return type;
+	}
+
+	public void setType(RaceType type) {
+		this.type = type;
 	}
 
 	public Set<Entry> getSignedUp() {
@@ -193,6 +212,63 @@ public class Race {
 		}
 		Double lapsEstimate = (double) remainingTime.toSeconds() / (double)leadEntry.getLastLapTime().toSeconds();
 		return leadEntry.getLaps().size() + lapsEstimate;
+	}
+	
+	/**
+	 * Calculate and set the positions of entries in the race based on the number of laps completed and the time taken to complete those laps
+	 */
+	public void calculatePositions() {
+		// from lead entry to last place entry
+		List<Entry> entriesInPosition = signedUp.stream().sorted((entry1, entry2) -> {
+			// sort entries with scoring abbreviations to the bottom
+			if ((entry1.getScoringAbbreviation() == null || entry1.getScoringAbbreviation() == "") && (entry2.getScoringAbbreviation() != null && entry2.getScoringAbbreviation() != "")) {
+				return -1;
+			}
+			if ((entry2.getScoringAbbreviation() == null || entry2.getScoringAbbreviation() == "") && (entry1.getScoringAbbreviation() != null && entry1.getScoringAbbreviation() != "")) {
+				return 1;
+			}
+			// more laps beats less laps
+			if (entry1.getLaps().size() > entry2.getLaps().size()) {
+				return -1;
+			}
+			if (entry1.getLaps().size() < entry2.getLaps().size()) {
+				return 1;
+			}
+			// resolve lap ties on time to sail laps
+			return entry1.getSumOfLapTimes().compareTo(entry2.getSumOfLapTimes());
+		}).toList();
+		
+		for (int i = 0; i < entriesInPosition.size(); i++) {
+				entriesInPosition.get(i).setPosition(i + 1);
+		}
+	}
+	
+	/** 
+	 * Update the position of an entry and any other entries that have their position altered as a result
+	 */
+	public void updateEntryPosition(Entry entry, Integer newPosition) {
+		// if new position is outside number of boats in race then ignore
+		if (newPosition > signedUp.size()) {
+			return;
+		};
+		Integer oldPosition = entry.getPosition();
+		entry.setPosition(newPosition);
+		// if new position is higher than old position move down position of entries between new and old positions
+		if (oldPosition == null || newPosition < oldPosition) {
+			signedUp.forEach(entry2 -> {
+				if (!entry.equals(entry2) && entry2.getPosition() != null && entry2.getPosition() >= newPosition && entry2.getPosition() < oldPosition) {
+					entry2.setPosition(entry2.getPosition() + 1);
+				}
+			});
+		}
+		// if new position is lower than old position move up position of entries between new and old positions
+		else if (newPosition > oldPosition) {
+			signedUp.forEach(entry2 -> {
+				if (!entry.equals(entry2) && entry2.getPosition() != null && entry2.getPosition() <= newPosition && entry2.getPosition() > oldPosition) {
+					entry2.setPosition(entry2.getPosition() - 1);
+				}
+			});
+		}
 	}
 	
 	public String toString() {

@@ -1,4 +1,4 @@
--- v2024.5.3
+-- v2024.7.1
 CREATE DATABASE IF NOT EXISTS `dinghy_racing` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
 
 USE dinghy_racing;
@@ -44,6 +44,7 @@ CREATE TABLE dinghy_class (
 	id BIGINT NOT NULL, 
 	name VARCHAR(255) NOT NULL,
     crew_size TINYINT NOT NULL,
+	portsmouth_number SMALLINT,
 	version BIGINT, 
 	CONSTRAINT PK_dinghy_class_id PRIMARY KEY (id),
 	CONSTRAINT UK_dinghy_class_name UNIQUE (name)
@@ -63,6 +64,7 @@ CREATE TABLE race (
 	name VARCHAR(255) NOT NULL, 
 	planned_laps integer NOT NULL, 
 	planned_start_time DATETIME(6) NOT NULL, 
+	`type` VARCHAR(50) NOT NULL,
 	start_sequence_state VARCHAR(50),
 	version BIGINT, 
 	dinghy_class_id BIGINT, 
@@ -77,7 +79,8 @@ CREATE TABLE entry (
     crew_id BIGINT NULL, 
 	dinghy_id BIGINT NOT NULL, 
 	race_id BIGINT NOT NULL, 
-	scoring_abbreviation CHAR(3) NULL, 	
+	scoring_abbreviation CHAR(3) NULL, 
+	position SMALLINT NULL,
 	CONSTRAINT PK_entry_id PRIMARY KEY (id),
 	CONSTRAINT UK_entry_helm_id_dinghy_id_race_id UNIQUE (helm_id, dinghy_id, race_id),
 	CONSTRAINT UK_entry_helm_id_race_id UNIQUE (helm_id, race_id),

@@ -41,6 +41,7 @@ import com.bginfosys.dinghyracing.model.DinghyClass;
 import com.bginfosys.dinghyracing.model.Entry;
 import com.bginfosys.dinghyracing.model.Lap;
 import com.bginfosys.dinghyracing.model.Race;
+import com.bginfosys.dinghyracing.model.RaceType;
 
 @DataJpaTest
 public class EntryRepositoryTests {
@@ -177,7 +178,7 @@ public class EntryRepositoryTests {
 		DinghyClass dinghyClass = new DinghyClass("Test Dinghyclass", 1);
 		entityManager.persist(dinghyClass);
 		
-		Race race = new Race("Race A", LocalDateTime.of(2023, 7, 25, 11, 54, 30), null, Duration.ofMinutes(45), 5);
+		Race race = new Race("Race A", LocalDateTime.of(2023, 7, 25, 11, 54, 30), null, Duration.ofMinutes(45), 5, RaceType.FLEET);
 		entityManager.persist(race);
 		
 		Dinghy dinghy = new Dinghy("1234", dinghyClass);
@@ -199,7 +200,7 @@ public class EntryRepositoryTests {
 		entityManager.persist(dinghyClass1);
 		entityManager.persist(dinghyClass2);
 		
-		Race race = new Race("Race A", LocalDateTime.of(2023, 7, 25, 11, 54, 30), dinghyClass2, Duration.ofMinutes(45), 5);
+		Race race = new Race("Race A", LocalDateTime.of(2023, 7, 25, 11, 54, 30), dinghyClass2, Duration.ofMinutes(45), 5, RaceType.FLEET);
 		entityManager.persist(race);
 		
 		Dinghy dinghy = new Dinghy("1234", dinghyClass1);
@@ -216,7 +217,7 @@ public class EntryRepositoryTests {
 		entityManager.persist(helm);
 		DinghyClass dinghyClass = new DinghyClass("Scorpion", 2);
 		entityManager.persist(dinghyClass);
-		Race race = new Race("A race", LocalDateTime.of(2023,  3, 24, 12, 30, 00), dinghyClass, Duration.ofMinutes(45), 5);
+		Race race = new Race("A race", LocalDateTime.of(2023,  3, 24, 12, 30, 00), dinghyClass, Duration.ofMinutes(45), 5, RaceType.FLEET);
 		entityManager.persist(race);
 		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
 		entityManager.persist(dinghy1);
@@ -240,7 +241,7 @@ public class EntryRepositoryTests {
 		entityManager.persist(helm2);
 		DinghyClass dinghyClass = new DinghyClass("Scorpion", 2);
 		entityManager.persist(dinghyClass);
-		Race race = new Race("A race", LocalDateTime.of(2023,  3, 24, 12, 30, 00), dinghyClass, Duration.ofMinutes(45), 5);
+		Race race = new Race("A race", LocalDateTime.of(2023,  3, 24, 12, 30, 00), dinghyClass, Duration.ofMinutes(45), 5, RaceType.FLEET);
 		entityManager.persist(race);
 		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
 		entityManager.persist(dinghy1);
@@ -260,7 +261,7 @@ public class EntryRepositoryTests {
 		entityManager.persist(helm1);
 		DinghyClass dinghyClass = new DinghyClass("Scorpion", 2);
 		entityManager.persist(dinghyClass);
-		Race race = new Race("A race", LocalDateTime.of(2023,  3, 24, 12, 30, 00), dinghyClass, Duration.ofMinutes(45), 5);
+		Race race = new Race("A race", LocalDateTime.of(2023,  3, 24, 12, 30, 00), dinghyClass, Duration.ofMinutes(45), 5, RaceType.FLEET);
 		entityManager.persist(race);
 		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
 		entityManager.persist(dinghy1);
@@ -286,7 +287,7 @@ public class EntryRepositoryTests {
 		Dinghy d2 = new Dinghy("2", dc1);
 		entityManager.persist(d1);
 		entityManager.persist(d2);
-		Race r1 = new Race("Race One", LocalDateTime.of(2023, 5, 13, 12, 00), dc1, Duration.ofMinutes(45), 5);
+		Race r1 = new Race("Race One", LocalDateTime.of(2023, 5, 13, 12, 00), dc1, Duration.ofMinutes(45), 5, RaceType.FLEET);
 		entityManager.persist(r1);
 		Entry e1 = new Entry(c1, d1, r1);
 		Entry e2 = new Entry(c2, d2, r1);
@@ -350,7 +351,7 @@ public class EntryRepositoryTests {
 		entityManager.persist(helmB);
 		DinghyClass dinghyClass = new DinghyClass("Laser", 1);
 		entityManager.persist(dinghyClass);
-		Race race = new Race("A race", LocalDateTime.of(2023,  3, 24, 12, 30, 00), dinghyClass, Duration.ofMinutes(45), 5);
+		Race race = new Race("A race", LocalDateTime.of(2023,  3, 24, 12, 30, 00), dinghyClass, Duration.ofMinutes(45), 5, RaceType.FLEET);
 		entityManager.persist(race);
 		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
 		Dinghy dinghy2 = new Dinghy("5678", dinghyClass);
@@ -376,7 +377,7 @@ public class EntryRepositoryTests {
 		entityManager.persist(crew);
 		DinghyClass dinghyClass = new DinghyClass("Scorpion", 2);
 		entityManager.persist(dinghyClass);
-		Race race = new Race("A race", LocalDateTime.of(2023,  3, 24, 12, 30, 00), dinghyClass, Duration.ofMinutes(45), 5);
+		Race race = new Race("A race", LocalDateTime.of(2023,  3, 24, 12, 30, 00), dinghyClass, Duration.ofMinutes(45), 5, RaceType.FLEET);
 		entityManager.persist(race);
 		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
 		Dinghy dinghy2 = new Dinghy("5678", dinghyClass);
@@ -396,7 +397,12 @@ public class EntryRepositoryTests {
 
 	@Test
 	void when_scoringAbbreviationLessThan3Characters_then_throwsValidationError() {
+		DinghyClass dinghyClass = new DinghyClass("Scorpion", 2);
+		entityManager.persist(dinghyClass);
+		Race race = new Race("A race", LocalDateTime.of(2023,  3, 24, 12, 30, 00), dinghyClass, Duration.ofMinutes(45), 5, RaceType.FLEET);
+		entityManager.persist(race);
 		Entry entry = new Entry();
+		entry.setRace(race);
 		entry.setScoringAbbreviation("A");
 		assertThrows(ConstraintViolationException.class, () -> {
 			entryRepository.save(entry);
@@ -406,7 +412,12 @@ public class EntryRepositoryTests {
 	
 	@Test
 	void when_scoringAbbreviationMoreThan3Characters_then_throwsValidationError() {
+		DinghyClass dinghyClass = new DinghyClass("Scorpion", 2);
+		entityManager.persist(dinghyClass);
+		Race race = new Race("A race", LocalDateTime.of(2023,  3, 24, 12, 30, 00), dinghyClass, Duration.ofMinutes(45), 5, RaceType.FLEET);
+		entityManager.persist(race);
 		Entry entry = new Entry();
+		entry.setRace(race);
 		entry.setScoringAbbreviation("AYZD");
 		assertThrows(ConstraintViolationException.class, () -> {
 			entryRepository.save(entry);

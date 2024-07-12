@@ -27,12 +27,13 @@ import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 class RaceTests {
 
 	//private Race race = new Race("Test Race", LocalDate.of(2021, 10, 14), LocalTime.of(14, 10), new DinghyClass("Test"));
 	private DinghyClass dinghyClass = new DinghyClass("Test", 1);
-	private Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), dinghyClass, Duration.ofMinutes(45), 5);
+	private Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), dinghyClass, Duration.ofMinutes(45), 5, RaceType.FLEET);
 	
 	@Test
 	void raceCreated() {
@@ -285,5 +286,196 @@ class RaceTests {
 		race.setStartSequenceState(StartSequence.ONEMINUTE);
 		
 		assertEquals(race.getStartSequenceState(), StartSequence.ONEMINUTE);
+	}
+
+	@Test
+	void given_raceHasEntries_when_dinghyClassesRequested_then_returnsSetOfDinghyClassesForBoatsInEntries() {
+		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), null, Duration.ofMinutes(45), 5, RaceType.FLEET);
+		Competitor competitor1 = new Competitor("Competitor One");
+		Competitor competitor2 = new Competitor("Competitor Two");
+		Competitor competitor3 = new Competitor("Competitor Three");
+		DinghyClass dc2 = new DinghyClass("Dinghy Class Two", 1);
+		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
+		Dinghy dinghy2 = new Dinghy("4567", dinghyClass);
+		Dinghy dinghy3 = new Dinghy("999", dc2);
+		
+		Entry entry1 = new Entry(competitor1, dinghy1, race);
+		Entry entry2 = new Entry(competitor2, dinghy2, race);
+		Entry entry3 = new Entry(competitor3, dinghy3, race);
+		race.signUp(entry1);
+		race.signUp(entry2);
+		race.signUp(entry3);
+		
+		Set<DinghyClass> dinghyClasses = race.getDinghyClasses();
+		assertEquals(dinghyClasses.size(), 2);
+		assertThat(dinghyClasses, hasItem(dinghyClass));
+		assertThat(dinghyClasses, hasItem(dc2));
+	}
+
+	@Test
+	void given_oneEntryHasFinishedLap_then_correctly_calculatesPosition() {
+		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), null, Duration.ofMinutes(45), 5, RaceType.FLEET);
+		Competitor competitor1 = new Competitor("Competitor One");
+		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
+		Entry entry1 = new Entry(competitor1, dinghy1, race);
+		race.signUp(entry1);
+		entry1.addLap(new Lap(1, Duration.ofMinutes(14)));
+		
+		race.calculatePositions();
+		
+		assertEquals(1, entry1.getPosition());
+	}
+
+	@Test
+	void given_twoEntriesHaveFinishedDifferentNumberOfLaps_then_correctly_calculatesPositions() {
+		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), null, Duration.ofMinutes(45), 5, RaceType.FLEET);
+		Competitor competitor1 = new Competitor("Competitor One");
+		Competitor competitor2 = new Competitor("Competitor Two");
+		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
+		Dinghy dinghy2 = new Dinghy("4567", dinghyClass);
+		Entry entry1 = new Entry(competitor1, dinghy1, race);
+		Entry entry2 = new Entry(competitor2, dinghy2, race);
+		race.signUp(entry1);
+		race.signUp(entry2);
+		entry1.addLap(new Lap(1, Duration.ofSeconds(840)));
+		entry2.addLap(new Lap(1, Duration.ofSeconds(540)));
+		entry2.addLap(new Lap(2, Duration.ofSeconds(540)));
+		
+		race.calculatePositions();
+		
+		assertEquals(2, entry1.getPosition());
+		assertEquals(1, entry2.getPosition());
+	}
+		
+	@Test
+	void given_twoEntriesHaveFinishedTheSameNumberOfLaps_then_correctly_calculatesPositions() {
+		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), null, Duration.ofMinutes(45), 5, RaceType.FLEET);
+		Competitor competitor1 = new Competitor("Competitor One");
+		Competitor competitor2 = new Competitor("Competitor Two");
+		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
+		Dinghy dinghy2 = new Dinghy("4567", dinghyClass);
+		Entry entry1 = new Entry(competitor1, dinghy1, race);
+		Entry entry2 = new Entry(competitor2, dinghy2, race);
+		race.signUp(entry1);
+		race.signUp(entry2);
+		entry1.addLap(new Lap(1, Duration.ofSeconds(840)));
+		entry2.addLap(new Lap(1, Duration.ofSeconds(839)));
+		
+		race.calculatePositions();
+		
+		assertEquals(2, entry1.getPosition());
+		assertEquals(1, entry2.getPosition());
+	}
+	
+	@Test
+	void given_twoEntriesHaveFinishedTheSameNumberOfLapsAndOneHasRetired_then_correctly_calculatesPositions() {
+		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), null, Duration.ofMinutes(45), 5, RaceType.FLEET);
+		Competitor competitor1 = new Competitor("Competitor One");
+		Competitor competitor2 = new Competitor("Competitor Two");
+		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
+		Dinghy dinghy2 = new Dinghy("4567", dinghyClass);
+		Entry entry1 = new Entry(competitor1, dinghy1, race);
+		Entry entry2 = new Entry(competitor2, dinghy2, race);
+		race.signUp(entry1);
+		race.signUp(entry2);
+		entry1.addLap(new Lap(1, Duration.ofSeconds(840)));
+		entry2.addLap(new Lap(1, Duration.ofSeconds(240)));
+		entry2.setScoringAbbreviation("RET");
+		
+		race.calculatePositions();
+		
+		assertEquals(1, entry1.getPosition());
+		assertEquals(2, entry2.getPosition());
+	}
+	
+	@Test
+	void given_newPositionHigherThanOldPosition_when_positionOfEntryUpdated_then_updatesPositionsOfOtherEntries() {
+		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), null, Duration.ofMinutes(45), 5, RaceType.FLEET);
+		Competitor competitor1 = new Competitor("Competitor One");
+		Competitor competitor2 = new Competitor("Competitor Two");
+		Competitor competitor3 = new Competitor("Competitor Three");
+		Competitor competitor4 = new Competitor("Competitor Four");
+		Dinghy dinghy1 = new Dinghy("1", dinghyClass);
+		Dinghy dinghy2 = new Dinghy("2", dinghyClass);
+		Dinghy dinghy3 = new Dinghy("3", dinghyClass);
+		Dinghy dinghy4 = new Dinghy("4", dinghyClass);
+		Entry entry1 = new Entry(competitor1, dinghy1, race);
+		Entry entry2 = new Entry(competitor2, dinghy2, race);
+		Entry entry3 = new Entry(competitor3, dinghy3, race);
+		Entry entry4 = new Entry(competitor4, dinghy4, race);
+		race.signUp(entry1);
+		race.signUp(entry2);
+		race.signUp(entry3);
+		race.signUp(entry4);
+		entry1.addLap(new Lap(1, Duration.ofSeconds(240))); // position 1
+		entry2.addLap(new Lap(1, Duration.ofSeconds(250))); // position 3
+		entry3.addLap(new Lap(1, Duration.ofSeconds(245))); // position 2
+		entry4.addLap(new Lap(1, Duration.ofSeconds(260))); // position 4
+		race.calculatePositions();
+		
+		race.updateEntryPosition(entry2, 2);
+		assertEquals(1, entry1.getPosition());
+		assertEquals(2, entry2.getPosition());
+		assertEquals(3, entry3.getPosition());
+		assertEquals(4, entry4.getPosition());
+	}
+	
+	@Test
+	void given_newPositionLowerThanOldPosition_when_positionOfEntryUpdated_then_updatesPositionsOfOtherEntries() {
+		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), null, Duration.ofMinutes(45), 5, RaceType.FLEET);
+		Competitor competitor1 = new Competitor("Competitor One");
+		Competitor competitor2 = new Competitor("Competitor Two");
+		Competitor competitor3 = new Competitor("Competitor Three");
+		Competitor competitor4 = new Competitor("Competitor Four");
+		Dinghy dinghy1 = new Dinghy("1", dinghyClass);
+		Dinghy dinghy2 = new Dinghy("2", dinghyClass);
+		Dinghy dinghy3 = new Dinghy("3", dinghyClass);
+		Dinghy dinghy4 = new Dinghy("4", dinghyClass);
+		Entry entry1 = new Entry(competitor1, dinghy1, race);
+		Entry entry2 = new Entry(competitor2, dinghy2, race);
+		Entry entry3 = new Entry(competitor3, dinghy3, race);
+		Entry entry4 = new Entry(competitor4, dinghy4, race);
+		race.signUp(entry1);
+		race.signUp(entry2);
+		race.signUp(entry3);
+		race.signUp(entry4);
+		entry1.addLap(new Lap(1, Duration.ofSeconds(240))); // position 1
+		entry2.addLap(new Lap(1, Duration.ofSeconds(250))); // position 3
+		entry3.addLap(new Lap(1, Duration.ofSeconds(245))); // position 2
+		entry4.addLap(new Lap(1, Duration.ofSeconds(260))); // position 4
+		race.calculatePositions();
+		
+		race.updateEntryPosition(entry3, 3);
+		assertEquals(1, entry1.getPosition());
+		assertEquals(2, entry2.getPosition());
+		assertEquals(3, entry3.getPosition());
+		assertEquals(4, entry4.getPosition());
+	}
+		
+	@Test
+	void given_noPositionsCalculated_when_positionOfEntryUpdated_then_updatesOnlyPositionsOfEntry() {
+		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), null, Duration.ofMinutes(45), 5, RaceType.FLEET);
+		Competitor competitor1 = new Competitor("Competitor One");
+		Competitor competitor2 = new Competitor("Competitor Two");
+		Competitor competitor3 = new Competitor("Competitor Three");
+		Competitor competitor4 = new Competitor("Competitor Four");
+		Dinghy dinghy1 = new Dinghy("1", dinghyClass);
+		Dinghy dinghy2 = new Dinghy("2", dinghyClass);
+		Dinghy dinghy3 = new Dinghy("3", dinghyClass);
+		Dinghy dinghy4 = new Dinghy("4", dinghyClass);
+		Entry entry1 = new Entry(competitor1, dinghy1, race);
+		Entry entry2 = new Entry(competitor2, dinghy2, race);
+		Entry entry3 = new Entry(competitor3, dinghy3, race);
+		Entry entry4 = new Entry(competitor4, dinghy4, race);
+		race.signUp(entry1);
+		race.signUp(entry2);
+		race.signUp(entry3);
+		race.signUp(entry4);
+		
+		race.updateEntryPosition(entry3, 3);
+		assertEquals(null, entry1.getPosition());
+		assertEquals(null, entry2.getPosition());
+		assertEquals(3, entry3.getPosition());
+		assertEquals(null, entry4.getPosition());
 	}
 }

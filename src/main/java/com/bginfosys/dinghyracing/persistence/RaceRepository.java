@@ -25,6 +25,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.bginfosys.dinghyracing.model.Race;
+import com.bginfosys.dinghyracing.model.RaceType;
 
 public interface RaceRepository extends JpaRepository<Race, Long> {
 
@@ -40,4 +41,7 @@ public interface RaceRepository extends JpaRepository<Race, Long> {
 	
 	Page<Race> findByPlannedStartTimeBetween(@Param("startTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime, 
 			@Param("endTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endTime, Pageable pageable);
+
+	Page<Race> findByPlannedStartTimeBetweenAndTypeEquals(@Param("startTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime, 
+			@Param("endTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endTime, @Param("type") RaceType type, Pageable pageable);
 }
