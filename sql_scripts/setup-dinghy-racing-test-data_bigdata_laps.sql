@@ -796,7 +796,7 @@ INSERT INTO entry_laps (entry_id, laps_id) VALUES (96, 392);
 INSERT INTO entry_laps (entry_id, laps_id) VALUES (97, 393);
 
 UPDATE entry SET scoring_abbreviation = "RET" WHERE id = 5;
-UPDATE entry SET scoring_abbreviation = "DNF" WHERE id = 6;
+UPDATE entry SET scoring_abbreviation = "RET" WHERE id = 6;
 UPDATE entry SET scoring_abbreviation = "DNS" WHERE id = 8;
 UPDATE entry SET scoring_abbreviation = "DNS" WHERE id = 14;
 UPDATE entry SET scoring_abbreviation = "DSQ" WHERE id = 17;
@@ -807,7 +807,7 @@ UPDATE entry SET scoring_abbreviation = "DNS" WHERE id = 47;
 UPDATE entry SET scoring_abbreviation = "DNS" WHERE id = 67;
 UPDATE entry SET scoring_abbreviation = "DSQ" WHERE id = 85;
 UPDATE entry SET scoring_abbreviation = "RET" WHERE id = 89;
-UPDATE entry SET scoring_abbreviation = "DNF" WHERE id = 92;
+UPDATE entry SET scoring_abbreviation = "RET" WHERE id = 92;
 
 UPDATE entry SET position = 1 WHERE id = 1;
 UPDATE entry SET position = 2 WHERE id = 2;
