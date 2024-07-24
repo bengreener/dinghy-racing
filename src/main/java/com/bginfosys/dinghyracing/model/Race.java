@@ -217,8 +217,8 @@ public class Race {
 	/**
 	 * Calculate and set the positions of entries in the race based on the number of laps completed and the time taken to complete those laps
 	 */
-	public void calculatePositions() {
-		// from lead entry to last place entry
+	public void calculatePositions(Entry entry) {
+		// from lead entry to last place entry (-1 faster, 0 same, 1 slower)
 		List<Entry> entriesInPosition = signedUp.stream().sorted((entry1, entry2) -> {
 			// sort entries with scoring abbreviations to the bottom
 			if ((entry1.getScoringAbbreviation() == null || entry1.getScoringAbbreviation() == "") && (entry2.getScoringAbbreviation() != null && entry2.getScoringAbbreviation() != "")) {
@@ -237,10 +237,8 @@ public class Race {
 			// resolve lap ties on time to sail laps
 			return entry1.getSumOfLapTimes().compareTo(entry2.getSumOfLapTimes());
 		}).toList();
-		
-		for (int i = 0; i < entriesInPosition.size(); i++) {
-				entriesInPosition.get(i).setPosition(i + 1);
-		}
+
+		updateEntryPosition(entry, entriesInPosition.lastIndexOf(entry) + 1);
 	}
 	
 	/** 
@@ -256,7 +254,7 @@ public class Race {
 		// if new position is higher than old position move down position of entries between new and old positions
 		if (oldPosition == null || newPosition < oldPosition) {
 			signedUp.forEach(entry2 -> {
-				if (!entry.equals(entry2) && entry2.getPosition() != null && entry2.getPosition() >= newPosition && entry2.getPosition() < oldPosition) {
+				if (!entry.equals(entry2) && entry2.getPosition() != null && entry2.getPosition() >= newPosition && (oldPosition == null || entry2.getPosition() < oldPosition)) {
 					entry2.setPosition(entry2.getPosition() + 1);
 				}
 			});
