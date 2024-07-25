@@ -40,3 +40,6 @@ ALTER TABLE race DROP COLUMN actual_start_time;
 ALTER TABLE dinghy_class ADD COLUMN portsmouth_number SMALLINT;
 ALTER TABLE race ADD COLUMN `type` VARCHAR(50) NOT NULL;
 ALTER TABLE entry ADD COLUMN position SMALLINT NULL;
+
+-- v2024.7.1 to v2024.7.2
+ALTER TABLE race ADD COLUMN start_type VARCHAR(50) NOT NULL;

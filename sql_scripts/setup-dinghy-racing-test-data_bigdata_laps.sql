@@ -1,4 +1,4 @@
--- v2024.7.1
+-- v2024.7.2
 -- !If records have been inserted via the UI, or another mechanism, then id values and hibernate_sequence.next_val will need to be updated
 USE dinghy_racing;
 
