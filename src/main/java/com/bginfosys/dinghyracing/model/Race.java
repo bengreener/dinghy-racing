@@ -80,17 +80,22 @@ public class Race {
 	@Enumerated(EnumType.STRING)
 	private StartSequence startSequenceState;
 	
+	@NotNull
+	@Enumerated(EnumType.STRING)
+	private StartType startType;
+	
 	//Required by JPA
 	//Not recommended by Spring Data
 	public Race() {}
 	
-	public Race(String name, LocalDateTime plannedStartTime, DinghyClass dinghyClass, Duration duration, Integer plannedLaps, RaceType type) {
+	public Race(String name, LocalDateTime plannedStartTime, DinghyClass dinghyClass, Duration duration, Integer plannedLaps, RaceType type, StartType startType) {
 		this.name = name;
 		this.plannedStartTime = plannedStartTime;
 		this.dinghyClass = dinghyClass;
 		this.duration = duration;
 		this.plannedLaps = plannedLaps;
 		this.type = type;
+		this.startType = startType;
 	}
 	
 	public Long getId() {
@@ -170,6 +175,14 @@ public class Race {
 
 	public void setStartSequenceState(StartSequence startSequenceState) {
 		this.startSequenceState = startSequenceState;
+	}
+
+	public StartType getStartType() {
+		return startType;
+	}
+
+	public void setStartType(StartType startType) {
+		this.startType = startType;
 	}
 
 	public void signUp(Entry entry) {
