@@ -206,6 +206,7 @@ public class RaceRepositoryTests {
 		race1.setDuration(Duration.ofMinutes(45));
 		race1.setPlannedLaps(5);
 		race1.setType(RaceType.FLEET);
+		race1.setStartType(StartType.CSCCLUBSTART);
 		entityManager.persistAndFlush(race1);
 		
 		Race race2 = new Race();
