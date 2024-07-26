@@ -1,4 +1,4 @@
--- v2024.7.2
+-- v2024.8.1
 USE dinghy_racing;
 
 -- clear existing data
