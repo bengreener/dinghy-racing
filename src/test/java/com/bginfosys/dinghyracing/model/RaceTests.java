@@ -320,9 +320,7 @@ class RaceTests {
 		Entry entry1 = new Entry(competitor1, dinghy1, race);
 		race.signUp(entry1);
 		entry1.addLap(new Lap(1, Duration.ofMinutes(14)));
-		
-		race.calculatePositions();
-		
+
 		assertEquals(1, entry1.getPosition());
 	}
 
@@ -340,9 +338,7 @@ class RaceTests {
 		entry1.addLap(new Lap(1, Duration.ofSeconds(840)));
 		entry2.addLap(new Lap(1, Duration.ofSeconds(540)));
 		entry2.addLap(new Lap(2, Duration.ofSeconds(540)));
-		
-		race.calculatePositions();
-		
+
 		assertEquals(2, entry1.getPosition());
 		assertEquals(1, entry2.getPosition());
 	}
@@ -360,8 +356,6 @@ class RaceTests {
 		race.signUp(entry2);
 		entry1.addLap(new Lap(1, Duration.ofSeconds(840)));
 		entry2.addLap(new Lap(1, Duration.ofSeconds(839)));
-		
-		race.calculatePositions();
 		
 		assertEquals(2, entry1.getPosition());
 		assertEquals(1, entry2.getPosition());
@@ -381,8 +375,6 @@ class RaceTests {
 		entry1.addLap(new Lap(1, Duration.ofSeconds(840)));
 		entry2.addLap(new Lap(1, Duration.ofSeconds(240)));
 		entry2.setScoringAbbreviation("RET");
-		
-		race.calculatePositions();
 		
 		assertEquals(1, entry1.getPosition());
 		assertEquals(2, entry2.getPosition());
@@ -411,7 +403,6 @@ class RaceTests {
 		entry2.addLap(new Lap(1, Duration.ofSeconds(250))); // position 3
 		entry3.addLap(new Lap(1, Duration.ofSeconds(245))); // position 2
 		entry4.addLap(new Lap(1, Duration.ofSeconds(260))); // position 4
-		race.calculatePositions();
 		
 		race.updateEntryPosition(entry2, 2);
 		assertEquals(1, entry1.getPosition());
@@ -443,7 +434,6 @@ class RaceTests {
 		entry2.addLap(new Lap(1, Duration.ofSeconds(250))); // position 3
 		entry3.addLap(new Lap(1, Duration.ofSeconds(245))); // position 2
 		entry4.addLap(new Lap(1, Duration.ofSeconds(260))); // position 4
-		race.calculatePositions();
 		
 		race.updateEntryPosition(entry3, 3);
 		assertEquals(1, entry1.getPosition());
