@@ -74,7 +74,8 @@ public class Dinghy {
 		this.dinghyClass = dinghyClass;
 	}
 
+	@Override
 	public String toString() {
-		return sailNumber + ", " + dinghyClass.getName();
+		return "Dinghy [id=" + id + ", version=" + version + ", dinghyClass=" + dinghyClass.getName() + ", sailNumber=" + sailNumber + "]";
 	}
 }
