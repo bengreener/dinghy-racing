@@ -91,4 +91,9 @@ public class Lap implements Comparable<Lap> {
 		}
 		return 0;
 	}
+
+	@Override
+	public String toString() {
+		return "Lap [id=" + id + ", version=" + version + ", number=" + number + ", time=" + time + "]";
+	}
 }
