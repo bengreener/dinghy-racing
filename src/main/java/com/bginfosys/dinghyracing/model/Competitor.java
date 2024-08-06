@@ -60,4 +60,8 @@ public class Competitor {
 		this.name = name;
 	}
 
+	@Override
+	public String toString() {
+		return "Competitor [id=" + id + ", version=" + version + ", name=" + name + "]";
+	}
 }
