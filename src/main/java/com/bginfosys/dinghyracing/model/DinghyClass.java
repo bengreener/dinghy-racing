@@ -81,4 +81,10 @@ public class DinghyClass {
 	public void setPortsmouthNumber(Integer portsmouthNumber) {
 		this.portsmouthNumber = portsmouthNumber;
 	}
+
+	@Override
+	public String toString() {
+		return "DinghyClass [id=" + id + ", version=" + version + ", name=" + name + ", crewSize=" + crewSize
+				+ ", portsmouthNumber=" + portsmouthNumber + "]";
+	}
 }
