@@ -244,4 +244,10 @@ public class Entry {
 	public int getLapsSailed() {
 		return laps.size();
 	}
+
+	@Override
+	public String toString() {
+		return "Entry [id=" + id + ", version=" + version + ", helm=" + helm.getName()+ ", crew=" + crew.getName() + ", dinghy=" + dinghy.getDinghyClass().getName() + " " + dinghy.getSailNumber()
+				+ ", race=" + race.getName() + ", position=" + position + "]";
+	}
 }
