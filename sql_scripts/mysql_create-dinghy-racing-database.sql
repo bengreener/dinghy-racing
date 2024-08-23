@@ -70,7 +70,7 @@ CREATE TABLE race (
 	planned_start_time DATETIME(6) NOT NULL, 
 	`type` VARCHAR(50) NOT NULL,
 	start_sequence_state VARCHAR(50),
-	start_type VARCHAR(50) NOT NULL
+	start_type VARCHAR(50) NOT NULL,
 	version BIGINT,
 	CONSTRAINT PK_race_id PRIMARY KEY (id),
 	CONSTRAINT UK_race_name_planned_start_time UNIQUE (name, planned_start_time),
