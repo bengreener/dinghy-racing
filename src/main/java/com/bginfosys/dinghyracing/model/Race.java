@@ -282,7 +282,11 @@ public class Race {
 		}
 	}
 	
+	@Override
 	public String toString() {
-		return (name + ", " + plannedStartTime.toString() + ", " + dinghyClass.getName());
+		return "Race [id=" + id + ", version=" + version + ", name=" + name + ", plannedStartTime=" + plannedStartTime
+				+ ", dinghyClass=" + dinghyClass.getName() + ", duration=" + duration + ", plannedLaps=" + plannedLaps + ", type="
+				+ type + ", startSequenceState=" + startSequenceState + ", startType="
+				+ startType + "]";
 	}
 }
