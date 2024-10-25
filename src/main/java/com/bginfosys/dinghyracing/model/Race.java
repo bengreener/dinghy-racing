@@ -231,31 +231,27 @@ public class Race {
 	 * Calculate and set the positions of entries in the race based on the number of laps completed and the time taken to complete those laps
 	 */
 	public void calculatePositions(Entry entry) {
-		if (entry.getScoringAbbreviation() != null && entry.getScoringAbbreviation() != "") {
-			updateEntryPosition(entry, signedUp.size());	
-		}
-		else {
-			// from lead entry to last place entry (-1 faster, 0 same, 1 slower)
-			List<Entry> entriesInPosition = signedUp.stream().sorted((entry1, entry2) -> {
-				// sort entries with scoring abbreviations to the bottom
-				if ((entry1.getScoringAbbreviation() == null || entry1.getScoringAbbreviation() == "") && (entry2.getScoringAbbreviation() != null && entry2.getScoringAbbreviation() != "")) {
-					return -1;
-				}
-				if ((entry2.getScoringAbbreviation() == null || entry2.getScoringAbbreviation() == "") && (entry1.getScoringAbbreviation() != null && entry1.getScoringAbbreviation() != "")) {
-					return 1;
-				}
-				// more laps beats less laps
-				if (entry1.getLaps().size() > entry2.getLaps().size()) {
-					return -1;
-				}
-				if (entry1.getLaps().size() < entry2.getLaps().size()) {
-					return 1;
-				}
-				// resolve lap ties on time to sail laps
-				return entry1.getSumOfLapTimes().compareTo(entry2.getSumOfLapTimes());
-			}).toList();
-			updateEntryPosition(entry, entriesInPosition.lastIndexOf(entry) + 1);
-		}		
+		// from lead entry to last place entry (-1 faster, 0 same, 1 slower)
+		List<Entry> entriesInPosition = signedUp.stream().sorted((entry1, entry2) -> {
+			// sort entries with scoring abbreviations to the bottom
+			if ((entry1.getScoringAbbreviation() == null || entry1.getScoringAbbreviation() == "") && (entry2.getScoringAbbreviation() != null && entry2.getScoringAbbreviation() != "")) {
+				return -1;
+			}
+			if ((entry2.getScoringAbbreviation() == null || entry2.getScoringAbbreviation() == "") && (entry1.getScoringAbbreviation() != null && entry1.getScoringAbbreviation() != "")) {
+				return 1;
+			}
+			// more laps beats less laps
+			if (entry1.getLaps().size() > entry2.getLaps().size()) {
+				return -1;
+			}
+			if (entry1.getLaps().size() < entry2.getLaps().size()) {
+				return 1;
+			}
+			// resolve lap ties on time to sail laps
+			return entry1.getSumOfLapTimes().compareTo(entry2.getSumOfLapTimes());
+		}).toList();
+
+		updateEntryPosition(entry, entriesInPosition.lastIndexOf(entry) + 1);
 	}
 	
 	/** 
@@ -268,10 +264,10 @@ public class Race {
 		};
 		Integer oldPosition = entry.getPosition();
 		entry.setPosition(newPosition);
-		// if new position is higher than old position move down position of entries between new and old positions. Entry cannot have a position lower than number of the number of entries in the race.
+		// if new position is higher than old position move down position of entries between new and old positions
 		if (oldPosition == null || newPosition < oldPosition) {
 			signedUp.forEach(entry2 -> {
-				if (!entry.equals(entry2) && entry2.getPosition() != null && entry2.getPosition() >= newPosition && (oldPosition == null || entry2.getPosition() < oldPosition) && entry2.getPosition() != signedUp.size()) {
+				if (!entry.equals(entry2) && entry2.getPosition() != null && entry2.getPosition() >= newPosition && (oldPosition == null || entry2.getPosition() < oldPosition)) {
 					entry2.setPosition(entry2.getPosition() + 1);
 				}
 			});
