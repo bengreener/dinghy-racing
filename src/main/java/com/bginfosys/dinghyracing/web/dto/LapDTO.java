@@ -19,6 +19,7 @@ package com.bginfosys.dinghyracing.web.dto;
 import java.time.Duration;
 
 public class LapDTO {
+	
 	private Integer number;
 	
 	private Duration time;
