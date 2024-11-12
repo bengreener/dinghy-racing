@@ -114,4 +114,22 @@ public class DinghyRepositoryTests {
 		
 		assertEquals(dinghy1, dinghy2);
 	}
+
+	@Test
+	void given_dinghiesExistWithTheSailNumber_when_searchingForDinghiesBySailNumber_then_theDinghiesAreReturned() {
+		DinghyClass dc1 = new DinghyClass("Scorpion", 1);
+		DinghyClass dc2 = new DinghyClass("Comet", 2);
+		
+		entityManager.persist(dc1);
+		entityManager.persist(dc2);
+		
+		Dinghy dinghy1 = new Dinghy("1234", dc1);
+		Dinghy dinghy2 = new Dinghy("1234", dc2);
+		entityManager.persist(dinghy1);
+		entityManager.persist(dinghy2);
+		
+		Page<Dinghy> dinghies = dinghyRepository.findBySailNumber("1234", Pageable.ofSize(5));
+		
+		assertThat(dinghies).contains(dinghy1, dinghy2);
+	}
 }

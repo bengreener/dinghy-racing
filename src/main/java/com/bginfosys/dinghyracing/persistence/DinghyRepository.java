@@ -39,4 +39,6 @@ public interface DinghyRepository extends JpaRepository<Dinghy, Long> {
 	Page<Dinghy> findByDinghyClass(@Param("dinghyClass") DinghyClass dinghyClass, Pageable pageable);
 
 	Dinghy findBySailNumberAndDinghyClass(@Param("sailNumber") String sailNumber, @Param("dinghyClass") DinghyClass dinghyClass);
+	
+	Page<Dinghy> findBySailNumber(@Param("sailNumber") String sailNumber, Pageable pageable);
 }
