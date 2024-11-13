@@ -102,7 +102,7 @@ public class EntryController implements ApplicationEventPublisherAware {
 			
 			responseEntity = ResponseEntity.ok()
 				.header("Content-Type", "application/hal+json")
-				.body(resource);	
+				.body(resource);
 		}
 		else {
 			responseEntity = ResponseEntity.status(HttpStatus.CONFLICT)
