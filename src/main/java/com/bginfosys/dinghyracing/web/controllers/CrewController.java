@@ -28,8 +28,13 @@ import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.data.mapping.context.PersistentEntities;
 import org.springframework.data.repository.support.RepositoryInvokerFactory;
 import org.springframework.data.rest.core.UriToEntityConverter;
+import org.springframework.data.rest.webmvc.mapping.LinkCollector;
+import org.springframework.data.rest.webmvc.support.RepositoryEntityLinks;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Links;
 import org.springframework.hateoas.UriTemplate;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,7 +44,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bginfosys.dinghyracing.model.Dinghy;
 import com.bginfosys.dinghyracing.persistence.CompetitorRepository;
-import com.bginfosys.dinghyracing.model.Crew;
+import com.bginfosys.dinghyracing.web.model.proxy.Crew;
+import com.bginfosys.dinghyracing.model.Competitor;
 
 @RestController
 @RequestMapping("/dinghyracing/api/crews")
@@ -50,18 +56,24 @@ public class CrewController {
 	
 	private final CompetitorRepository competitorRepository;
 	
+	private final RepositoryEntityLinks entityLinks;
+	
 	private final PersistentEntities persistentEntities;
 
 	private final RepositoryInvokerFactory repositoryInvokerFactory;
 	
 	private final ConversionService conversionService;
+	
+	private final LinkCollector linkCollector;
 
-	CrewController(CompetitorRepository competitorRepository, PersistentEntities persistentEntities, RepositoryInvokerFactory repositoryInvokerFactory,
-			@Qualifier("mvcConversionService") ConversionService conversionService) {
+	CrewController(CompetitorRepository competitorRepository, RepositoryEntityLinks entityLinks, PersistentEntities persistentEntities, RepositoryInvokerFactory repositoryInvokerFactory,
+			@Qualifier("mvcConversionService") ConversionService conversionService, LinkCollector linkCollector) {
 		this.competitorRepository = competitorRepository;
+		this.entityLinks = entityLinks;
 		this.persistentEntities = persistentEntities;
 		this.repositoryInvokerFactory = repositoryInvokerFactory;
 		this.conversionService = conversionService;
+		this.linkCollector = linkCollector;
 	}
 	
 	@GetMapping(path= "/search/findCrewsByDinghy")
@@ -72,23 +84,44 @@ public class CrewController {
 		TypeDescriptor dinghyType = TypeDescriptor.valueOf(Dinghy.class);
 		Dinghy dinghy = (Dinghy) getEntityFromUri(UriTemplate.of(dinghyUri).expand(), dinghyType);
 		
-		// query entries table for unique crew combinations for entries with the dinghy
-		List<Long[]> results = this.jdbcTemplate.query("SELECT DISTINCT helm_id, crew_id FROM entry WHERE dinghy_id = ?", 
-				(resultSet, rowNum) -> {
-					Long[] result = {resultSet.getLong("helm_id"), resultSet.getLong("crew_id")};
-					return result;
-				}, dinghy.getId());
-		
-		Set<Crew> crews = new HashSet<Crew>();
-		for (Long[] result : results) {			
-			crews.add(new Crew(competitorRepository.findById(result[0]).orElse(null), competitorRepository.findById(result[1]).orElse(null)));
+		if (dinghy != null ) {
+			// query entries table for unique crew combinations for entries with the dinghy
+			List<Long[]> results = this.jdbcTemplate.query("SELECT DISTINCT helm_id, crew_id FROM entry WHERE dinghy_id = ?", 
+					(resultSet, rowNum) -> {
+						Long[] result = {resultSet.getLong("helm_id"), resultSet.getLong("crew_id")};
+						return result;
+					}, dinghy.getId());
+			
+			Set<Crew> crews = new HashSet<Crew>();
+			for (Long[] result : results) {
+				Competitor helm = competitorRepository.findById(result[0]).orElse(null);
+				Competitor mate = competitorRepository.findById(result[1]).orElse(null);
+				
+				Class<?> type = helm.getClass();
+				EntityModel<Competitor> helmEntityModel = EntityModel.of(helm);
+				Links helmLinks = linkCollector.getLinksFor(helm);
+				helmEntityModel.add(helmLinks);
+				helmEntityModel.add(entityLinks.linkToItemResource(type, result[0]));
+				
+				EntityModel<Competitor> mateEntityModel = null;
+				if (mate != null) {
+					mateEntityModel = EntityModel.of(mate);
+					Links mateLinks = linkCollector.getLinksFor(mate);
+					mateEntityModel.add(mateLinks);	
+					mateEntityModel.add(entityLinks.linkToItemResource(type, result[1]));
+				}
+				crews.add(new Crew(helmEntityModel, mateEntityModel));
+			}
+			
+			CollectionModel<Crew> resource = CollectionModel.of(crews);
+			
+			responseEntity = ResponseEntity.ok()
+				.header("Content-Type", "application/hal+json")
+				.body(resource);	
 		}
-		
-		CollectionModel<Crew> resource = CollectionModel.of(crews);
-		
-		responseEntity = ResponseEntity.ok()
-			.header("Content-Type", "application/hal+json")
-			.body(resource);
+		else {
+			responseEntity = new ResponseEntity<Object>(HttpStatus.NOT_FOUND);
+		}		
 		
 		return responseEntity;
 	}
