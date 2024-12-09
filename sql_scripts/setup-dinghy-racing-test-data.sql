@@ -28,22 +28,14 @@ INSERT INTO dinghy (id, sail_number, dinghy_class_id, version) VALUES (3, "6745"
 INSERT INTO dinghy (id, sail_number, dinghy_class_id, version) VALUES (4, "2928", 2, 0);
 INSERT INTO dinghy (id, sail_number, dinghy_class_id, version) VALUES (5, "826", 3, 0);
 
-/** INSERT INTO race (id, name, duration, planned_laps, planned_start_time, dinghy_class_id, `type`, start_sequence_state, version) 
-	VALUES (1, "Scorpion A", 2700000000000, 5, "2024-01-07 14:10:00", 1, "FLEET", start_sequence_state = "NONE", 0);
-INSERT INTO race (id, name, duration, planned_laps, planned_start_time, dinghy_class_id, `type`, start_sequence_state, version) 
-	VALUES (2, "Graduate A", 2700000000000, 4, "2024-01-07 14:30:00", 2, "FLEET", start_sequence_state = "NONE", 0);
-INSERT INTO race (id, name, duration, planned_laps, planned_start_time, dinghy_class_id, `type`, start_sequence_state, version) 
-	VALUES (3, "Comet A", 2700000000000, 4, "2024-10-07 14:30:00", 3, "FLEET", start_sequence_state = "NONE", 0);
-INSERT INTO race (id, name, duration, planned_laps, planned_start_time, dinghy_class_id, `type`, start_sequence_state, version) 
-	VALUES (4, "Handicap A", 2700000000000, 4, "2024-01-07 14:10:00", null, "FLEET", start_sequence_state = "NONE", 0); */
 INSERT INTO race (id, name, duration, planned_laps, planned_start_time, dinghy_class_id, `type`, start_sequence_state, start_type, version) 
-	VALUES (1, "Scorpion A", 2700000000000, 5, "2024-01-07 14:10:00", 1, "FLEET", "NONE", "CSCCLUBSTART", 0);
+	VALUES (1, "Scorpion A", 2700000000000, 5, "2024-12-09 14:10:00", 1, "FLEET", "NONE", "CSCCLUBSTART", 0);
 INSERT INTO race (id, name, duration, planned_laps, planned_start_time, dinghy_class_id, `type`, start_sequence_state, start_type, version) 
-	VALUES (2, "Graduate A", 2700000000000, 4, "2024-01-07 14:30:00", 2, "FLEET", "NONE", "CSCCLUBSTART", 0);
+	VALUES (2, "Graduate A", 2700000000000, 4, "2024-12-09 14:30:00", 2, "FLEET", "NONE", "CSCCLUBSTART", 0);
 INSERT INTO race (id, name, duration, planned_laps, planned_start_time, dinghy_class_id, `type`, start_sequence_state, start_type, version) 
-	VALUES (3, "Comet A", 2700000000000, 4, "2024-10-07 14:30:00", 3, "FLEET", "NONE", "CSCCLUBSTART", 0);
+	VALUES (3, "Comet A", 2700000000000, 4, "2024-12-09 14:30:00", 3, "FLEET", "NONE", "CSCCLUBSTART", 0);
 INSERT INTO race (id, name, duration, planned_laps, planned_start_time, dinghy_class_id, `type`, start_sequence_state, start_type, version) 
-	VALUES (4, "Handicap A", 2700000000000, 4, "2024-01-07 14:10:00", null, "FLEET", "NONE", "CSCCLUBSTART", 0);
+	VALUES (4, "Handicap A", 2700000000000, 4, "2024-12-09 14:10:00", null, "FLEET", "NONE", "CSCCLUBSTART", 0);
 
 INSERT INTO entry (id, helm_id, dinghy_id, race_id, crew_id, version) VALUES (1, 1, 1, 1, 4, 0);
 INSERT INTO entry (id, helm_id, dinghy_id, race_id, crew_id, version) VALUES (2, 2, 3, 1, 6, 0);
