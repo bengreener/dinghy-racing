@@ -81,6 +81,8 @@ public class Entry {
 	
 	private Integer position;
 	
+	private Duration correctedTime;
+	
 	public Entry() {}
 	
 	public Entry(Competitor helm, Dinghy dinghy, Race race) {
@@ -183,6 +185,14 @@ public class Entry {
 
 	public void setPosition(Integer position) {
 		this.position = position;
+	}
+
+	public Duration getCorrectedTime() {
+		return correctedTime;
+	}
+
+	public void setCorrectedTime(Duration correctedTime) {
+		this.correctedTime = correctedTime;
 	}
 
 	/**

@@ -43,3 +43,6 @@ ALTER TABLE entry ADD COLUMN position SMALLINT NULL;
 
 -- v2024.7.1 to v2024.8.1
 ALTER TABLE race ADD COLUMN start_type VARCHAR(50) NOT NULL;
+
+-- v2024.8.1 to v2024.12.2
+ALTER TABLE entry ADD COLUMN corrected_time BIGINT;
