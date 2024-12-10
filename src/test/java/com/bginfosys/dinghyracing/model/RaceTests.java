@@ -521,4 +521,120 @@ class RaceTests {
 		
 		assertEquals(4, entry2.getPosition());
 	}
+
+	@Test
+	void given_race_is_fleet_when_oneEntryHasFinishedLap_then_correctly_calculatesPosition() {
+		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), null, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Competitor competitor1 = new Competitor("Competitor One");
+		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
+		Entry entry1 = new Entry(competitor1, dinghy1, race);
+		race.signUp(entry1);
+		entry1.addLap(new Lap(1, Duration.ofMinutes(14)));
+
+		assertEquals(1, entry1.getPosition());
+	}
+
+	/*
+	 * Entries and lap times need to be selected so that on corrected time the entry that crosses the line 2nd gets position 1 
+	 */
+	@Test
+	void given_race_is_fleet_when_twoEntriesHaveFinishedDifferentNumberOfLaps_then_correctly_calculatesPositions() {
+		DinghyClass scorpion = new DinghyClass("Test", 1);
+		DinghyClass graduate = new DinghyClass("Test", 1);
+
+		scorpion.setPortsmouthNumber(1043);
+		graduate.setPortsmouthNumber(1110);
+		
+		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), null, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Competitor competitor1 = new Competitor("Competitor One");
+		Competitor competitor2 = new Competitor("Competitor Two");
+		Dinghy dinghy1 = new Dinghy("1234", scorpion);
+		Dinghy dinghy2 = new Dinghy("4567", graduate);
+		Entry entry1 = new Entry(competitor1, dinghy1, race);
+		Entry entry2 = new Entry(competitor2, dinghy2, race);
+		race.signUp(entry1);
+		race.signUp(entry2);
+		entry1.addLap(new Lap(1, Duration.ofSeconds(209)));
+		entry1.addLap(new Lap(2, Duration.ofSeconds(209)));
+		entry2.addLap(new Lap(1, Duration.ofSeconds(200)));
+
+		assertEquals(1, entry1.getPosition());
+		assertEquals(2, entry2.getPosition());
+	}
+	
+	/*
+	 * Entries and lap times need to be selected so that on corrected time the entry that crosses the line 2nd gets position 1 
+	 */
+	@Test
+	void given_race_is_fleet_when_twoEntriesHaveFinishedTheSameNumberOfLaps_then_correctly_calculatesPositions() {
+		DinghyClass scorpion = new DinghyClass("Test", 1);
+		DinghyClass graduate = new DinghyClass("Test", 1);
+
+		scorpion.setPortsmouthNumber(1043);
+		graduate.setPortsmouthNumber(1110);
+		
+		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), null, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Competitor competitor1 = new Competitor("Competitor One");
+		Competitor competitor2 = new Competitor("Competitor Two");
+		Dinghy dinghy1 = new Dinghy("1234", scorpion);
+		Dinghy dinghy2 = new Dinghy("4567", graduate);
+		Entry entry1 = new Entry(competitor1, dinghy1, race);
+		Entry entry2 = new Entry(competitor2, dinghy2, race);
+		race.signUp(entry1);
+		race.signUp(entry2);
+		entry1.addLap(new Lap(1, Duration.ofSeconds(209)));
+		entry2.addLap(new Lap(1, Duration.ofSeconds(222)));
+
+		assertEquals(2, entry1.getPosition());
+		assertEquals(1, entry2.getPosition());	
+	}
+
+	@Test
+	void given_race_is_fleet_when_twoEntriesHaveFinishedTheSameNumberOfLapsAndOneHasRetired_then_correctly_calculatesPositions() {
+		DinghyClass scorpion = new DinghyClass("Test", 1);
+		DinghyClass graduate = new DinghyClass("Test", 1);
+
+		scorpion.setPortsmouthNumber(1043);
+		graduate.setPortsmouthNumber(1110);
+		
+		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), null, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Competitor competitor1 = new Competitor("Competitor One");
+		Competitor competitor2 = new Competitor("Competitor Two");
+		Dinghy dinghy1 = new Dinghy("1234", scorpion);
+		Dinghy dinghy2 = new Dinghy("4567", graduate);
+		Entry entry1 = new Entry(competitor1, dinghy1, race);
+		Entry entry2 = new Entry(competitor2, dinghy2, race);
+		race.signUp(entry1);
+		race.signUp(entry2);
+		entry1.addLap(new Lap(1, Duration.ofSeconds(209)));
+		entry2.addLap(new Lap(1, Duration.ofSeconds(222)));
+		entry2.setScoringAbbreviation("RET");
+
+		assertEquals(1, entry1.getPosition());
+		assertEquals(2, entry2.getPosition());
+	}
+
+	@Test
+	void given_race_race_is_fleet_when_scoringAbbreviationSetForEntry_then_positionSetEqualToNumberOfEntriesInRace() {
+		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), null, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Competitor competitor1 = new Competitor("Competitor One");
+		Competitor competitor2 = new Competitor("Competitor Two");
+		Competitor competitor3 = new Competitor("Competitor Three");
+		Competitor competitor4 = new Competitor("Competitor Four");
+		Dinghy dinghy1 = new Dinghy("1", dinghyClass);
+		Dinghy dinghy2 = new Dinghy("2", dinghyClass);
+		Dinghy dinghy3 = new Dinghy("3", dinghyClass);
+		Dinghy dinghy4 = new Dinghy("4", dinghyClass);
+		Entry entry1 = new Entry(competitor1, dinghy1, race);
+		Entry entry2 = new Entry(competitor2, dinghy2, race);
+		Entry entry3 = new Entry(competitor3, dinghy3, race);
+		Entry entry4 = new Entry(competitor4, dinghy4, race);
+		race.signUp(entry1);
+		race.signUp(entry2);
+		race.signUp(entry3);
+		race.signUp(entry4);
+		entry2.setScoringAbbreviation("DNS");
+		
+		assertEquals(4, entry2.getPosition());
+	}
 }
