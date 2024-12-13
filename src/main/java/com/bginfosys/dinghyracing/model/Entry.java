@@ -188,11 +188,21 @@ public class Entry {
 	}
 
 	public Duration getCorrectedTime() {
+		// if null return a duration of infinity to avoid null issues when performing operations on duration
+		if (correctedTime == null) {
+			return Duration.ofSeconds((long)Double.POSITIVE_INFINITY);
+		}
 		return correctedTime;
 	}
 
 	public void setCorrectedTime(Duration correctedTime) {
-		this.correctedTime = correctedTime;
+		// if value is equal to infinity then a lap has not been completed and no corrected time can be calculated
+		if (correctedTime.getSeconds() == (long)Double.POSITIVE_INFINITY) {
+			this.correctedTime = null;
+		}
+		else {
+			this.correctedTime = correctedTime;
+		}
 	}
 
 	/**

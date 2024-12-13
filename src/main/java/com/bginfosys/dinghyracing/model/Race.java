@@ -197,7 +197,7 @@ public class Race {
 	}
 	
 	public Entry getLeadEntry() {
-		if (signedUp != null ) {
+		if (signedUp != null && signedUp.size() > 0 ) {
 			// get entries that have completed the same number of laps as lead boat
 			Integer leadLapCount = this.leadEntrylapsCompleted(); 
 			Stream<Entry> entriesOnLeadLap = signedUp.stream().filter(entry -> entry.getLaps().size() == leadLapCount);
@@ -231,32 +231,39 @@ public class Race {
 	 * Calculate and set the positions of entries in the race based on the number of laps completed and the time taken to complete those laps
 	 */
 	public void calculatePositions(Entry entry) {
+		Comparator<Entry> entriesComparator;
+				
+		switch (this.type) {
+			case PURSUIT:
+				entriesComparator = new PursuitEntriesComparator();
+				break;
+			case FLEET:
+				entriesComparator = new FleetEntriesComparator();
+				break;
+			default:
+				entriesComparator = new FleetEntriesComparator();
+				break;			
+		}
+		
 		if (entry.getScoringAbbreviation() != null && entry.getScoringAbbreviation() != "") {
 			updateEntryPosition(entry, signedUp.size());	
 		}
 		else {
-			// from lead entry to last place entry (-1 faster, 0 same, 1 slower)
-			List<Entry> entriesInPosition = signedUp.stream().sorted((entry1, entry2) -> {
-				// sort entries with scoring abbreviations to the bottom
-				if ((entry1.getScoringAbbreviation() == null || entry1.getScoringAbbreviation() == "") && (entry2.getScoringAbbreviation() != null && entry2.getScoringAbbreviation() != "")) {
-					return -1;
+			if (this.type == RaceType.FLEET) {
+				// if a lap is removed may result in entry having no laps. Treat this case specifically to avoid a divide by 0 error in corrected time calculation
+				if (entry.getLaps().size() < 1) {
+					entry.setCorrectedTime(Duration.ofSeconds((long)Double.POSITIVE_INFINITY));
 				}
-				if ((entry2.getScoringAbbreviation() == null || entry2.getScoringAbbreviation() == "") && (entry1.getScoringAbbreviation() != null && entry1.getScoringAbbreviation() != "")) {
-					return 1;
-				}
-				// more laps beats less laps
-				if (entry1.getLaps().size() > entry2.getLaps().size()) {
-					return -1;
-				}
-				if (entry1.getLaps().size() < entry2.getLaps().size()) {
-					return 1;
-				}
-				// resolve lap ties on time to sail laps
-				return entry1.getSumOfLapTimes().compareTo(entry2.getSumOfLapTimes());
-			}).toList();
+				else {
+					entry.setCorrectedTime(entry.getSumOfLapTimes().multipliedBy(this.getLeadEntry().getLapsSailed() * 1000).dividedBy(entry.getDinghy().getDinghyClass().getPortsmouthNumber() * entry.getLapsSailed()));//  / (entry.getDinghy().getDinghyClass().getPortsmouthNumber() * entry.getLapsSailed()));
+//					Integer mostLaps = Math.max(1, this.getLeadEntry().getLapsSailed());
+//					entry.setCorrectedTime(entry.getSumOfLapTimes().multipliedBy(mostLaps * 1000).dividedBy(entry.getDinghy().getDinghyClass().getPortsmouthNumber() * entry.getLapsSailed()));//  / (entry.getDinghy().getDinghyClass().getPortsmouthNumber() * entry.getLapsSailed()));	
+				}				
+			}
+			List<Entry> entriesInPosition = signedUp.stream().sorted(entriesComparator).toList();
 			updateEntryPosition(entry, entriesInPosition.lastIndexOf(entry) + 1);
 		}		
-	}
+	} 
 	
 	/** 
 	 * Update the position of an entry and any other entries that have their position altered as a result
@@ -293,4 +300,55 @@ public class Race {
 				+ type + ", startSequenceState=" + startSequenceState + ", startType="
 				+ startType + "]";
 	}
+	
+	public class PursuitEntriesComparator implements Comparator<Entry> {
+		
+		@Override
+		public int compare(Entry entry1, Entry entry2) {
+			// from lead entry to last place entry (-1 faster, 0 same, 1 slower)
+			// sort entries with scoring abbreviations to the bottom
+			if ((entry1.getScoringAbbreviation() == null || entry1.getScoringAbbreviation() == "") && (entry2.getScoringAbbreviation() != null && entry2.getScoringAbbreviation() != "")) {
+				return -1;
+			}
+			if ((entry2.getScoringAbbreviation() == null || entry2.getScoringAbbreviation() == "") && (entry1.getScoringAbbreviation() != null && entry1.getScoringAbbreviation() != "")) {
+				return 1;
+			}
+			// more laps beats less laps
+			if (entry1.getLaps().size() > entry2.getLaps().size()) {
+				return -1;
+			}
+			if (entry1.getLaps().size() < entry2.getLaps().size()) {
+				return 1;
+			}
+			// resolve lap ties on time to sail laps
+			return entry1.getSumOfLapTimes().compareTo(entry2.getSumOfLapTimes());
+		}
+	}
+	
+		public class FleetEntriesComparator implements Comparator<Entry> {
+		
+			@Override
+			public int compare(Entry entry1, Entry entry2) {
+				// from lead entry to last place entry (-1 faster, 0 same, 1 slower)
+				// sort entries with scoring abbreviations to the bottom
+				if ((entry1.getScoringAbbreviation() == null || entry1.getScoringAbbreviation() == "") && (entry2.getScoringAbbreviation() != null && entry2.getScoringAbbreviation() != "")) {
+					return -1;
+				}
+				if ((entry2.getScoringAbbreviation() == null || entry2.getScoringAbbreviation() == "") && (entry1.getScoringAbbreviation() != null && entry1.getScoringAbbreviation() != "")) {
+					return 1;
+				}
+				// more laps beats less laps unless portsmouth number is lower
+				// entry1 sailed more laps and handicap is the same or indicates a slower boat
+				if (entry1.getLaps().size() > entry2.getLaps().size() && entry1.getDinghy().getDinghyClass().getPortsmouthNumber() >= entry2.getDinghy().getDinghyClass().getPortsmouthNumber()) {
+					return -1;
+				}
+				// entry1 sailed less laps and handicap is the same or indicates a faster boat
+				if (entry1.getLaps().size() < entry2.getLaps().size() && entry1.getDinghy().getDinghyClass().getPortsmouthNumber() <= entry2.getDinghy().getDinghyClass().getPortsmouthNumber()) {
+					return 1;
+				}
+				// resolve lap ties on corrected time to sail laps
+				return entry1.getCorrectedTime().compareTo(entry2.getCorrectedTime());
+			}
+		}
 }
+

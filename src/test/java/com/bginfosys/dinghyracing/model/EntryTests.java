@@ -24,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.SortedSet;
 import java.util.concurrent.ConcurrentSkipListSet;
 
@@ -234,10 +235,12 @@ public class EntryTests {
 	
 	@Test
 	void when_addingALap_then_lapIsAddedToLaps() {
-		Entry entry = new Entry();
-		Race race = new Race();
-		race.setPlannedLaps(5);
-		entry.setRace(race);
+		Competitor competitor1 = new Competitor("Bob");
+		DinghyClass graduate = new DinghyClass("Graduate", 2 , 1110);
+		Dinghy dinghy1 = new Dinghy("1234", graduate);
+		Race race = new Race("Race1", LocalDateTime.now(), null, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Entry entry = new Entry(competitor1, dinghy1, race);
+		race.signUp(entry);
 		Lap lap = new Lap(1, Duration.ofMinutes(13));
 		entry.addLap(lap);
 		assertTrue(entry.getLaps().contains(lap));
@@ -248,6 +251,7 @@ public class EntryTests {
 		Entry entry = new Entry();
 		Race race = new Race();
 		race.setPlannedLaps(5);
+		race.setType(RaceType.PURSUIT);
 		entry.setRace(race);
 		Lap lap1 = new Lap(1, Duration.ofMinutes(13));
 		Lap lap1_2 = new Lap(1, Duration.ofMinutes(11));
@@ -260,10 +264,12 @@ public class EntryTests {
 	
 	@Test
 	void when_addingALap_then_returnsTrueIfLapIsAdded() {
-		Entry entry = new Entry();
-		Race race = new Race();
-		race.setPlannedLaps(5);
-		entry.setRace(race);
+		Competitor competitor1 = new Competitor("Bob");
+		DinghyClass graduate = new DinghyClass("Graduate", 2 , 1110);
+		Dinghy dinghy1 = new Dinghy("1234", graduate);
+		Race race = new Race("Race1", LocalDateTime.now(), null, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Entry entry = new Entry(competitor1, dinghy1, race);
+		race.signUp(entry);
 		Lap lap = new Lap(1, Duration.ofMinutes(13));
 		boolean lapAdded = entry.addLap(lap);
 		assertTrue(lapAdded);
@@ -271,10 +277,12 @@ public class EntryTests {
 	
 	@Test
 	void when_addingALap_then_returnsFalseIfLapIsNotAdded() {
-		Entry entry = new Entry();
-		Race race = new Race();
-		race.setPlannedLaps(5);
-		entry.setRace(race);
+		Competitor competitor1 = new Competitor("Bob");
+		DinghyClass graduate = new DinghyClass("Graduate", 2 , 1110);
+		Dinghy dinghy1 = new Dinghy("1234", graduate);
+		Race race = new Race("Race1", LocalDateTime.now(), null, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Entry entry = new Entry(competitor1, dinghy1, race);
+		race.signUp(entry);
 		Lap lap1 = new Lap(1, Duration.ofMinutes(13));
 		Lap lap1_2 = new Lap(1, Duration.ofMinutes(12));
 		entry.addLap(lap1);
@@ -284,10 +292,12 @@ public class EntryTests {
 	
 	@Test
 	void when_removingALap_then_lapIsRemoved() {
-		Entry entry = new Entry();
-		Race race = new Race();
-		race.setPlannedLaps(5);
-		entry.setRace(race);
+		Competitor competitor1 = new Competitor("Bob");
+		DinghyClass graduate = new DinghyClass("Graduate", 2 , 1110);
+		Dinghy dinghy1 = new Dinghy("1234", graduate);
+		Race race = new Race("Race1", LocalDateTime.now(), null, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Entry entry = new Entry(competitor1, dinghy1, race);
+		race.signUp(entry);
 		Lap lap = new Lap(1, Duration.ofMinutes(13));
 		entry.addLap(lap);
 		entry.removeLap(new Lap(1, Duration.ofMinutes(13)));
@@ -296,10 +306,12 @@ public class EntryTests {
 	
 	@Test
 	void when_requestingTotalLapTime_then_returnsSumOfRecordedLapTimes() {
-		Entry entry = new Entry();
-		Race race = new Race();
-		race.setPlannedLaps(5);
-		entry.setRace(race);
+		Competitor competitor1 = new Competitor("Bob");
+		DinghyClass graduate = new DinghyClass("Graduate", 2 , 1110);
+		Dinghy dinghy1 = new Dinghy("1234", graduate);
+		Race race = new Race("Race1", LocalDateTime.now(), null, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Entry entry = new Entry(competitor1, dinghy1, race);
+		race.signUp(entry);
 		Lap lap1 = new Lap(1, Duration.ofMinutes(13));
 		Lap lap2 = new Lap(2, Duration.ofMinutes(16));
 		Lap lap3 = new Lap(3, Duration.ofMinutes(15));
@@ -324,10 +336,12 @@ public class EntryTests {
 	
 	@Test
 	void given_anEntryHasCompletedMoreThanOneLap_then_returnsTheLastLapTime() {
-		Entry entry = new Entry();
-		Race race = new Race();
-		race.setPlannedLaps(5);
-		entry.setRace(race);
+		Competitor competitor1 = new Competitor("Bob");
+		DinghyClass graduate = new DinghyClass("Graduate", 2 , 1110);
+		Dinghy dinghy1 = new Dinghy("1234", graduate);
+		Race race = new Race("Race1", LocalDateTime.now(), null, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Entry entry = new Entry(competitor1, dinghy1, race);
+		race.signUp(entry);
 		Lap lap1 = new Lap(1, Duration.ofMinutes(13));
 		Lap lap2 = new Lap(2, Duration.ofMinutes(16));
 		Lap lap3 = new Lap(3, Duration.ofMinutes(15));
@@ -352,10 +366,12 @@ public class EntryTests {
 	
 	@Test
 	void given_anEntryHasCompletedMoreThanOneLap_then_returnsTheAverageLapTime() {
-		Entry entry = new Entry();
-		Race race = new Race();
-		race.setPlannedLaps(5);
-		entry.setRace(race);
+		Competitor competitor1 = new Competitor("Bob");
+		DinghyClass graduate = new DinghyClass("Graduate", 2 , 1110);
+		Dinghy dinghy1 = new Dinghy("1234", graduate);
+		Race race = new Race("Race1", LocalDateTime.now(), null, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Entry entry = new Entry(competitor1, dinghy1, race);
+		race.signUp(entry);
 		Lap lap1 = new Lap(1, Duration.ofMinutes(13));
 		Lap lap2 = new Lap(2, Duration.ofMinutes(16));
 		Lap lap3 = new Lap(3, Duration.ofMinutes(15));
@@ -373,10 +389,12 @@ public class EntryTests {
 	
 	@Test
 	void given_anEntryHasLapsRecorded_then_updatesLastLap() {
-		Entry entry = new Entry();
-		Race race = new Race();
-		race.setPlannedLaps(5);
-		entry.setRace(race);
+		Competitor competitor1 = new Competitor("Bob");
+		DinghyClass graduate = new DinghyClass("Graduate", 2 , 1110);
+		Dinghy dinghy1 = new Dinghy("1234", graduate);
+		Race race = new Race("Race1", LocalDateTime.now(), null, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Entry entry = new Entry(competitor1, dinghy1, race);
+		race.signUp(entry);
 		Lap lap1 = new Lap(1, Duration.ofMinutes(13));
 		Lap lap2 = new Lap(2, Duration.ofMinutes(16));
 		Lap lap3 = new Lap(3, Duration.ofMinutes(15));
@@ -397,10 +415,12 @@ public class EntryTests {
 	
 	@Test
 	void given_anEntryHasLapsRecorded_then_ifAttemptToUpdateLapOtherThanLastThrowsIllegalArgumentException() {
-		Entry entry = new Entry();
-		Race race = new Race();
-		race.setPlannedLaps(5);
-		entry.setRace(race);
+		Competitor competitor1 = new Competitor("Bob");
+		DinghyClass graduate = new DinghyClass("Graduate", 2 , 1110);
+		Dinghy dinghy1 = new Dinghy("1234", graduate);
+		Race race = new Race("Race1", LocalDateTime.now(), null, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Entry entry = new Entry(competitor1, dinghy1, race);
+		race.signUp(entry);
 		Lap lap1 = new Lap(1, Duration.ofMinutes(13));
 		Lap lap2 = new Lap(2, Duration.ofMinutes(16));
 		Lap lap3 = new Lap(3, Duration.ofMinutes(15));
@@ -438,11 +458,12 @@ public class EntryTests {
 
 	@Test
 	void when_onLastLapOfRace_then_returnsTrueForOnLastLap() {
-		Race race = new Race();
-		race.setPlannedLaps(2);
-		
-		Entry entry = new Entry();
-		entry.setRace(race);
+		Competitor competitor1 = new Competitor("Bob");
+		DinghyClass graduate = new DinghyClass("Graduate", 2 , 1110);
+		Dinghy dinghy1 = new Dinghy("1234", graduate);
+		Race race = new Race("Race1", LocalDateTime.now(), null, Duration.ofMinutes(45), 2, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Entry entry = new Entry(competitor1, dinghy1, race);
+		race.signUp(entry);
 		entry.addLap(new Lap(1, Duration.ofMinutes(3L)));
 		
 		assertTrue(entry.getOnLastLap());
@@ -450,11 +471,12 @@ public class EntryTests {
 	
 	@Test
 	void when_notOnLastLapOfRace_then_returnsFalseForOnLastLap() {
-		Race race = new Race();
-		race.setPlannedLaps(3);
-		
-		Entry entry = new Entry();
-		entry.setRace(race);
+		Competitor competitor1 = new Competitor("Bob");
+		DinghyClass graduate = new DinghyClass("Graduate", 2 , 1110);
+		Dinghy dinghy1 = new Dinghy("1234", graduate);
+		Race race = new Race("Race1", LocalDateTime.now(), null, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Entry entry = new Entry(competitor1, dinghy1, race);
+		race.signUp(entry);
 		entry.addLap(new Lap(1, Duration.ofMinutes(3L)));
 		
 		assertFalse(entry.getOnLastLap());
@@ -462,11 +484,13 @@ public class EntryTests {
 
 	@Test
 	void when_finishedRace_then_returnsTrueForFinishedRace() {
-		Race race = new Race();
-		race.setPlannedLaps(2);
+		Competitor competitor1 = new Competitor("Bob");
+		DinghyClass graduate = new DinghyClass("Graduate", 2 , 1110);
+		Dinghy dinghy1 = new Dinghy("1234", graduate);
+		Race race = new Race("Race1", LocalDateTime.now(), null, Duration.ofMinutes(45), 2, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Entry entry = new Entry(competitor1, dinghy1, race);
+		race.signUp(entry);
 		
-		Entry entry = new Entry();
-		entry.setRace(race);
 		entry.addLap(new Lap(1, Duration.ofMinutes(3L)));
 		entry.addLap(new Lap(2, Duration.ofMinutes(3L)));
 		
@@ -475,11 +499,12 @@ public class EntryTests {
 	
 	@Test 
 	void when_notFinishedRace_then_returnsFalseForNotFinishedRace() {
-		Race race = new Race();
-		race.setPlannedLaps(3);
-		
-		Entry entry = new Entry();
-		entry.setRace(race);
+		Competitor competitor1 = new Competitor("Bob");
+		DinghyClass graduate = new DinghyClass("Graduate", 2 , 1110);
+		Dinghy dinghy1 = new Dinghy("1234", graduate);
+		Race race = new Race("Race1", LocalDateTime.now(), null, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Entry entry = new Entry(competitor1, dinghy1, race);
+		race.signUp(entry);
 		entry.addLap(new Lap(1, Duration.ofMinutes(3L)));
 		
 		assertFalse(entry.getFinishedRace());
@@ -487,11 +512,12 @@ public class EntryTests {
 	
 	@Test
 	void when_finishedRace_then_doesNotAddAdditionalLaps() {
-		Race race = new Race();
-		race.setPlannedLaps(2);
-		
-		Entry entry = new Entry();
-		entry.setRace(race);
+		Competitor competitor1 = new Competitor("Bob");
+		DinghyClass graduate = new DinghyClass("Graduate", 2 , 1110);
+		Dinghy dinghy1 = new Dinghy("1234", graduate);
+		Race race = new Race("Race1", LocalDateTime.now(), null, Duration.ofMinutes(45), 2, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Entry entry = new Entry(competitor1, dinghy1, race);
+		race.signUp(entry);
 		entry.addLap(new Lap(1, Duration.ofMinutes(3L)));
 		entry.addLap(new Lap(2, Duration.ofMinutes(3L)));
 		
@@ -506,6 +532,7 @@ public class EntryTests {
 		Race race = new Race();
 		Entry entry = new Entry();
 		entry.setRace(race);
+		race.setType(RaceType.FLEET);
 		entry.setScoringAbbreviation("XYZ");
 		
 		assertTrue(entry.getScoringAbbreviation() == "XYZ");
@@ -515,6 +542,7 @@ public class EntryTests {
 	void when_DNS_thenDoesNotAddLaps() {
 		Race race = new Race();
 		race.setPlannedLaps(2);
+		race.setType(RaceType.FLEET);
 		
 		Entry entry = new Entry();
 		entry.setRace(race);
@@ -530,6 +558,7 @@ public class EntryTests {
 	void when_RET_thenDoesNotAddLaps() {
 		Race race = new Race();
 		race.setPlannedLaps(2);
+		race.setType(RaceType.FLEET);
 		
 		Entry entry = new Entry();
 		entry.setRace(race);
@@ -545,6 +574,7 @@ public class EntryTests {
 	void when_DSQ_thenDoesNotAddLaps() {
 		Race race = new Race();
 		race.setPlannedLaps(2);
+		race.setType(RaceType.FLEET);
 		
 		Entry entry = new Entry();
 		entry.setRace(race);
@@ -568,10 +598,12 @@ public class EntryTests {
 	
 	@Test
 	void given_hasSailedTwoLaps_then_returnsNumberOfLapsSailed() {
-		Entry entry = new Entry();
-		Race race = new Race();
-		race.setPlannedLaps(5);
-		entry.setRace(race);
+		Competitor competitor1 = new Competitor("Bob");
+		DinghyClass graduate = new DinghyClass("Graduate", 2 , 1110);
+		Dinghy dinghy1 = new Dinghy("1234", graduate);
+		Race race = new Race("Race1", LocalDateTime.now(), null, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Entry entry = new Entry(competitor1, dinghy1, race);
+		race.signUp(entry);
 		Lap lap1 = new Lap(1, Duration.ofMinutes(13));
 		Lap lap2 = new Lap(2, Duration.ofMinutes(16));
 		entry.addLap(lap1);
@@ -582,10 +614,12 @@ public class EntryTests {
 
 	@Test
 	void when_lapAdded_then_calculatesPositionsOfEntriesInRace() {
-		Entry entry = new Entry();
-		Race race = new Race();
-		race.setPlannedLaps(5);
-		entry.setRace(race);
+		Competitor competitor1 = new Competitor("Bob");
+		DinghyClass graduate = new DinghyClass("Graduate", 2 , 1110);
+		Dinghy dinghy1 = new Dinghy("1234", graduate);
+		Race race = new Race("Race1", LocalDateTime.now(), null, Duration.ofMinutes(45), 2, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Entry entry = new Entry(competitor1, dinghy1, race);
+		race.signUp(entry);
 		Lap lap1 = new Lap(1, Duration.ofMinutes(13));
 		entry.addLap(lap1);
 		
@@ -594,12 +628,16 @@ public class EntryTests {
 
 	@Test
 	void when_lapRemoved_then_calculatesPositionsOfEntriesInRace() {
-		Entry entry1 = new Entry();
-		Entry entry2 = new Entry();
-		Race race = new Race();
-		race.setPlannedLaps(5);
-		entry1.setRace(race);
-		entry2.setRace(race);
+		Competitor competitor1 = new Competitor("Bob");
+		Competitor competitor2 = new Competitor("Joan");
+		DinghyClass graduate = new DinghyClass("Graduate", 2 , 1110);
+		Dinghy dinghy1 = new Dinghy("1234", graduate);
+		Dinghy dinghy2 = new Dinghy("5678", graduate);
+		Race race = new Race("Race1", LocalDateTime.now(), null, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Entry entry1 = new Entry(competitor1, dinghy1, race);
+		race.signUp(entry1);
+		Entry entry2 = new Entry(competitor2, dinghy2, race);
+		race.signUp(entry2);
 		entry1.addLap(new Lap(1, Duration.ofMinutes(12)));
 		entry1.addLap(new Lap(2, Duration.ofMinutes(13)));
 		entry2.addLap(new Lap(1, Duration.ofMinutes(13)));
@@ -612,12 +650,16 @@ public class EntryTests {
 
 	@Test
 	void when_lapUpdated_then_calculatesPositionsOfEntriesInRace() {
-		Entry entry1 = new Entry();
-		Entry entry2 = new Entry();
-		Race race = new Race();
-		race.setPlannedLaps(5);
-		entry1.setRace(race);
-		entry2.setRace(race);
+		Competitor competitor1 = new Competitor("Bob");
+		Competitor competitor2 = new Competitor("Joan");
+		DinghyClass graduate = new DinghyClass("Graduate", 2 , 1110);
+		Dinghy dinghy1 = new Dinghy("1234", graduate);
+		Dinghy dinghy2 = new Dinghy("5678", graduate);
+		Race race = new Race("Race1", LocalDateTime.now(), null, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Entry entry1 = new Entry(competitor1, dinghy1, race);
+		race.signUp(entry1);
+		Entry entry2 = new Entry(competitor2, dinghy2, race);
+		race.signUp(entry2);
 		entry1.addLap(new Lap(1, Duration.ofMinutes(12)));
 		entry1.addLap(new Lap(2, Duration.ofMinutes(13)));
 		entry2.addLap(new Lap(1, Duration.ofMinutes(13)));
@@ -630,12 +672,16 @@ public class EntryTests {
 	
 	@Test
 	void when_scoringAbrreviationIsSet_then_recalculatesPositionOfEntriesInRace() {
-		Entry entry1 = new Entry();
-		Entry entry2 = new Entry();
-		Race race = new Race();
-		race.setPlannedLaps(5);
-		entry1.setRace(race);
-		entry2.setRace(race);
+		Competitor competitor1 = new Competitor("Bob");
+		Competitor competitor2 = new Competitor("Joan");
+		DinghyClass graduate = new DinghyClass("Graduate", 2 , 1110);
+		Dinghy dinghy1 = new Dinghy("1234", graduate);
+		Dinghy dinghy2 = new Dinghy("5678", graduate);
+		Race race = new Race("Race1", LocalDateTime.now(), null, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Entry entry1 = new Entry(competitor1, dinghy1, race);
+		race.signUp(entry1);
+		Entry entry2 = new Entry(competitor2, dinghy2, race);
+		race.signUp(entry2);
 		entry1.addLap(new Lap(1, Duration.ofMinutes(12)));
 		entry1.addLap(new Lap(2, Duration.ofMinutes(13)));
 		entry2.addLap(new Lap(1, Duration.ofMinutes(13)));
