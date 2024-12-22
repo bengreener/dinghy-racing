@@ -654,27 +654,24 @@ class RaceTests {
 	
 	@Test
 	void given_race_is_fleet_when_twoEntriesHaveFinishedDifferentNumberOfLapsAndCorrectedTimeForBoatThatSailedLessLapsPlacesItAheadOfBoatThatSailedMoreLapsAndTheBoatThatSailedMoreLapsHasAHigherPY_then_correctly_calculatesPositions() {
-		DinghyClass scorpion = new DinghyClass("Test", 1);
-		DinghyClass graduate = new DinghyClass("Test", 1);
-
-		scorpion.setPortsmouthNumber(1043);
-		graduate.setPortsmouthNumber(1110);
+		DinghyClass scorpion = new DinghyClass("Scorpion", 1, 1043);
+		DinghyClass graduate = new DinghyClass("Graduate", 1, 1110);
 		
 		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), null, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
-		Competitor competitor1 = new Competitor("Competitor One");
-		Competitor competitor2 = new Competitor("Competitor Two");
+		Competitor competitor1 = new Competitor("One");
+		Competitor competitor2 = new Competitor("Two");
 		Dinghy dinghy1 = new Dinghy("1234", scorpion);
 		Dinghy dinghy2 = new Dinghy("4567", graduate);
 		Entry entry1 = new Entry(competitor1, dinghy1, race);
 		Entry entry2 = new Entry(competitor2, dinghy2, race);
 		race.signUp(entry1);
 		race.signUp(entry2);
-		entry1.addLap(new Lap(1, Duration.ofSeconds(209))); // corrected time 400
 		entry2.addLap(new Lap(1, Duration.ofSeconds(150)));
+		entry1.addLap(new Lap(1, Duration.ofSeconds(209))); // corrected time 400
 		entry2.addLap(new Lap(2, Duration.ofSeconds(300))); // corrected time 405
 
-		assertEquals(2, entry1.getPosition());
 		assertEquals(1, entry2.getPosition());
+		assertEquals(2, entry1.getPosition());
 	}
 	
 	@Test
@@ -692,10 +689,40 @@ class RaceTests {
 		race.signUp(entry1);
 		race.signUp(entry2);
 		entry1.addLap(new Lap(1, Duration.ofSeconds(200)));
-		entry1.addLap(new Lap(2, Duration.ofSeconds(200)));
-		entry2.addLap(new Lap(1, Duration.ofSeconds(220)));
+		entry1.addLap(new Lap(2, Duration.ofSeconds(200))); // corrected time 418 seconds
+		entry2.addLap(new Lap(1, Duration.ofSeconds(220))); // corrected time 396 seconds
 
 		assertEquals(1, entry2.getPosition());
 		assertEquals(2, entry1.getPosition());
+	}
+	
+	@Test
+	void given_race_is_fleet_when_threeEntriesHaveFinishedDifferentNumberOfLaps_then_anEntryCannotFinishAheadOfAnEntryWiththeSamePYThatSailedMoreLaps() {
+		DinghyClass fireball = new DinghyClass("Fireball", 2, 955);
+		DinghyClass graduate = new DinghyClass("Graduate", 2, 1110);
+		
+		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), null, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Competitor competitor1 = new Competitor("Competitor One");
+		Competitor competitor2 = new Competitor("Competitor Two");
+		Competitor competitor3 = new Competitor("Competitor Three");
+		Dinghy dinghy1 = new Dinghy("1234", fireball);
+		Dinghy dinghy2 = new Dinghy("4567", graduate);
+		Dinghy dinghy3 = new Dinghy("2628", graduate);
+		Entry entry1 = new Entry(competitor1, dinghy1, race);
+		Entry entry2 = new Entry(competitor2, dinghy2, race);
+		Entry entry3 = new Entry(competitor3, dinghy3, race);
+		race.signUp(entry1);
+		race.signUp(entry2);
+		race.signUp(entry3);
+		entry1.addLap(new Lap(1, Duration.ofSeconds(87)));
+		entry2.addLap(new Lap(1, Duration.ofSeconds(105)));
+		entry3.addLap(new Lap(1, Duration.ofSeconds(100))); // corrected time 180 seconds
+		entry1.addLap(new Lap(2, Duration.ofSeconds(90))); // corrected time 185 seconds
+		entry2.addLap(new Lap(2, Duration.ofSeconds(105))); // corrected time 189 seconds
+		
+
+		assertEquals(1, entry1.getPosition());
+		assertEquals(2, entry2.getPosition());
+		assertEquals(3, entry3.getPosition());
 	}
 }

@@ -16,6 +16,7 @@
    
 package com.bginfosys.dinghyracing.model;
 
+import java.io.Serializable;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
@@ -31,11 +32,16 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import jakarta.persistence.UniqueConstraint;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -48,7 +54,15 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Table(uniqueConstraints = {
 		@UniqueConstraint(columnNames = {"name", "plannedStartTime"})
 })
-public class Race {
+public class Race implements Serializable {
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	@Transient
+	Logger logger = LoggerFactory.getLogger(Race.class);
 	
 	private @Id @GeneratedValue Long id;
 	private @Version @JsonIgnore Long version;
@@ -231,39 +245,65 @@ public class Race {
 	 * Calculate and set the positions of entries in the race based on the number of laps completed and the time taken to complete those laps
 	 */
 	public void calculatePositions(Entry entry) {
-		Comparator<Entry> entriesComparator;
-				
-		switch (this.type) {
-			case PURSUIT:
-				entriesComparator = new PursuitEntriesComparator();
-				break;
-			case FLEET:
-				entriesComparator = new FleetEntriesComparator();
-				break;
-			default:
-				entriesComparator = new FleetEntriesComparator();
-				break;			
-		}
-		
 		if (entry.getScoringAbbreviation() != null && entry.getScoringAbbreviation() != "") {
-			updateEntryPosition(entry, signedUp.size());	
+			updateEntryPosition(entry, signedUp.size());
 		}
 		else {
 			if (this.type == RaceType.FLEET) {
-				// if a lap is removed may result in entry having no laps. Treat this case specifically to avoid a divide by 0 error in corrected time calculation
-				if (entry.getLaps().size() < 1) {
-					entry.setCorrectedTime(Duration.ofSeconds((long)Double.POSITIVE_INFINITY));
+				// if this is the lead entry need to calculate corrected time for all entries in the race
+				if (entry == this.getLeadEntry()) {
+					this.signedUp.forEach(e -> updateCorrectedTime(e));
 				}
 				else {
-					entry.setCorrectedTime(entry.getSumOfLapTimes().multipliedBy(this.getLeadEntry().getLapsSailed() * 1000).dividedBy(entry.getDinghy().getDinghyClass().getPortsmouthNumber() * entry.getLapsSailed()));//  / (entry.getDinghy().getDinghyClass().getPortsmouthNumber() * entry.getLapsSailed()));
-//					Integer mostLaps = Math.max(1, this.getLeadEntry().getLapsSailed());
-//					entry.setCorrectedTime(entry.getSumOfLapTimes().multipliedBy(mostLaps * 1000).dividedBy(entry.getDinghy().getDinghyClass().getPortsmouthNumber() * entry.getLapsSailed()));//  / (entry.getDinghy().getDinghyClass().getPortsmouthNumber() * entry.getLapsSailed()));	
-				}				
+					updateCorrectedTime(entry);
+				}
+				List<Entry> entriesInPosition = signedUp.stream().sorted(new FleetEntriesComparator()).toList();
+				signedUp.forEach(e -> e.setPosition(entriesInPosition.lastIndexOf(e) + 1));
+				calculatePositionPart2();
 			}
-			List<Entry> entriesInPosition = signedUp.stream().sorted(entriesComparator).toList();
-			updateEntryPosition(entry, entriesInPosition.lastIndexOf(entry) + 1);
+			else if (this.type == RaceType.PURSUIT) {
+				List<Entry> entriesInPosition = signedUp.stream().sorted(new PursuitEntriesComparator()).toList();
+				updateEntryPosition(entry, entriesInPosition.lastIndexOf(entry) + 1);	
+			}
 		}		
-	} 
+	}
+	
+	/**
+	 * If a boat ends with a corrected time greater than a boat which completed less laps but has the same Portsmouth Number, a modifying calculation should be applied
+	 */
+	private void calculatePositionPart2() {
+		signedUp.forEach(entry -> {
+			// check to see if any entries have a better corrected time than another entry that has sailed more laps and has the same or a higher PN
+			List<Entry> adjustEntries = signedUp.stream()
+					.filter(e -> entry.getCorrectedTime().compareTo(e.getCorrectedTime()) < 0 
+							&& entry.getLapsSailed() < e.getLapsSailed() 
+							&& entry.getDinghy().getDinghyClass().getPortsmouthNumber() <= e.getDinghy().getDinghyClass().getPortsmouthNumber())
+					.sorted((e1, e2) -> e1.getPosition().compareTo(e2.getPosition())).toList();
+			if (adjustEntries.size() > 0) {
+				// determine where to slot entry in to remaining entries (need to adjust for other entries that have their position changed on the same basis)
+				// below entries with a better corrected time
+				List<Entry> aePartDeux = signedUp.stream().filter(e -> e.getPosition() > adjustEntries.get(adjustEntries.size() - 1).getPosition() && e.getCorrectedTime().compareTo(entry.getCorrectedTime()) < 0 ).toList();
+				Entry lastEntry;
+				if (aePartDeux.size() > 0) {
+					lastEntry = aePartDeux.get(aePartDeux.size() - 1);
+				}
+				else {
+					lastEntry = adjustEntries.get(adjustEntries.size() - 1);
+				}
+				updateEntryPosition(entry, lastEntry.getPosition());
+			}
+		});
+	}
+	
+	public void updateCorrectedTime(Entry entry) {
+		// if a lap is removed may result in entry having no laps. Treat this case specifically to avoid a divide by 0 error in corrected time calculation
+		if (entry.getLaps().size() < 1) {
+			entry.setCorrectedTime(Duration.ofSeconds((long)Double.POSITIVE_INFINITY));
+		}
+		else {
+			entry.setCorrectedTime(entry.getSumOfLapTimes().multipliedBy(this.getLeadEntry().getLapsSailed() * 1000).dividedBy(entry.getDinghy().getDinghyClass().getPortsmouthNumber() * entry.getLapsSailed()));	
+		}
+	}
 	
 	/** 
 	 * Update the position of an entry and any other entries that have their position altered as a result
@@ -329,24 +369,17 @@ public class Race {
 		
 			@Override
 			public int compare(Entry entry1, Entry entry2) {
-				// from lead entry to last place entry (-1 faster, 0 same, 1 slower)
+				// -1 faster, 0 same, 1 slower
 				// sort entries with scoring abbreviations to the bottom
+				// entry1 does not have scoring abbreviation && entry2 does have scoring abbreviation then entry1 faster
 				if ((entry1.getScoringAbbreviation() == null || entry1.getScoringAbbreviation() == "") && (entry2.getScoringAbbreviation() != null && entry2.getScoringAbbreviation() != "")) {
 					return -1;
 				}
-				if ((entry2.getScoringAbbreviation() == null || entry2.getScoringAbbreviation() == "") && (entry1.getScoringAbbreviation() != null && entry1.getScoringAbbreviation() != "")) {
+				// entry1 has scoring abbreviation && entry2 does not have scoring abbreviation then entry2 faster
+				if ((entry1.getScoringAbbreviation() != null && entry1.getScoringAbbreviation() != "") && (entry2.getScoringAbbreviation() == null || entry2.getScoringAbbreviation() == "")) {
 					return 1;
 				}
-				// more laps beats less laps unless portsmouth number is lower
-				// entry1 sailed more laps and handicap is the same or indicates a slower boat
-				if (entry1.getLaps().size() > entry2.getLaps().size() && entry1.getDinghy().getDinghyClass().getPortsmouthNumber() >= entry2.getDinghy().getDinghyClass().getPortsmouthNumber()) {
-					return -1;
-				}
-				// entry1 sailed less laps and handicap is the same or indicates a faster boat
-				if (entry1.getLaps().size() < entry2.getLaps().size() && entry1.getDinghy().getDinghyClass().getPortsmouthNumber() <= entry2.getDinghy().getDinghyClass().getPortsmouthNumber()) {
-					return 1;
-				}
-				// resolve lap ties on corrected time to sail laps
+				// check corrected time
 				return entry1.getCorrectedTime().compareTo(entry2.getCorrectedTime());
 			}
 		}

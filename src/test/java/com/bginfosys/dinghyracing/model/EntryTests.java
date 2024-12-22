@@ -633,14 +633,14 @@ public class EntryTests {
 		DinghyClass graduate = new DinghyClass("Graduate", 2 , 1110);
 		Dinghy dinghy1 = new Dinghy("1234", graduate);
 		Dinghy dinghy2 = new Dinghy("5678", graduate);
-		Race race = new Race("Race1", LocalDateTime.now(), null, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Race race = new Race("Race1", LocalDateTime.now(), null, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART);
 		Entry entry1 = new Entry(competitor1, dinghy1, race);
 		race.signUp(entry1);
 		Entry entry2 = new Entry(competitor2, dinghy2, race);
 		race.signUp(entry2);
 		entry1.addLap(new Lap(1, Duration.ofMinutes(12)));
-		entry1.addLap(new Lap(2, Duration.ofMinutes(13)));
 		entry2.addLap(new Lap(1, Duration.ofMinutes(13)));
+		entry1.addLap(new Lap(2, Duration.ofMinutes(13)));
 		entry2.addLap(new Lap(2, Duration.ofMinutes(13)));
 		
 		entry1.removeLap(new Lap(2, Duration.ofMinutes(13)));

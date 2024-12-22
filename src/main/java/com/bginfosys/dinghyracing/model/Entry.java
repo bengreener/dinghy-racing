@@ -171,6 +171,9 @@ public class Entry {
 	}
 	
 	public String getScoringAbbreviation() {
+		if (scoringAbbreviation == null) {
+			return "";
+		}
 		return scoringAbbreviation;
 	}
 	
@@ -267,7 +270,18 @@ public class Entry {
 
 	@Override
 	public String toString() {
-		return "Entry [id=" + id + ", version=" + version + ", helm=" + helm.getName()+ ", crew=" + crew.getName() + ", dinghy=" + dinghy.getDinghyClass().getName() + " " + dinghy.getSailNumber()
-				+ ", race=" + race.getName() + ", position=" + position + "]";
+		if (dinghy.getDinghyClass().getCrewSize() > 1) {
+			String crewName = "";
+			if (crew != null) {
+				crewName = crew.getName();
+			}
+			return "Entry [id=" + id + ", version=" + version + ", helm=" + helm.getName()+ ", crew=" + crewName + ", dinghy=" + dinghy.getDinghyClass().getName() + " " + dinghy.getSailNumber()
+			+ ", race=" + race.getName() + ", position=" + position + "]";
+		}
+		else {
+			return "Entry [id=" + id + ", version=" + version + ", helm=" + helm.getName()+ ", dinghy=" + dinghy.getDinghyClass().getName() + " " + dinghy.getSailNumber()
+			+ ", race=" + race.getName() + ", position=" + position + "]";	
+		}
+		
 	}
 }
