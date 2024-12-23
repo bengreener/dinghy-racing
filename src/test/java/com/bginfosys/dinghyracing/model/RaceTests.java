@@ -696,8 +696,11 @@ class RaceTests {
 		assertEquals(2, entry1.getPosition());
 	}
 	
+	/*
+	 * Tests entries that need to have position adjusted due to slower last laps end in correct order
+	 */
 	@Test
-	void given_race_is_fleet_when_threeEntriesHaveFinishedDifferentNumberOfLaps_then_anEntryCannotFinishAheadOfAnEntryWiththeSamePYThatSailedMoreLaps() {
+	void given_race_is_fleet_when_fourEntriesHaveFinishedDifferentNumberOfLaps_then_anEntryCannotFinishAheadOfAnEntryWiththeSamePYThatSailedMoreLaps() {
 		DinghyClass fireball = new DinghyClass("Fireball", 2, 955);
 		DinghyClass graduate = new DinghyClass("Graduate", 2, 1110);
 		
@@ -705,24 +708,31 @@ class RaceTests {
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("Competitor Two");
 		Competitor competitor3 = new Competitor("Competitor Three");
+		Competitor competitor4 = new Competitor("Competitor Four");
 		Dinghy dinghy1 = new Dinghy("1234", fireball);
 		Dinghy dinghy2 = new Dinghy("4567", graduate);
 		Dinghy dinghy3 = new Dinghy("2628", graduate);
+		Dinghy dinghy4 = new Dinghy("5789", graduate);
 		Entry entry1 = new Entry(competitor1, dinghy1, race);
 		Entry entry2 = new Entry(competitor2, dinghy2, race);
 		Entry entry3 = new Entry(competitor3, dinghy3, race);
+		Entry entry4 = new Entry(competitor4, dinghy4, race);
 		race.signUp(entry1);
 		race.signUp(entry2);
 		race.signUp(entry3);
+		race.signUp(entry4);
 		entry1.addLap(new Lap(1, Duration.ofSeconds(87)));
 		entry2.addLap(new Lap(1, Duration.ofSeconds(105)));
 		entry3.addLap(new Lap(1, Duration.ofSeconds(100))); // corrected time 180 seconds
+		entry4.addLap(new Lap(1, Duration.ofSeconds(105))); 
 		entry1.addLap(new Lap(2, Duration.ofSeconds(90))); // corrected time 185 seconds
 		entry2.addLap(new Lap(2, Duration.ofSeconds(105))); // corrected time 189 seconds
+		entry4.addLap(new Lap(2, Duration.ofSeconds(106))); // corrected time 190 seconds
 		
 
 		assertEquals(1, entry1.getPosition());
 		assertEquals(2, entry2.getPosition());
-		assertEquals(3, entry3.getPosition());
+		assertEquals(3, entry4.getPosition());
+		assertEquals(4, entry3.getPosition());
 	}
 }
