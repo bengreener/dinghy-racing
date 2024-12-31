@@ -81,6 +81,8 @@ public class Entry {
 	
 	private Integer position;
 	
+	private Duration correctedTime;
+	
 	public Entry() {}
 	
 	public Entry(Competitor helm, Dinghy dinghy, Race race) {
@@ -169,6 +171,9 @@ public class Entry {
 	}
 	
 	public String getScoringAbbreviation() {
+		if (scoringAbbreviation == null) {
+			return "";
+		}
 		return scoringAbbreviation;
 	}
 	
@@ -183,6 +188,24 @@ public class Entry {
 
 	public void setPosition(Integer position) {
 		this.position = position;
+	}
+
+	public Duration getCorrectedTime() {
+		// if null return a duration of infinity to avoid null issues when performing operations on duration
+		if (correctedTime == null) {
+			return Duration.ofSeconds((long)Double.POSITIVE_INFINITY);
+		}
+		return correctedTime;
+	}
+
+	public void setCorrectedTime(Duration correctedTime) {
+		// if value is equal to infinity then a lap has not been completed and no corrected time can be calculated
+		if (correctedTime.getSeconds() == (long)Double.POSITIVE_INFINITY) {
+			this.correctedTime = null;
+		}
+		else {
+			this.correctedTime = correctedTime;
+		}
 	}
 
 	/**
@@ -247,7 +270,18 @@ public class Entry {
 
 	@Override
 	public String toString() {
-		return "Entry [id=" + id + ", version=" + version + ", helm=" + helm.getName()+ ", crew=" + crew.getName() + ", dinghy=" + dinghy.getDinghyClass().getName() + " " + dinghy.getSailNumber()
-				+ ", race=" + race.getName() + ", position=" + position + "]";
+		if (dinghy.getDinghyClass().getCrewSize() > 1) {
+			String crewName = "";
+			if (crew != null) {
+				crewName = crew.getName();
+			}
+			return "Entry [id=" + id + ", version=" + version + ", helm=" + helm.getName()+ ", crew=" + crewName + ", dinghy=" + dinghy.getDinghyClass().getName() + " " + dinghy.getSailNumber()
+			+ ", race=" + race.getName() + ", position=" + position + "]";
+		}
+		else {
+			return "Entry [id=" + id + ", version=" + version + ", helm=" + helm.getName()+ ", dinghy=" + dinghy.getDinghyClass().getName() + " " + dinghy.getSailNumber()
+			+ ", race=" + race.getName() + ", position=" + position + "]";	
+		}
+		
 	}
 }

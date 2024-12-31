@@ -48,6 +48,12 @@ public class DinghyClass {
 	public DinghyClass(String name, Integer crewSize) {
 		this.name = name;
 		this.crewSize = crewSize;
+	}
+	
+	public DinghyClass(String name, Integer crewSize, Integer portsmouthNumber) {
+		this.name = name;
+		this.crewSize = crewSize;
+		this.portsmouthNumber = portsmouthNumber;
 	}	
 	
 	public Long getId() {
