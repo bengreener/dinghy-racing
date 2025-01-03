@@ -273,24 +273,27 @@ public class Race implements Serializable {
 	 */
 	private void calculatePositionPart2() {
 		signedUp.forEach(entry -> {
-			// check to see if any entries have a better corrected time than another entry that has sailed more laps and has the same or a higher PN
-			List<Entry> adjustEntries = signedUp.stream()
-					.filter(e -> entry.getCorrectedTime().compareTo(e.getCorrectedTime()) < 0 
-							&& entry.getLapsSailed() < e.getLapsSailed() 
-							&& entry.getDinghy().getDinghyClass().getPortsmouthNumber() <= e.getDinghy().getDinghyClass().getPortsmouthNumber())
-					.sorted((e1, e2) -> e1.getPosition().compareTo(e2.getPosition())).toList();
-			if (adjustEntries.size() > 0) {
-				// determine where to slot entry in to remaining entries (need to adjust for other entries that have their position changed on the same basis)
-				// below entries with a better corrected time
-				List<Entry> aePartDeux = signedUp.stream().filter(e -> e.getPosition() > adjustEntries.get(adjustEntries.size() - 1).getPosition() && e.getCorrectedTime().compareTo(entry.getCorrectedTime()) < 0 ).toList();
-				Entry lastEntry;
-				if (aePartDeux.size() > 0) {
-					lastEntry = aePartDeux.get(aePartDeux.size() - 1);
+			// corrected time of entries with a scoring abbreviation is irrelevant
+			if (entry.getScoringAbbreviation() == null || entry.getScoringAbbreviation() == "") {
+				// check to see if entry has a better corrected time than other entries that sailed more laps and have the same or a higher PN (this entry gained an advantage from sailing less laps)
+				List<Entry> adjustEntries = signedUp.stream()
+						.filter(e -> entry.getCorrectedTime().compareTo(e.getCorrectedTime()) < 0 
+								&& entry.getLapsSailed() < e.getLapsSailed() 
+								&& entry.getDinghy().getDinghyClass().getPortsmouthNumber() <= e.getDinghy().getDinghyClass().getPortsmouthNumber())
+						.sorted((e1, e2) -> e1.getPosition().compareTo(e2.getPosition())).toList();
+				if (adjustEntries.size() > 0) {
+					// determine where to slot entry in to remaining entries (need to adjust for other entries that also had their position changed due to having an advantage from sailing less laps)
+					// slot below below other adjusted entries entries with a better corrected time
+					List<Entry> aePartDeux = signedUp.stream().filter(e -> e.getPosition() > adjustEntries.get(adjustEntries.size() - 1).getPosition() && e.getCorrectedTime().compareTo(entry.getCorrectedTime()) < 0 ).toList();
+					Entry lastEntry;
+					if (aePartDeux.size() > 0) {
+						lastEntry = aePartDeux.get(aePartDeux.size() - 1);
+					}
+					else {
+						lastEntry = adjustEntries.get(adjustEntries.size() - 1);
+					}
+					updateEntryPosition(entry, lastEntry.getPosition()); // slot in after last entry
 				}
-				else {
-					lastEntry = adjustEntries.get(adjustEntries.size() - 1);
-				}
-				updateEntryPosition(entry, lastEntry.getPosition());
 			}
 		});
 	}
