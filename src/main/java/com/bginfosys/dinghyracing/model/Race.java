@@ -259,11 +259,11 @@ public class Race implements Serializable {
 				}
 				List<Entry> entriesInPosition = signedUp.stream().sorted(new FleetEntriesComparator()).toList();
 				signedUp.forEach(e -> e.setPosition(entriesInPosition.lastIndexOf(e) + 1));
-				calculatePositionPart2();
+				applyLapAdjustments();
 			}
 			else if (this.type == RaceType.PURSUIT) {
 				List<Entry> entriesInPosition = signedUp.stream().sorted(new PursuitEntriesComparator()).toList();
-				updateEntryPosition(entry, entriesInPosition.lastIndexOf(entry) + 1);	
+				updateEntryPosition(entry, entriesInPosition.lastIndexOf(entry) + 1);
 			}
 		}		
 	}
@@ -271,7 +271,7 @@ public class Race implements Serializable {
 	/**
 	 * If a boat ends with a corrected time greater than a boat which completed less laps but has the same Portsmouth Number, a modifying calculation should be applied
 	 */
-	private void calculatePositionPart2() {
+	private void applyLapAdjustments() {
 		signedUp.forEach(entry -> {
 			// corrected time of entries with a scoring abbreviation is irrelevant
 			if (entry.getScoringAbbreviation() == null || entry.getScoringAbbreviation() == "") {
