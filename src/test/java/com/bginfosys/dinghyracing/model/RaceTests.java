@@ -855,7 +855,7 @@ class RaceTests {
 	}
 
 	@Test
-	void given_race_race_is_fleet_when_scoringAbbreviationSetForEntry_then_positionSetEqualToNumberOfEntriesInRace() {
+	void given_raceIsFleet_when_scoringAbbreviationSetForEntry_then_positionSetEqualToNumberOfEntriesInRace() {
 		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), null, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("Competitor Two");
@@ -876,5 +876,63 @@ class RaceTests {
 		entry2.setScoringAbbreviation("DNS");
 		
 		assertEquals(4, entry2.getPosition());
+	}
+
+	@Test
+	void given_raceIsFleet_when_moreThanOneEntryHaveTheSameCorrectedTime_then_theyAreAllAssignedTheLowestPositionOfAnyEntryWithThatCorrectedTime() {
+		DinghyClass scorpion = new DinghyClass("Scorpion", 2, 1043);
+		
+		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), null, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Competitor competitor1 = new Competitor("Competitor One");
+		Competitor competitor2 = new Competitor("Competitor Two");
+		Dinghy dinghy1 = new Dinghy("1234", scorpion);
+		Dinghy dinghy2 = new Dinghy("4567", scorpion);
+		Entry entry1 = new Entry(competitor1, dinghy1, race);
+		Entry entry2 = new Entry(competitor2, dinghy2, race);
+		race.signUp(entry1);
+		race.signUp(entry2);
+		entry1.addLap(new Lap(1, Duration.ofSeconds(660000)));
+		entry2.addLap(new Lap(1, Duration.ofSeconds(660000)));
+
+		assertEquals(2, entry1.getPosition());
+		assertEquals(2, entry2.getPosition());
+	}
+	
+	@Test
+	void given_raceIsFleet_when_moreThanOneGroupOfEntriesHaveTheSameCorrectedTimeAndEachGroupHasADifferentCorrectedTime_then_theyAreAllAssignedTheLowestPositionOfAnyEntryWithThatCorrectedTime() {
+		DinghyClass scorpion = new DinghyClass("Scorpion", 2, 1043);
+		
+		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), null, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Competitor competitor1 = new Competitor("Competitor One");
+		Competitor competitor2 = new Competitor("Competitor Two");
+		Competitor competitor3 = new Competitor("Competitor Three");
+		Competitor competitor4 = new Competitor("Competitor Four");
+		Competitor competitor5 = new Competitor("Competitor Five");
+		Dinghy dinghy1 = new Dinghy("1234", scorpion);
+		Dinghy dinghy2 = new Dinghy("4567", scorpion);
+		Dinghy dinghy3 = new Dinghy("3245", scorpion);
+		Dinghy dinghy4 = new Dinghy("2176", scorpion);
+		Dinghy dinghy5 = new Dinghy("2582", scorpion);
+		Entry entry1 = new Entry(competitor1, dinghy1, race);
+		Entry entry2 = new Entry(competitor2, dinghy2, race);
+		Entry entry3 = new Entry(competitor3, dinghy3, race);
+		Entry entry4 = new Entry(competitor4, dinghy4, race);
+		Entry entry5 = new Entry(competitor5, dinghy5, race);
+		race.signUp(entry1);
+		race.signUp(entry2);
+		race.signUp(entry3);
+		race.signUp(entry4);
+		race.signUp(entry5);
+		entry1.addLap(new Lap(1, Duration.ofSeconds(600000)));
+		entry2.addLap(new Lap(1, Duration.ofSeconds(660000)));
+		entry3.addLap(new Lap(1, Duration.ofSeconds(660000)));
+		entry4.addLap(new Lap(1, Duration.ofSeconds(650000)));
+		entry5.addLap(new Lap(1, Duration.ofSeconds(600000)));
+
+		assertEquals(2, entry1.getPosition());
+		assertEquals(2, entry5.getPosition());
+		assertEquals(3, entry4.getPosition());
+		assertEquals(5, entry2.getPosition());
+		assertEquals(5, entry3.getPosition());
 	}
 }

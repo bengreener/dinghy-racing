@@ -45,6 +45,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import jakarta.validation.constraints.NotNull;
 
@@ -260,6 +261,7 @@ public class Race implements Serializable {
 				List<Entry> entriesInPosition = signedUp.stream().sorted(new FleetEntriesComparator()).toList();
 				signedUp.forEach(e -> e.setPosition(entriesInPosition.lastIndexOf(e) + 1));
 				applyLapAdjustments();
+				applyMatchingCorrectedTimeAdjustments();
 			}
 			else if (this.type == RaceType.PURSUIT) {
 				List<Entry> entriesInPosition = signedUp.stream().sorted(new PursuitEntriesComparator()).toList();
@@ -297,6 +299,21 @@ public class Race implements Serializable {
 			}
 		});
 	}
+	
+	/*
+	 * If more than one entry has the same corrected time all entries with that corrected time should be assigned the lowest position of any entry with that corrected time
+	 */
+	private void applyMatchingCorrectedTimeAdjustments() {
+		// identify any duplications of corrected time and set position accordingly
+		Map<Duration, List<Entry>> duplicatedCorrectedTime = signedUp.stream().filter(entry -> entry.getScoringAbbreviation() == null || entry.getScoringAbbreviation() == "")
+				.collect(Collectors.groupingBy(Entry::getCorrectedTime));
+		duplicatedCorrectedTime.forEach((key, value) -> {
+			if (value.size() > 1) {
+				Integer maxPosition = value.stream().max(Comparator.comparing(Entry::getPosition)).get().getPosition();
+				value.forEach(entry -> entry.setPosition(maxPosition));
+			}
+		});
+	}	
 	
 	public void updateCorrectedTime(Entry entry) {
 		// if a lap is removed may result in entry having no laps. Treat this case specifically to avoid a divide by 0 error in corrected time calculation
