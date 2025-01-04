@@ -45,6 +45,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import jakarta.validation.constraints.NotNull;
 
@@ -259,11 +260,12 @@ public class Race implements Serializable {
 				}
 				List<Entry> entriesInPosition = signedUp.stream().sorted(new FleetEntriesComparator()).toList();
 				signedUp.forEach(e -> e.setPosition(entriesInPosition.lastIndexOf(e) + 1));
-				calculatePositionPart2();
+				applyLapAdjustments();
+				applyMatchingCorrectedTimeAdjustments();
 			}
 			else if (this.type == RaceType.PURSUIT) {
 				List<Entry> entriesInPosition = signedUp.stream().sorted(new PursuitEntriesComparator()).toList();
-				updateEntryPosition(entry, entriesInPosition.lastIndexOf(entry) + 1);	
+				updateEntryPosition(entry, entriesInPosition.lastIndexOf(entry) + 1);
 			}
 		}		
 	}
@@ -271,29 +273,47 @@ public class Race implements Serializable {
 	/**
 	 * If a boat ends with a corrected time greater than a boat which completed less laps but has the same Portsmouth Number, a modifying calculation should be applied
 	 */
-	private void calculatePositionPart2() {
+	private void applyLapAdjustments() {
 		signedUp.forEach(entry -> {
-			// check to see if any entries have a better corrected time than another entry that has sailed more laps and has the same or a higher PN
-			List<Entry> adjustEntries = signedUp.stream()
-					.filter(e -> entry.getCorrectedTime().compareTo(e.getCorrectedTime()) < 0 
-							&& entry.getLapsSailed() < e.getLapsSailed() 
-							&& entry.getDinghy().getDinghyClass().getPortsmouthNumber() <= e.getDinghy().getDinghyClass().getPortsmouthNumber())
-					.sorted((e1, e2) -> e1.getPosition().compareTo(e2.getPosition())).toList();
-			if (adjustEntries.size() > 0) {
-				// determine where to slot entry in to remaining entries (need to adjust for other entries that have their position changed on the same basis)
-				// below entries with a better corrected time
-				List<Entry> aePartDeux = signedUp.stream().filter(e -> e.getPosition() > adjustEntries.get(adjustEntries.size() - 1).getPosition() && e.getCorrectedTime().compareTo(entry.getCorrectedTime()) < 0 ).toList();
-				Entry lastEntry;
-				if (aePartDeux.size() > 0) {
-					lastEntry = aePartDeux.get(aePartDeux.size() - 1);
+			// corrected time of entries with a scoring abbreviation is irrelevant
+			if (entry.getScoringAbbreviation() == null || entry.getScoringAbbreviation() == "") {
+				// check to see if entry has a better corrected time than other entries that sailed more laps and have the same or a higher PN (this entry gained an advantage from sailing less laps)
+				List<Entry> adjustEntries = signedUp.stream()
+						.filter(e -> entry.getCorrectedTime().compareTo(e.getCorrectedTime()) < 0 
+								&& entry.getLapsSailed() < e.getLapsSailed() 
+								&& entry.getDinghy().getDinghyClass().getPortsmouthNumber() <= e.getDinghy().getDinghyClass().getPortsmouthNumber())
+						.sorted((e1, e2) -> e1.getPosition().compareTo(e2.getPosition())).toList();
+				if (adjustEntries.size() > 0) {
+					// determine where to slot entry in to remaining entries (need to adjust for other entries that also had their position changed due to having an advantage from sailing less laps)
+					// slot below below other adjusted entries entries with a better corrected time
+					List<Entry> aePartDeux = signedUp.stream().filter(e -> e.getPosition() > adjustEntries.get(adjustEntries.size() - 1).getPosition() && e.getCorrectedTime().compareTo(entry.getCorrectedTime()) < 0 ).toList();
+					Entry lastEntry;
+					if (aePartDeux.size() > 0) {
+						lastEntry = aePartDeux.get(aePartDeux.size() - 1);
+					}
+					else {
+						lastEntry = adjustEntries.get(adjustEntries.size() - 1);
+					}
+					updateEntryPosition(entry, lastEntry.getPosition()); // slot in after last entry
 				}
-				else {
-					lastEntry = adjustEntries.get(adjustEntries.size() - 1);
-				}
-				updateEntryPosition(entry, lastEntry.getPosition());
 			}
 		});
 	}
+	
+	/*
+	 * If more than one entry has the same corrected time all entries with that corrected time should be assigned the lowest position of any entry with that corrected time
+	 */
+	private void applyMatchingCorrectedTimeAdjustments() {
+		// identify any duplications of corrected time and set position accordingly
+		Map<Duration, List<Entry>> duplicatedCorrectedTime = signedUp.stream().filter(entry -> entry.getScoringAbbreviation() == null || entry.getScoringAbbreviation() == "")
+				.collect(Collectors.groupingBy(Entry::getCorrectedTime));
+		duplicatedCorrectedTime.forEach((key, value) -> {
+			if (value.size() > 1) {
+				Integer maxPosition = value.stream().max(Comparator.comparing(Entry::getPosition)).get().getPosition();
+				value.forEach(entry -> entry.setPosition(maxPosition));
+			}
+		});
+	}	
 	
 	public void updateCorrectedTime(Entry entry) {
 		// if a lap is removed may result in entry having no laps. Treat this case specifically to avoid a divide by 0 error in corrected time calculation
