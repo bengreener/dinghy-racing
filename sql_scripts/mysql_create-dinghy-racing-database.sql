@@ -1,4 +1,4 @@
--- v2024.12.2
+-- v2025.1.2
 CREATE DATABASE IF NOT EXISTS `dinghy_racing` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
 
 USE dinghy_racing;
@@ -17,6 +17,11 @@ CREATE TABLE dinghy_class_seq (
 	next_val BIGINT
 ) engine=InnoDB;
 INSERT INTO dinghy_class_seq VALUES ( 1 );
+
+CREATE TABLE fleet_seq (
+	next_val BIGINT
+) engine=InnoDB;
+INSERT INTO fleet_seq VALUES ( 1 );
 
 CREATE TABLE entry_seq (
 	next_val BIGINT
@@ -49,6 +54,22 @@ CREATE TABLE dinghy_class (
 	version BIGINT, 
 	CONSTRAINT PK_dinghy_class_id PRIMARY KEY (id),
 	CONSTRAINT UK_dinghy_class_name UNIQUE (name)
+) engine=InnoDB;
+
+CREATE TABLE fleet (
+	id BIGINT NOT NULL, 
+	name VARCHAR(255) NOT NULL,
+	CONSTRAINT PK_fleet_id PRIMARY KEY (id),
+	CONSTRAINT UK_fleet_name UNIQUE (name)
+) engine=InnoDB;
+
+CREATE TABLE fleet_dinghy_classes (
+	fleet_id BIGINT NOT NULL,
+	dinghy_class_id BIGINT NOT NULL,
+	CONSTRAINT PK_fleet_dinghy_classes_fleet_id_dinghy_class_id PRIMARY KEY (fleet_id, dinghy_class_id),
+	CONSTRAINT FK_fleet_fleet_id FOREIGN KEY (fleet_id) REFERENCES fleet (id),
+	CONSTRAINT FK_dinghy_class_dinghy_class_id FOREIGN KEY (dinghy_class_id) REFERENCES dinghy_class (id),
+	CONSTRAINT UK_fleet_id_dinghy_class_id UNIQUE (fleet_id, dinghy_class_id)
 ) engine=InnoDB;
 
 CREATE TABLE dinghy (
