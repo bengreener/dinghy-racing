@@ -51,6 +51,7 @@ ALTER TABLE entry ADD COLUMN corrected_time BIGINT;
 CREATE TABLE fleet (
 	id BIGINT NOT NULL, 
 	name VARCHAR(255) NOT NULL,
+	version BIGINT, 
 	CONSTRAINT PK_fleet_id PRIMARY KEY (id),
 	CONSTRAINT UK_fleet_name UNIQUE (name)
 ) engine=InnoDB;
