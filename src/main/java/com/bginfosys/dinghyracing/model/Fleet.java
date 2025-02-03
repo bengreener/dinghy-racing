@@ -44,7 +44,7 @@ public class Fleet implements Serializable {
 	private String name;
 
 	@Column(unique=true)
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany
 	private Set<DinghyClass> dinghyClasses = new HashSet<DinghyClass>(64);
 	
 	public Fleet() {}
