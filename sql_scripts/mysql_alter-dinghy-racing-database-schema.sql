@@ -58,7 +58,7 @@ CREATE TABLE fleet (
 
 CREATE TABLE fleet_dinghy_classes (
 	fleet_id BIGINT NOT NULL,
-	dinghy_class_id BIGINT NOT NULL,
+	dinghy_classes_id BIGINT NOT NULL,
 	CONSTRAINT PK_fleet_dinghy_classes_fleet_id_dinghy_class_id PRIMARY KEY (fleet_id, dinghy_class_id),
 	CONSTRAINT FK_fleet_fleet_id FOREIGN KEY (fleet_id) REFERENCES fleet (id),
 	CONSTRAINT FK_dinghy_class_dinghy_class_id FOREIGN KEY (dinghy_class_id) REFERENCES dinghy_class (id),
