@@ -22,7 +22,6 @@ import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -48,6 +47,10 @@ public class Fleet implements Serializable {
 	private Set<DinghyClass> dinghyClasses = new HashSet<DinghyClass>(64);
 	
 	public Fleet() {}
+	
+	public Long getId() {
+		return this.id;
+	}
 	
 	public Fleet(String name) {
 		this.name = name;
