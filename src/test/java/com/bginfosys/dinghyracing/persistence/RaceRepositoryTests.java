@@ -42,6 +42,7 @@ import com.bginfosys.dinghyracing.model.StartType;
 import com.bginfosys.dinghyracing.model.Dinghy;
 import com.bginfosys.dinghyracing.model.DinghyClass;
 import com.bginfosys.dinghyracing.model.Entry;
+import com.bginfosys.dinghyracing.model.Fleet;
 import com.bginfosys.dinghyracing.model.Competitor;
 
 @DataJpaTest
@@ -55,10 +56,10 @@ public class RaceRepositoryTests {
 
 	@Test
 	void when_providedWithValidRace_then_savesRace() {
-		DinghyClass dinghyClass = new DinghyClass("Test Dinghyclass", 1);
-		entityManager.persist(dinghyClass);
+		Fleet fleet = new Fleet("Test Fleet");
+		entityManager.persist(fleet);
 		
-		Race race1 = new Race("Test Race", LocalDateTime.of(2023, 5, 13, 12, 00), dinghyClass, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Race race1 = new Race("Test Race", LocalDateTime.of(2023, 5, 13, 12, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		race1.setPlannedLaps(5);
 		Race race2 = raceRepository.save(race1);
 		
@@ -67,12 +68,12 @@ public class RaceRepositoryTests {
 	
 	@Test
 	void when_raceHasNoName_then_throwsException() {
-		DinghyClass dinghyClass = new DinghyClass("Test Dinghyclass", 1);
-		entityManager.persist(dinghyClass);
+		Fleet fleet = new Fleet("Test Fleet");
+		entityManager.persist(fleet);
 				
 		Race race1 = new Race();
 		race1.setPlannedStartTime(LocalDateTime.of(2023, 5, 13, 12, 00));
-		race1.setDinghyClass(dinghyClass);
+		race1.setFleet(fleet);
 		race1.setDuration(Duration.ofMinutes(45));
 		race1.setPlannedLaps(5);
 		raceRepository.save(race1);
@@ -84,12 +85,12 @@ public class RaceRepositoryTests {
 	
 	@Test
 	void when_raceHasNoPlannedStartTime_then_throwsException() {
-		DinghyClass dinghyClass = new DinghyClass("Test Dinghyclass", 1);
-		entityManager.persist(dinghyClass);
+		Fleet fleet = new Fleet("Test Fleet");
+		entityManager.persist(fleet);
 				
 		Race race1 = new Race();
 		race1.setName("Test Race");
-		race1.setDinghyClass(dinghyClass);
+		race1.setFleet(fleet);
 		race1.setPlannedLaps(5);
 		raceRepository.save(race1);
 		
@@ -100,13 +101,13 @@ public class RaceRepositoryTests {
 	
 	@Test
 	void when_raceHasNoPlannedLaps_then_throwsException() {
-		DinghyClass dinghyClass = new DinghyClass("Test Dinghyclass", 1);
-		entityManager.persist(dinghyClass);
+		Fleet fleet = new Fleet("Test Fleet");
+		entityManager.persist(fleet);
 				
 		Race race1 = new Race();
 		race1.setName("Test Race");
 		race1.setPlannedStartTime(LocalDateTime.of(2023, 5, 13, 12, 00));
-		race1.setDinghyClass(dinghyClass);
+		race1.setFleet(fleet);
 		race1.setDuration(Duration.ofMinutes(45));
 		raceRepository.save(race1);
 		
@@ -116,14 +117,28 @@ public class RaceRepositoryTests {
 	}
 	
 	@Test
+	void when_raceHasNoFleet_then_throwsException() {
+		Race race1 = new Race();
+		race1.setName("Test Race");
+		race1.setPlannedStartTime(LocalDateTime.of(2023, 5, 13, 12, 00));
+		race1.setDuration(Duration.ofMinutes(45));
+		race1.setPlannedLaps(5);
+		raceRepository.save(race1);
+		
+		assertThrows(ConstraintViolationException.class, () -> {
+			entityManager.flush();
+		});
+	}
+	
+	@Test
 	void when_raceHasNoDuration_then_throwsException() {
-		DinghyClass dinghyClass = new DinghyClass("Test Dinghyclass", 1);
-		entityManager.persist(dinghyClass);
+		Fleet fleet = new Fleet("Test Fleet");
+		entityManager.persist(fleet);
 				
 		Race race1 = new Race();
 		race1.setName("Test Race");
 		race1.setPlannedStartTime(LocalDateTime.of(2023, 5, 13, 12, 00));
-		race1.setDinghyClass(dinghyClass);
+		race1.setFleet(fleet);
 		race1.setPlannedLaps(5);
 		raceRepository.save(race1);
 		
@@ -139,10 +154,14 @@ public class RaceRepositoryTests {
 		
 		DinghyClass dinghyClass = new DinghyClass("Test Dinghyclass", 1);
 		entityManager.persist(dinghyClass);
+		
+		Fleet fleet = new Fleet("Test Fleet");
+		entityManager.persist(fleet);
+		
 		Dinghy dinghy = new Dinghy("1234", dinghyClass);
 		entityManager.persist(dinghy);
 				
-		Race race1 = new Race("Test Race", LocalDateTime.of(2023, 5, 13, 12, 00), dinghyClass, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Race race1 = new Race("Test Race", LocalDateTime.of(2023, 5, 13, 12, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		entityManager.persist(race1);
 		// remove entity from session (detach entity). Not doing so can result in a false positive dependent on the logic used to check for an existing entity in repository save method
 		entityManager.detach(race1);
@@ -157,7 +176,7 @@ public class RaceRepositoryTests {
 		
 		assertThat(race1.getId() == race2.getId()
 			&& race1.getName() == race2.getName()
-			&& race1.getDinghyClass() == race2.getDinghyClass() 
+			&& race1.getFleet() == race2.getFleet() 
 			&& race1.getPlannedStartTime() == race2.getPlannedStartTime()
 			&& race1.getSignedUp() == race2.getSignedUp()
 		);
@@ -165,14 +184,14 @@ public class RaceRepositoryTests {
 
 	@Test
 	void when_aCollectionOfRacesAfterACertainTimeIsRequested_then_ACollectionContainingOnlyRacesThatStartAtOrAfterThatTimeIsReturned() {
-		DinghyClass dinghyClass = new DinghyClass("Test Dinghyclass", 1);
-		entityManager.persist(dinghyClass);
+		Fleet fleet = new Fleet("Test Fleet");
+		entityManager.persist(fleet);
 		
-		Race race1 = new Race("Test Race1", LocalDateTime.of(2023, 5, 13, 11, 00), dinghyClass, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Race race1 = new Race("Test Race1", LocalDateTime.of(2023, 5, 13, 11, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		race1 = entityManager.persist(race1);
-		Race race2 = new Race("Test Race2", LocalDateTime.of(2023, 5, 13, 12, 00), dinghyClass, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Race race2 = new Race("Test Race2", LocalDateTime.of(2023, 5, 13, 12, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		race2 = entityManager.persist(race2);
-		Race race3 = new Race("Test Race3", LocalDateTime.of(2023, 5, 13, 13, 00), dinghyClass, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Race race3 = new Race("Test Race3", LocalDateTime.of(2023, 5, 13, 13, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		race3 = entityManager.persist(race3);
 		
 		Page<Race> result = raceRepository.findByPlannedStartTimeGreaterThanEqual(LocalDateTime.of(2023, 5, 13, 12, 00), Pageable.ofSize(5));
@@ -182,14 +201,14 @@ public class RaceRepositoryTests {
 	
 	@Test
 	void when_raceIsRequestedByNameAndPlannedStartTime_then_raceIsReturned() {
-		DinghyClass dinghyClass = new DinghyClass("Test Dinghyclass", 1);
-		entityManager.persist(dinghyClass);
+		Fleet fleet = new Fleet("Test Fleet");
+		entityManager.persist(fleet);
 		
-		Race race1 = new Race("Test Race1", LocalDateTime.of(2023, 5, 13, 11, 00), dinghyClass, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Race race1 = new Race("Test Race1", LocalDateTime.of(2023, 5, 13, 11, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		entityManager.persist(race1);
-		Race race2 = new Race("Test Race2", LocalDateTime.of(2023, 5, 13, 12, 00), dinghyClass, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Race race2 = new Race("Test Race2", LocalDateTime.of(2023, 5, 13, 12, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		entityManager.persist(race2);
-		Race race3 = new Race("Test Race3", LocalDateTime.of(2023, 5, 13, 13, 00), dinghyClass, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Race race3 = new Race("Test Race3", LocalDateTime.of(2023, 5, 13, 13, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		entityManager.persist(race3);
 		entityManager.flush();
 		
@@ -200,13 +219,10 @@ public class RaceRepositoryTests {
 
 	@Test
 	void given_raceExistsWithNameAndStartTime_when_creatingAnotherRaceWithTheSameNameAndStartTime_then_throwsError() {
-		Race race1 = new Race();
-		race1.setName("Test Race");
-		race1.setPlannedStartTime(LocalDateTime.of(2023, 10, 13, 12, 00));
-		race1.setDuration(Duration.ofMinutes(45));
-		race1.setPlannedLaps(5);
-		race1.setType(RaceType.FLEET);
-		race1.setStartType(StartType.CSCCLUBSTART);
+		Fleet fleet = new Fleet("Test Fleet");
+		entityManager.persist(fleet);
+				
+		Race race1 = new Race("Test Race", LocalDateTime.of(2023, 10, 13, 12, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		entityManager.persistAndFlush(race1);
 		
 		Race race2 = new Race();
@@ -223,16 +239,16 @@ public class RaceRepositoryTests {
 
 	@Test
 	void when_aCollectionOfRacesBetweenCertainTimesIsRequested_then_ACollectionContainingOnlyRacesBetweenThomseTimesAreReturned() {
-		DinghyClass dinghyClass = new DinghyClass("Test Dinghyclass", 1);
-		entityManager.persist(dinghyClass);
+		Fleet fleet = new Fleet("Test Fleet");
+		entityManager.persist(fleet);
 		
-		Race race1 = new Race("Test Race1", LocalDateTime.of(2023, 5, 13, 11, 59), dinghyClass, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Race race1 = new Race("Test Race1", LocalDateTime.of(2023, 5, 13, 11, 59), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		race1 = entityManager.persist(race1);
-		Race race2 = new Race("Test Race2", LocalDateTime.of(2023, 5, 13, 12, 00), dinghyClass, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Race race2 = new Race("Test Race2", LocalDateTime.of(2023, 5, 13, 12, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		race2 = entityManager.persist(race2);
-		Race race3 = new Race("Test Race3", LocalDateTime.of(2023, 5, 13, 13, 00), dinghyClass, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Race race3 = new Race("Test Race3", LocalDateTime.of(2023, 5, 13, 13, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		race3 = entityManager.persist(race3);
-		Race race4 = new Race("Test Race4", LocalDateTime.of(2023, 5, 13, 13, 01), dinghyClass, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Race race4 = new Race("Test Race4", LocalDateTime.of(2023, 5, 13, 13, 01), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		race4 = entityManager.persist(race4);
 		
 		Page<Race> result = raceRepository.findByPlannedStartTimeBetween(LocalDateTime.of(2023, 5, 13, 12, 00), 
@@ -244,20 +260,20 @@ public class RaceRepositoryTests {
 	
 	@Test
 	void when_aCollectionOfRacesBetweenCertainTimesAndTypeEqualsIsRequested_then_ACollectionContainingOnlyRacesBetweenThoseTimesWithThatTypeAreReturned() {
-		DinghyClass dinghyClass = new DinghyClass("Test Dinghyclass", 1);
-		entityManager.persist(dinghyClass);
+		Fleet fleet = new Fleet("Test Fleet");
+		entityManager.persist(fleet);
 		
-		Race race1 = new Race("Test Race1", LocalDateTime.of(2023, 5, 13, 11, 59), dinghyClass, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Race race1 = new Race("Test Race1", LocalDateTime.of(2023, 5, 13, 11, 59), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		race1 = entityManager.persist(race1);
-		Race race2 = new Race("Test Race2", LocalDateTime.of(2023, 5, 13, 12, 00), dinghyClass, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Race race2 = new Race("Test Race2", LocalDateTime.of(2023, 5, 13, 12, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		race2 = entityManager.persist(race2);
-		Race race3 = new Race("Test Race3", LocalDateTime.of(2023, 5, 13, 13, 00), dinghyClass, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Race race3 = new Race("Test Race3", LocalDateTime.of(2023, 5, 13, 13, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		race3 = entityManager.persist(race3);
-		Race race4 = new Race("Test Race4", LocalDateTime.of(2023, 5, 13, 13, 01), dinghyClass, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Race race4 = new Race("Test Race4", LocalDateTime.of(2023, 5, 13, 13, 01), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		race4 = entityManager.persist(race4);
-		Race race5 = new Race("Test Race5", LocalDateTime.of(2023, 5, 13, 12, 00), dinghyClass, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART);
+		Race race5 = new Race("Test Race5", LocalDateTime.of(2023, 5, 13, 12, 00), fleet, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART);
 		race5 = entityManager.persist(race5);
-		Race race6 = new Race("Test Race6", LocalDateTime.of(2023, 5, 13, 13, 00), dinghyClass, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART);
+		Race race6 = new Race("Test Race6", LocalDateTime.of(2023, 5, 13, 13, 00), fleet, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART);
 		race6 = entityManager.persist(race6);
 		
 		Page<Race> result = raceRepository.findByPlannedStartTimeBetweenAndTypeEquals(LocalDateTime.of(2023, 5, 13, 12, 00), 
@@ -271,10 +287,14 @@ public class RaceRepositoryTests {
 	void when_aNewStartSequenceStateIsSet_then_savesWithNewStartSequenceState() {
 		DinghyClass dinghyClass = new DinghyClass("Test Dinghyclass", 1);
 		entityManager.persist(dinghyClass);
+		
+		Fleet fleet = new Fleet("Test Fleet");
+		entityManager.persist(fleet);
+		
 		Dinghy dinghy = new Dinghy("1234", dinghyClass);
 		entityManager.persist(dinghy);
 				
-		Race race1 = new Race("Test Race", LocalDateTime.of(2023, 5, 13, 12, 00), dinghyClass, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Race race1 = new Race("Test Race", LocalDateTime.of(2023, 5, 13, 12, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		entityManager.persist(race1);
 		// remove entity from session (detach entity). Not doing so can result in a false positive dependent on the logic used to check for an existing entity in repository save method
 		entityManager.detach(race1);

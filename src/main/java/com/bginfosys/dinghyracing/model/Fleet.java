@@ -48,12 +48,17 @@ public class Fleet implements Serializable {
 	
 	public Fleet() {}
 	
-	public Long getId() {
-		return this.id;
-	}
-	
 	public Fleet(String name) {
 		this.name = name;
+	}
+	
+	public Fleet(String name, Set<DinghyClass> dinghyClasses) {
+		this.name = name;
+		this.dinghyClasses = dinghyClasses;
+	}
+		
+	public Long getId() {
+		return this.id;
 	}
 
 	public String getName() {

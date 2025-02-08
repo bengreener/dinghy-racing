@@ -86,7 +86,7 @@ public class Entry {
 	public Entry() {}
 	
 	public Entry(Competitor helm, Dinghy dinghy, Race race) {
-		if (race.getDinghyClass() == null || race.getDinghyClass() == dinghy.getDinghyClass()) {
+		if (race.getFleet().getDinghyClasses().isEmpty() || race.getFleet().getDinghyClasses().contains(dinghy.getDinghyClass())) {
 			this.dinghy = dinghy;
 			this.helm = helm;
 			this.race = race;
@@ -105,7 +105,7 @@ public class Entry {
 	}
 
 	public void setDinghy(Dinghy dinghy) {
-		if (this.getRace() == null || this.getRace().getDinghyClass() == null || (dinghy.getDinghyClass() == this.getRace().getDinghyClass())) {
+		if (this.race == null || this.getRace().getFleet().getDinghyClasses().isEmpty() || race.getFleet().getDinghyClasses().contains(dinghy.getDinghyClass())) {
 			this.dinghy = dinghy;
 		}
 		else {
@@ -134,7 +134,7 @@ public class Entry {
 	}
 
 	public void setRace(Race race) {
-		if (race.getDinghyClass() == null || this.getDinghy() == null || (this.getDinghy().getDinghyClass() == race.getDinghyClass())) {
+		if (dinghy == null || race.getFleet().getDinghyClasses().isEmpty() || race.getFleet().getDinghyClasses().contains(dinghy.getDinghyClass())) {
 			this.race = race;
 			race.signUp(this);
 		}

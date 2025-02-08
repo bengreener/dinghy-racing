@@ -25,6 +25,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.concurrent.ConcurrentSkipListSet;
 
@@ -45,7 +47,9 @@ public class EntryTests {
 	void when_constructorCalledWithArguments_then_itInstantiatesAndSetsPropertyValues() {
 		Competitor helm = new Competitor();
 		Dinghy dinghy = new Dinghy();
+		Fleet fleet = new Fleet("Test Fleet");
 		Race race = new Race();
+		race.setFleet(fleet);
 		
 		Entry entry = new Entry(helm, dinghy, race);
 		assertTrue(entry instanceof Entry);
@@ -55,14 +59,19 @@ public class EntryTests {
 	}
 	
 	@Test
-	void when_constructorCalledWithArgumentsAndRaceDinghyClassIsNotNullAndDoesNotMatchDinghyDinghyClass_then_throwsDinghyClassMismatchException() {
+	void when_constructorCalledWithArgumentsAndRaceFleetDinghyClassIsNotNullAndDoesNotMatchDinghyDinghyClass_then_throwsDinghyClassMismatchException() {
 		DinghyClass dc1 = new DinghyClass("Scorpion", 2);
 		DinghyClass dc2 = new DinghyClass("Graduate", 2);
+		
+		Set<DinghyClass> dinghyClasses = new HashSet<DinghyClass>();
+		dinghyClasses.add(dc2);
+		Fleet fleet = new Fleet("Test Fleet", dinghyClasses);
+		
 		Competitor helm = new Competitor();
 		Dinghy dinghy = new Dinghy();
 		dinghy.setDinghyClass(dc1);
 		Race race = new Race();
-		race.setDinghyClass(dc2);
+		race.setFleet(fleet);
 		
 		assertThrows(DinghyClassMismatchException.class, () -> {
 			new Entry(helm, dinghy, race);	
@@ -70,12 +79,14 @@ public class EntryTests {
 	}
 	
 	@Test
-	void when_constructorCalledWithArgumentsAndRaceDinghyClassIsNullAndDoesNotMatchDinghyDinghyClass_then_itInstantiatesAndSetsPropertyValues() {
+	void when_constructorCalledWithArgumentsAndRaceFleetDinghyClassIsNullAndDoesNotMatchDinghyDinghyClass_then_itInstantiatesAndSetsPropertyValues() {
 		DinghyClass dc1 = new DinghyClass("Scorpion", 2);
 		Competitor helm = new Competitor();
 		Dinghy dinghy = new Dinghy();
 		dinghy.setDinghyClass(dc1);
+		Fleet fleet = new Fleet("Test Fleet");
 		Race race = new Race();
+		race.setFleet(fleet);
 		
 		Entry entry = new Entry(helm, dinghy, race);
 		assertTrue(entry instanceof Entry);
@@ -94,10 +105,15 @@ public class EntryTests {
 	}
 	
 	@Test
-	void when_settingDinghyAndDinghyDinghyClassEqualsRaceDinghyClass_then_itSetsDinghy() {
+	void when_settingDinghyAndDinghyDinghyClassEqualsRaceFleetDinghyClass_then_itSetsDinghy() {
 		DinghyClass dinghyClass = new DinghyClass("Scorpion", 2);
+						
+		Set<DinghyClass> dinghyClasses = new HashSet<DinghyClass>();
+		dinghyClasses.add(dinghyClass);
+		Fleet fleet = new Fleet("Test Fleet", dinghyClasses);
+		
 		Race race = new Race();
-		race.setDinghyClass(dinghyClass);
+		race.setFleet(fleet);
 		Entry entry = new Entry();
 		Dinghy dinghy = new Dinghy();
 		dinghy.setDinghyClass(dinghyClass);
@@ -107,11 +123,16 @@ public class EntryTests {
 	}
 	
 	@Test
-	void when_settingDinghyAndDinghyDinghyClassDoesNotMatchRaceDinghyClass_then_throwsDinghyClassMismatchException() {
+	void when_settingDinghyAndDinghyDinghyClassDoesNotMatchRaceFleetDinghyClass_then_throwsDinghyClassMismatchException() {
 		DinghyClass dc1 = new DinghyClass("Scorpion", 2);
 		DinghyClass dc2 = new DinghyClass("Graduate", 2);
+		
+		Set<DinghyClass> dinghyClasses = new HashSet<DinghyClass>();
+		dinghyClasses.add(dc1);
+		Fleet fleet = new Fleet("Test Fleet", dinghyClasses);
+
 		Race race = new Race();
-		race.setDinghyClass(dc1);
+		race.setFleet(fleet);
 		
 		Dinghy dinghy = new Dinghy();
 		dinghy.setDinghyClass(dc2);
@@ -125,9 +146,11 @@ public class EntryTests {
 	}
 		
 	@Test
-	void when_settingDinghyAndRaceDinghyClassIsNull_then_setsDinghy() {
+	void when_settingDinghyAndRaceFleetDinghyClassIsNull_then_setsDinghy() {
 		DinghyClass dinghyClass = new DinghyClass("Scorpion", 2);
+		Fleet fleet = new Fleet("Test Fleet");
 		Race race = new Race();
+		race.setFleet(fleet);
 		Entry entry = new Entry();
 		entry.setRace(race);
 		Dinghy dinghy = new Dinghy();
@@ -158,31 +181,43 @@ public class EntryTests {
 	}
 	
 	@Test
-	void when_settingRaceAndRaceDinghyClassIsNullAndDinghyIsNull_then_setsRace() {
+	void when_settingRaceAndRaceFleetDinghyClassIsNullAndDinghyIsNull_then_setsRace() {
 		Entry entry = new Entry();
+		Fleet fleet = new Fleet("Test Fleet");
 		Race race = new Race();
+		race.setFleet(fleet);
 		
 		entry.setRace(race);
 		assertEquals(entry.getRace(), race);
 	}
 
 	@Test
-	void when_settingRaceAndRaceDinghyClassIsNotNullAndDinghyIsNull_then_setsRace() {
+	void when_settingRaceAndRaceFleetDinghyClassIsNotNullAndDinghyIsNull_then_setsRace() {
 		DinghyClass dinghyClass = new DinghyClass("Scorpion", 2);
+		
+		Set<DinghyClass> dinghyClasses = new HashSet<DinghyClass>();
+		dinghyClasses.add(dinghyClass);
+		Fleet fleet = new Fleet("Test Fleet", dinghyClasses);
+		
 		Race race = new Race();
-		race.setDinghyClass(dinghyClass);
+		race.setFleet(fleet);
 		
 		Entry entry = new Entry();
 		entry.setRace(race);
 	}
 	
 	@Test
-	void when_settingRaceAndRaceDinghyClassIsNotNullAndMatchesDinghyDinghyClass_then_setsRace() {
+	void when_settingRaceAndRaceFleetDinghyClassIsNotNullAndMatchesDinghyDinghyClass_then_setsRace() {
 		DinghyClass dinghyClass = new DinghyClass("Scorpion", 2);
 		Dinghy dinghy = new Dinghy();
 		dinghy.setDinghyClass(dinghyClass);
+		
+		Set<DinghyClass> dinghyClasses = new HashSet<DinghyClass>();
+		dinghyClasses.add(dinghyClass);
+		Fleet fleet = new Fleet("Test Fleet", dinghyClasses);
+		
 		Race race = new Race();
-		race.setDinghyClass(dinghyClass);
+		race.setFleet(fleet);
 		
 		Entry entry = new Entry();
 		entry.setDinghy(dinghy);
@@ -190,13 +225,18 @@ public class EntryTests {
 	}
 	
 	@Test
-	void when_settingRaceAndRaceDinghyClassIsNotNullAndDinghyDinghyClassIsNotNullAndRaceDinghyClassDoesNotMatchDinghyDinghyClass_then_throwsDinghyMismAtchException() {
+	void when_settingRaceAndRaceFleetDinghyClassIsNotNullAndDinghyDinghyClassIsNotNullAndRaceFleetDinghyClassDoesNotMatchDinghyDinghyClass_then_throwsDinghyMismAtchException() {
 		DinghyClass dc1 = new DinghyClass("Scorpion", 2);
 		DinghyClass dc2 = new DinghyClass("Graduate", 2);
 		Dinghy dinghy = new Dinghy();
 		dinghy.setDinghyClass(dc1);
+		
+		Set<DinghyClass> dinghyClasses = new HashSet<DinghyClass>();
+		dinghyClasses.add(dc2);
+		Fleet fleet = new Fleet("Test Fleet", dinghyClasses);
+		
 		Race race = new Race();
-		race.setDinghyClass(dc2);
+		race.setFleet(fleet);
 		
 		Entry entry = new Entry();
 		entry.setDinghy(dinghy);
@@ -207,11 +247,14 @@ public class EntryTests {
 	}
 	
 	@Test
-	void when_settingRaceAndRaceDinghyClassIsNullAndDoesNotMatchDinghyDinghyClass_then_setsRace() {
+	void when_settingRaceAndRaceFleetDinghyClassesIsEmpty_then_setsRace() {
 		DinghyClass dinghyClass = new DinghyClass("Scorpion", 2);
 		Dinghy dinghy = new Dinghy();
 		dinghy.setDinghyClass(dinghyClass);
+		
+		Fleet fleet = new Fleet("Test Fleet");
 		Race race = new Race();
+		race.setFleet(fleet);
 		
 		Entry entry = new Entry();
 		entry.setDinghy(dinghy);
@@ -238,7 +281,8 @@ public class EntryTests {
 		Competitor competitor1 = new Competitor("Bob");
 		DinghyClass graduate = new DinghyClass("Graduate", 2 , 1110);
 		Dinghy dinghy1 = new Dinghy("1234", graduate);
-		Race race = new Race("Race1", LocalDateTime.now(), null, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Fleet fleet = new Fleet("Test Fleet");
+		Race race = new Race("Race1", LocalDateTime.now(), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		Entry entry = new Entry(competitor1, dinghy1, race);
 		race.signUp(entry);
 		Lap lap = new Lap(1, Duration.ofMinutes(13));
@@ -267,7 +311,8 @@ public class EntryTests {
 		Competitor competitor1 = new Competitor("Bob");
 		DinghyClass graduate = new DinghyClass("Graduate", 2 , 1110);
 		Dinghy dinghy1 = new Dinghy("1234", graduate);
-		Race race = new Race("Race1", LocalDateTime.now(), null, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Fleet fleet = new Fleet("Test Fleet");
+		Race race = new Race("Race1", LocalDateTime.now(), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		Entry entry = new Entry(competitor1, dinghy1, race);
 		race.signUp(entry);
 		Lap lap = new Lap(1, Duration.ofMinutes(13));
@@ -280,7 +325,8 @@ public class EntryTests {
 		Competitor competitor1 = new Competitor("Bob");
 		DinghyClass graduate = new DinghyClass("Graduate", 2 , 1110);
 		Dinghy dinghy1 = new Dinghy("1234", graduate);
-		Race race = new Race("Race1", LocalDateTime.now(), null, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Fleet fleet = new Fleet("Test Fleet");
+		Race race = new Race("Race1", LocalDateTime.now(), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		Entry entry = new Entry(competitor1, dinghy1, race);
 		race.signUp(entry);
 		Lap lap1 = new Lap(1, Duration.ofMinutes(13));
@@ -295,7 +341,8 @@ public class EntryTests {
 		Competitor competitor1 = new Competitor("Bob");
 		DinghyClass graduate = new DinghyClass("Graduate", 2 , 1110);
 		Dinghy dinghy1 = new Dinghy("1234", graduate);
-		Race race = new Race("Race1", LocalDateTime.now(), null, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Fleet fleet = new Fleet("Test Fleet");
+		Race race = new Race("Race1", LocalDateTime.now(), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		Entry entry = new Entry(competitor1, dinghy1, race);
 		race.signUp(entry);
 		Lap lap = new Lap(1, Duration.ofMinutes(13));
@@ -309,7 +356,8 @@ public class EntryTests {
 		Competitor competitor1 = new Competitor("Bob");
 		DinghyClass graduate = new DinghyClass("Graduate", 2 , 1110);
 		Dinghy dinghy1 = new Dinghy("1234", graduate);
-		Race race = new Race("Race1", LocalDateTime.now(), null, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Fleet fleet = new Fleet("Test Fleet");
+		Race race = new Race("Race1", LocalDateTime.now(), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		Entry entry = new Entry(competitor1, dinghy1, race);
 		race.signUp(entry);
 		Lap lap1 = new Lap(1, Duration.ofMinutes(13));
@@ -339,7 +387,8 @@ public class EntryTests {
 		Competitor competitor1 = new Competitor("Bob");
 		DinghyClass graduate = new DinghyClass("Graduate", 2 , 1110);
 		Dinghy dinghy1 = new Dinghy("1234", graduate);
-		Race race = new Race("Race1", LocalDateTime.now(), null, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Fleet fleet = new Fleet("Test Fleet");
+		Race race = new Race("Race1", LocalDateTime.now(), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		Entry entry = new Entry(competitor1, dinghy1, race);
 		race.signUp(entry);
 		Lap lap1 = new Lap(1, Duration.ofMinutes(13));
@@ -369,7 +418,8 @@ public class EntryTests {
 		Competitor competitor1 = new Competitor("Bob");
 		DinghyClass graduate = new DinghyClass("Graduate", 2 , 1110);
 		Dinghy dinghy1 = new Dinghy("1234", graduate);
-		Race race = new Race("Race1", LocalDateTime.now(), null, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Fleet fleet = new Fleet("Test Fleet");
+		Race race = new Race("Race1", LocalDateTime.now(), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		Entry entry = new Entry(competitor1, dinghy1, race);
 		race.signUp(entry);
 		Lap lap1 = new Lap(1, Duration.ofMinutes(13));
@@ -392,7 +442,8 @@ public class EntryTests {
 		Competitor competitor1 = new Competitor("Bob");
 		DinghyClass graduate = new DinghyClass("Graduate", 2 , 1110);
 		Dinghy dinghy1 = new Dinghy("1234", graduate);
-		Race race = new Race("Race1", LocalDateTime.now(), null, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Fleet fleet = new Fleet("Test Fleet");
+		Race race = new Race("Race1", LocalDateTime.now(), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		Entry entry = new Entry(competitor1, dinghy1, race);
 		race.signUp(entry);
 		Lap lap1 = new Lap(1, Duration.ofMinutes(13));
@@ -418,7 +469,8 @@ public class EntryTests {
 		Competitor competitor1 = new Competitor("Bob");
 		DinghyClass graduate = new DinghyClass("Graduate", 2 , 1110);
 		Dinghy dinghy1 = new Dinghy("1234", graduate);
-		Race race = new Race("Race1", LocalDateTime.now(), null, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Fleet fleet = new Fleet("Test Fleet");
+		Race race = new Race("Race1", LocalDateTime.now(), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		Entry entry = new Entry(competitor1, dinghy1, race);
 		race.signUp(entry);
 		Lap lap1 = new Lap(1, Duration.ofMinutes(13));
@@ -461,7 +513,8 @@ public class EntryTests {
 		Competitor competitor1 = new Competitor("Bob");
 		DinghyClass graduate = new DinghyClass("Graduate", 2 , 1110);
 		Dinghy dinghy1 = new Dinghy("1234", graduate);
-		Race race = new Race("Race1", LocalDateTime.now(), null, Duration.ofMinutes(45), 2, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Fleet fleet = new Fleet("Test Fleet");
+		Race race = new Race("Race1", LocalDateTime.now(), fleet, Duration.ofMinutes(45), 2, RaceType.FLEET, StartType.CSCCLUBSTART);
 		Entry entry = new Entry(competitor1, dinghy1, race);
 		race.signUp(entry);
 		entry.addLap(new Lap(1, Duration.ofMinutes(3L)));
@@ -474,7 +527,8 @@ public class EntryTests {
 		Competitor competitor1 = new Competitor("Bob");
 		DinghyClass graduate = new DinghyClass("Graduate", 2 , 1110);
 		Dinghy dinghy1 = new Dinghy("1234", graduate);
-		Race race = new Race("Race1", LocalDateTime.now(), null, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Fleet fleet = new Fleet("Test Fleet");
+		Race race = new Race("Race1", LocalDateTime.now(), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		Entry entry = new Entry(competitor1, dinghy1, race);
 		race.signUp(entry);
 		entry.addLap(new Lap(1, Duration.ofMinutes(3L)));
@@ -487,7 +541,8 @@ public class EntryTests {
 		Competitor competitor1 = new Competitor("Bob");
 		DinghyClass graduate = new DinghyClass("Graduate", 2 , 1110);
 		Dinghy dinghy1 = new Dinghy("1234", graduate);
-		Race race = new Race("Race1", LocalDateTime.now(), null, Duration.ofMinutes(45), 2, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Fleet fleet = new Fleet("Test Fleet");
+		Race race = new Race("Race1", LocalDateTime.now(), fleet, Duration.ofMinutes(45), 2, RaceType.FLEET, StartType.CSCCLUBSTART);
 		Entry entry = new Entry(competitor1, dinghy1, race);
 		race.signUp(entry);
 		
@@ -502,7 +557,8 @@ public class EntryTests {
 		Competitor competitor1 = new Competitor("Bob");
 		DinghyClass graduate = new DinghyClass("Graduate", 2 , 1110);
 		Dinghy dinghy1 = new Dinghy("1234", graduate);
-		Race race = new Race("Race1", LocalDateTime.now(), null, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Fleet fleet = new Fleet("Test Fleet");
+		Race race = new Race("Race1", LocalDateTime.now(), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		Entry entry = new Entry(competitor1, dinghy1, race);
 		race.signUp(entry);
 		entry.addLap(new Lap(1, Duration.ofMinutes(3L)));
@@ -515,7 +571,8 @@ public class EntryTests {
 		Competitor competitor1 = new Competitor("Bob");
 		DinghyClass graduate = new DinghyClass("Graduate", 2 , 1110);
 		Dinghy dinghy1 = new Dinghy("1234", graduate);
-		Race race = new Race("Race1", LocalDateTime.now(), null, Duration.ofMinutes(45), 2, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Fleet fleet = new Fleet("Test Fleet");
+		Race race = new Race("Race1", LocalDateTime.now(), fleet, Duration.ofMinutes(45), 2, RaceType.FLEET, StartType.CSCCLUBSTART);
 		Entry entry = new Entry(competitor1, dinghy1, race);
 		race.signUp(entry);
 		entry.addLap(new Lap(1, Duration.ofMinutes(3L)));
@@ -601,7 +658,8 @@ public class EntryTests {
 		Competitor competitor1 = new Competitor("Bob");
 		DinghyClass graduate = new DinghyClass("Graduate", 2 , 1110);
 		Dinghy dinghy1 = new Dinghy("1234", graduate);
-		Race race = new Race("Race1", LocalDateTime.now(), null, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Fleet fleet = new Fleet("Test Fleet");
+		Race race = new Race("Race1", LocalDateTime.now(), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		Entry entry = new Entry(competitor1, dinghy1, race);
 		race.signUp(entry);
 		Lap lap1 = new Lap(1, Duration.ofMinutes(13));
@@ -617,7 +675,8 @@ public class EntryTests {
 		Competitor competitor1 = new Competitor("Bob");
 		DinghyClass graduate = new DinghyClass("Graduate", 2 , 1110);
 		Dinghy dinghy1 = new Dinghy("1234", graduate);
-		Race race = new Race("Race1", LocalDateTime.now(), null, Duration.ofMinutes(45), 2, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Fleet fleet = new Fleet("Test Fleet");
+		Race race = new Race("Race1", LocalDateTime.now(), fleet, Duration.ofMinutes(45), 2, RaceType.FLEET, StartType.CSCCLUBSTART);
 		Entry entry = new Entry(competitor1, dinghy1, race);
 		race.signUp(entry);
 		Lap lap1 = new Lap(1, Duration.ofMinutes(13));
@@ -633,7 +692,8 @@ public class EntryTests {
 		DinghyClass graduate = new DinghyClass("Graduate", 2 , 1110);
 		Dinghy dinghy1 = new Dinghy("1234", graduate);
 		Dinghy dinghy2 = new Dinghy("5678", graduate);
-		Race race = new Race("Race1", LocalDateTime.now(), null, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART);
+		Fleet fleet = new Fleet("Test Fleet");
+		Race race = new Race("Race1", LocalDateTime.now(), fleet, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART);
 		Entry entry1 = new Entry(competitor1, dinghy1, race);
 		race.signUp(entry1);
 		Entry entry2 = new Entry(competitor2, dinghy2, race);
@@ -655,7 +715,8 @@ public class EntryTests {
 		DinghyClass graduate = new DinghyClass("Graduate", 2 , 1110);
 		Dinghy dinghy1 = new Dinghy("1234", graduate);
 		Dinghy dinghy2 = new Dinghy("5678", graduate);
-		Race race = new Race("Race1", LocalDateTime.now(), null, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Fleet fleet = new Fleet("Test Fleet");
+		Race race = new Race("Race1", LocalDateTime.now(), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		Entry entry1 = new Entry(competitor1, dinghy1, race);
 		race.signUp(entry1);
 		Entry entry2 = new Entry(competitor2, dinghy2, race);
@@ -677,7 +738,8 @@ public class EntryTests {
 		DinghyClass graduate = new DinghyClass("Graduate", 2 , 1110);
 		Dinghy dinghy1 = new Dinghy("1234", graduate);
 		Dinghy dinghy2 = new Dinghy("5678", graduate);
-		Race race = new Race("Race1", LocalDateTime.now(), null, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Fleet fleet = new Fleet("Test Fleet");
+		Race race = new Race("Race1", LocalDateTime.now(), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		Entry entry1 = new Entry(competitor1, dinghy1, race);
 		race.signUp(entry1);
 		Entry entry2 = new Entry(competitor2, dinghy2, race);

@@ -74,8 +74,9 @@ public class Race implements Serializable {
 	@NotNull
 	private LocalDateTime plannedStartTime;
 		
+	@NotNull
 	@ManyToOne
-	private DinghyClass dinghyClass;
+	private Fleet fleet;
 	
 	@NotNull
 	private Duration duration;
@@ -103,10 +104,10 @@ public class Race implements Serializable {
 	//Not recommended by Spring Data
 	public Race() {}
 	
-	public Race(String name, LocalDateTime plannedStartTime, DinghyClass dinghyClass, Duration duration, Integer plannedLaps, RaceType type, StartType startType) {
+	public Race(String name, LocalDateTime plannedStartTime, Fleet fleet, Duration duration, Integer plannedLaps, RaceType type, StartType startType) {
 		this.name = name;
 		this.plannedStartTime = plannedStartTime;
-		this.dinghyClass = dinghyClass;
+		this.fleet = fleet;
 		this.duration = duration;
 		this.plannedLaps = plannedLaps;
 		this.type = type;
@@ -137,16 +138,17 @@ public class Race implements Serializable {
 		this.plannedStartTime = plannedStartTime;
 	}
 
-	public DinghyClass getDinghyClass() {
-		return dinghyClass;
+	public Fleet getFleet() {
+		return fleet;
 	}
 
+	// Get the dinghy classes for dinghies signed up to the race
 	public Set<DinghyClass> getDinghyClasses() {
 		return signedUp.stream().map(entry -> entry.getDinghy().getDinghyClass()).distinct().collect(Collectors.toSet());
 	}
 	
-	public void setDinghyClass(DinghyClass dinghyClass) {
-		this.dinghyClass = dinghyClass;
+	public void setFleet(Fleet fleet) {
+		this.fleet = fleet;
 	}
 	
 	public Duration getDuration() {
@@ -356,7 +358,7 @@ public class Race implements Serializable {
 	@Override
 	public String toString() {
 		return "Race [id=" + id + ", version=" + version + ", name=" + name + ", plannedStartTime=" + plannedStartTime
-				+ ", dinghyClass=" + dinghyClass.getName() + ", duration=" + duration + ", plannedLaps=" + plannedLaps + ", type="
+				+ ", fleet=" + fleet.getName() + ", duration=" + duration + ", plannedLaps=" + plannedLaps + ", type="
 				+ type + ", startSequenceState=" + startSequenceState + ", startType="
 				+ startType + "]";
 	}

@@ -27,13 +27,21 @@ import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 class RaceTests {
 
 	//private Race race = new Race("Test Race", LocalDate.of(2021, 10, 14), LocalTime.of(14, 10), new DinghyClass("Test"));
 	private DinghyClass dinghyClass = new DinghyClass("Test", 1, 1000);
-	private Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), dinghyClass, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+	private Set<DinghyClass> dinghyClasses = new HashSet<DinghyClass>();
+	
+	Fleet fleet = new Fleet("Test Fleet", dinghyClasses);
+	private Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+	
+	RaceTests() {
+		dinghyClasses.add(dinghyClass);	
+	}
 	
 	@Test
 	void raceCreated() {
@@ -290,7 +298,8 @@ class RaceTests {
 
 	@Test
 	void given_raceHasEntries_when_dinghyClassesRequested_then_returnsSetOfDinghyClassesForBoatsInEntries() {
-		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), null, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Fleet fleet = new Fleet("Test Fleet");
+		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("Competitor Two");
 		Competitor competitor3 = new Competitor("Competitor Three");
@@ -315,7 +324,8 @@ class RaceTests {
 	// Pursuit Race Position Tests
 	@Test
 	void given_race_is_pursuit_when_oneEntryHasFinishedLap_then_correctly_calculatesPosition() {
-		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), null, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART);
+		Fleet fleet = new Fleet("Test Fleet");
+		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
 		Entry entry1 = new Entry(competitor1, dinghy1, race);
@@ -327,7 +337,8 @@ class RaceTests {
 
 	@Test
 	void given_race_is_pursuit_when_twoEntriesHaveFinishedDifferentNumberOfLaps_then_correctly_calculatesPositions() {
-		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), null, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART);
+		Fleet fleet = new Fleet("Test Fleet");
+		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("Competitor Two");
 		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
@@ -346,7 +357,8 @@ class RaceTests {
 		
 	@Test
 	void given_race_is_pursuit_when_twoEntriesHaveFinishedTheSameNumberOfLaps_then_correctly_calculatesPositions() {
-		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), null, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART);
+		Fleet fleet = new Fleet("Test Fleet");
+		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("Competitor Two");
 		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
@@ -364,7 +376,8 @@ class RaceTests {
 	
 	@Test
 	void given_race_is_pursuit_when_twoEntriesHaveFinishedTheSameNumberOfLapsAndOneHasRetired_then_correctly_calculatesPositions() {
-		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), null, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART);
+		Fleet fleet = new Fleet("Test Fleet");
+		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("Competitor Two");
 		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
@@ -383,7 +396,8 @@ class RaceTests {
 	
 	@Test
 	void given_race_is_pursuit_when_newPositionHigherThanOldPosition_when_positionOfEntryUpdated_then_updatesPositionsOfOtherEntries() {
-		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), null, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART);
+		Fleet fleet = new Fleet("Test Fleet");
+		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("Competitor Two");
 		Competitor competitor3 = new Competitor("Competitor Three");
@@ -414,7 +428,8 @@ class RaceTests {
 	
 	@Test
 	void given_race_is_pursuit_when_oldPositionWasNull_when_positionOfEntryUpdated_then_doesNotUpdatesPositionOfAnyEntryLowerThanNumberOfEntriesInRace() {
-		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), null, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART);
+		Fleet fleet = new Fleet("Test Fleet");
+		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("Competitor Two");
 		Competitor competitor3 = new Competitor("Competitor Three");
@@ -443,7 +458,8 @@ class RaceTests {
 	
 	@Test
 	void given_race_is_pursuit_when_newPositionLowerThanOldPosition_when_positionOfEntryUpdated_then_updatesPositionsOfOtherEntries() {
-		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), null, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART);
+		Fleet fleet = new Fleet("Test Fleet");
+		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("Competitor Two");
 		Competitor competitor3 = new Competitor("Competitor Three");
@@ -474,7 +490,8 @@ class RaceTests {
 		
 	@Test
 	void given_race_is_pursuit_when_noPositionsCalculated_when_positionOfEntryUpdated_then_updatesOnlyPositionsOfEntry() {
-		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), null, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART);
+		Fleet fleet = new Fleet("Test Fleet");
+		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("Competitor Two");
 		Competitor competitor3 = new Competitor("Competitor Three");
@@ -501,7 +518,8 @@ class RaceTests {
 
 	@Test
 	void given_race_race_is_pursuit_when_scoringAbbreviationSetForEntry_then_positionSetEqualToNumberOfEntriesInRace() {
-		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), null, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART);
+		Fleet fleet = new Fleet("Test Fleet");
+		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("Competitor Two");
 		Competitor competitor3 = new Competitor("Competitor Three");
@@ -528,7 +546,8 @@ class RaceTests {
 	void given_raceIsFleetAndEntriesAllSameClassAndAllSailedTheSameDistance_then_correctlyAssignsPositions() {
 		DinghyClass scorpion = new DinghyClass("Scorpion", 2, 1043);
 		
-		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), null, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Fleet fleet = new Fleet("Test Fleet");
+		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("Competitor Two");
 		Dinghy dinghy1 = new Dinghy("1234", scorpion);
@@ -550,7 +569,8 @@ class RaceTests {
 	void given_raceIsFleetAndEntriesAllSameClass_when_oneEntrySailsLessLaps_then_correctlyAssignsPositions() {
 		DinghyClass scorpion = new DinghyClass("Scorpion", 2, 1043);
 		
-		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), null, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Fleet fleet = new Fleet("Test Fleet");
+		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("Competitor Two");
 		Dinghy dinghy1 = new Dinghy("1234", scorpion);
@@ -571,8 +591,8 @@ class RaceTests {
 	void given_raceIsFleetAndEntriesDifferentClassAndAllEntriesSailSameNumberOfLaps_then_correctlyAssignsPositions() {
 		DinghyClass scorpion = new DinghyClass("Scorpion", 2, 1043);
 		DinghyClass graduate = new DinghyClass("Graduate", 2, 1110);
-		
-		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), null, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Fleet fleet = new Fleet("Test Fleet");
+		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("Competitor Two");
 		Dinghy dinghy1 = new Dinghy("1234", scorpion);
@@ -595,7 +615,8 @@ class RaceTests {
 		DinghyClass scorpion = new DinghyClass("Scorpion", 2, 1043);
 		DinghyClass graduate = new DinghyClass("Graduate", 2, 1110);
 		
-		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), null, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Fleet fleet = new Fleet("Test Fleet");
+		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("Competitor Two");
 		Dinghy dinghy1 = new Dinghy("1234", scorpion);
@@ -617,7 +638,8 @@ class RaceTests {
 		DinghyClass scorpion = new DinghyClass("Scorpion", 2, 1043);
 		DinghyClass graduate = new DinghyClass("Graduate", 2, 1110);
 		
-		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), null, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Fleet fleet = new Fleet("Test Fleet");
+		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("Competitor Two");
 		Dinghy dinghy1 = new Dinghy("1234", scorpion);
@@ -638,7 +660,8 @@ class RaceTests {
 	void given_raceIsFleetAndEntriesAllSameClassAndAllSailedTheSameDistanceExceptOneEntryWithScoringAbbreviation_then_correctlyAssignsPositions() {
 		DinghyClass scorpion = new DinghyClass("Scorpion", 2, 1043);
 		
-		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), null, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Fleet fleet = new Fleet("Test Fleet");
+		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("Competitor Two");
 		Competitor competitor3 = new Competitor("Competitor Three");
@@ -665,8 +688,8 @@ class RaceTests {
 	@Test
 	void given_raceIsFleetAndEntriesAllSameClassAndOneEntryHasAScoringAbbreviation_when_oneEntrySailsLessLaps_then_correctlyAssignsPositions() {
 		DinghyClass scorpion = new DinghyClass("Scorpion", 2, 1043);
-		
-		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), null, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Fleet fleet = new Fleet("Test Fleet");
+		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("Competitor Two");
 		Competitor competitor3 = new Competitor("Competitor Three");
@@ -694,7 +717,8 @@ class RaceTests {
 		DinghyClass scorpion = new DinghyClass("Scorpion", 2, 1043);
 		DinghyClass graduate = new DinghyClass("Graduate", 2, 1110);
 		
-		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), null, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Fleet fleet = new Fleet("Test Fleet");
+		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("Competitor Two");
 		Competitor competitor3 = new Competitor("Competitor Three");
@@ -723,7 +747,8 @@ class RaceTests {
 		DinghyClass scorpion = new DinghyClass("Scorpion", 2, 1043);
 		DinghyClass graduate = new DinghyClass("Graduate", 2, 1110);
 		
-		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), null, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Fleet fleet = new Fleet("Test Fleet");
+		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("Competitor Two");
 		Competitor competitor3 = new Competitor("Competitor Three");
@@ -751,7 +776,8 @@ class RaceTests {
 		DinghyClass scorpion = new DinghyClass("Scorpion", 2, 1043);
 		DinghyClass graduate = new DinghyClass("Graduate", 2, 1110);
 		
-		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), null, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Fleet fleet = new Fleet("Test Fleet");
+		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("Competitor Two");
 		Dinghy dinghy1 = new Dinghy("1234", scorpion);
@@ -778,7 +804,8 @@ class RaceTests {
 		DinghyClass comet = new DinghyClass("Comet", 1, 1210);
 		DinghyClass topper = new DinghyClass("Topper", 1, 1369);
 		
-		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), null, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Fleet fleet = new Fleet("Test Fleet");
+		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("Competitor Two");
 		Competitor competitor3 = new Competitor("Competitor Three");
@@ -856,7 +883,8 @@ class RaceTests {
 
 	@Test
 	void given_raceIsFleet_when_scoringAbbreviationSetForEntry_then_positionSetEqualToNumberOfEntriesInRace() {
-		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), null, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Fleet fleet = new Fleet("Test Fleet");
+		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("Competitor Two");
 		Competitor competitor3 = new Competitor("Competitor Three");
@@ -882,7 +910,8 @@ class RaceTests {
 	void given_raceIsFleet_when_moreThanOneEntryHaveTheSameCorrectedTime_then_theyAreAllAssignedTheLowestPositionOfAnyEntryWithThatCorrectedTime() {
 		DinghyClass scorpion = new DinghyClass("Scorpion", 2, 1043);
 		
-		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), null, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Fleet fleet = new Fleet("Test Fleet");
+		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("Competitor Two");
 		Dinghy dinghy1 = new Dinghy("1234", scorpion);
@@ -902,7 +931,8 @@ class RaceTests {
 	void given_raceIsFleet_when_moreThanOneGroupOfEntriesHaveTheSameCorrectedTimeAndEachGroupHasADifferentCorrectedTime_then_theyAreAllAssignedTheLowestPositionOfAnyEntryWithThatCorrectedTime() {
 		DinghyClass scorpion = new DinghyClass("Scorpion", 2, 1043);
 		
-		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), null, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Fleet fleet = new Fleet("Test Fleet");
+		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("Competitor Two");
 		Competitor competitor3 = new Competitor("Competitor Three");
