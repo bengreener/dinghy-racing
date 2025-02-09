@@ -59,13 +59,29 @@ CREATE TABLE fleet (
 CREATE TABLE fleet_dinghy_classes (
 	fleet_id BIGINT NOT NULL,
 	dinghy_classes_id BIGINT NOT NULL,
-	CONSTRAINT PK_fleet_dinghy_classes_fleet_id_dinghy_class_id PRIMARY KEY (fleet_id, dinghy_class_id),
+	CONSTRAINT PK_fleet_dinghy_classes_fleet_id_dinghy_classes_id PRIMARY KEY (fleet_id, dinghy_classes_id),
 	CONSTRAINT FK_fleet_fleet_id FOREIGN KEY (fleet_id) REFERENCES fleet (id),
-	CONSTRAINT FK_dinghy_class_dinghy_class_id FOREIGN KEY (dinghy_class_id) REFERENCES dinghy_class (id),
-	CONSTRAINT UK_fleet_id_dinghy_class_id UNIQUE (fleet_id, dinghy_class_id)
+	CONSTRAINT FK_dinghy_class_dinghy_classes_id FOREIGN KEY (dinghy_classes_id) REFERENCES dinghy_class (id),
+	CONSTRAINT UK_fleet_dinghy_classes_fleet_id_dinghy_classes_id UNIQUE (fleet_id, dinghy_classes_id)
 ) engine=InnoDB;
 
 CREATE TABLE fleet_seq (
 	next_val BIGINT
 ) engine=InnoDB;
 INSERT INTO fleet_seq VALUES ( 1 );
+
+-- exisitng data needs race records to be mapped to fleet records so migration will be more complicated
+--	1) Determine Race to fleet mappings for existing data
+--	2) Generate script to map race records to fleet records
+--	3) Drop race.dinghy_class_id table
+--	4) add race.fleet_id column without NOT NULL constraint
+--	5) update race.fleet_id with fleet ids
+--	6) update race table to set NOT NULL constraint on fleet_id
+
+ALTER TABLE race 
+	DROP CONSTRAINT FK_race_dinghy_class_id,
+	DROP COLUMN dinghy_class_id;
+
+ALTER TABLE race 
+	ADD COLUMN fleet_id BIGINT NOT NULL,
+	ADD CONSTRAINT FK_race_fleet_id FOREIGN KEY (fleet_id) REFERENCES fleet (id);

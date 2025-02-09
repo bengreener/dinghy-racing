@@ -67,10 +67,10 @@ CREATE TABLE fleet (
 CREATE TABLE fleet_dinghy_classes (
 	fleet_id BIGINT NOT NULL,
 	dinghy_classes_id BIGINT NOT NULL,
-	CONSTRAINT PK_fleet_dinghy_classes_fleet_id_dinghy_class_id PRIMARY KEY (fleet_id, dinghy_class_id),
+	CONSTRAINT PK_fleet_dinghy_classes_fleet_id_dinghy_classes_id PRIMARY KEY (fleet_id, dinghy_classes_id),
 	CONSTRAINT FK_fleet_fleet_id FOREIGN KEY (fleet_id) REFERENCES fleet (id),
-	CONSTRAINT FK_dinghy_class_dinghy_class_id FOREIGN KEY (dinghy_class_id) REFERENCES dinghy_class (id),
-	CONSTRAINT UK_fleet_id_dinghy_class_id UNIQUE (fleet_id, dinghy_class_id)
+	CONSTRAINT FK_dinghy_class_dinghy_classes_id FOREIGN KEY (dinghy_classes_id) REFERENCES dinghy_class (id),
+	CONSTRAINT UK_fleet_dinghy_classes_fleet_id_dinghy_classes_id UNIQUE (fleet_id, dinghy_classes_id)
 ) engine=InnoDB;
 
 CREATE TABLE dinghy (
@@ -85,7 +85,7 @@ CREATE TABLE dinghy (
 
 CREATE TABLE race (
 	id BIGINT NOT NULL, 
-	dinghy_class_id BIGINT, 
+	fleet_id BIGINT, 
 	duration BIGINT NOT NULL, 
 	name VARCHAR(255) NOT NULL, 
 	planned_laps integer NOT NULL, 
@@ -96,7 +96,7 @@ CREATE TABLE race (
 	version BIGINT,
 	CONSTRAINT PK_race_id PRIMARY KEY (id),
 	CONSTRAINT UK_race_name_planned_start_time UNIQUE (name, planned_start_time),
-	CONSTRAINT FK_race_dinghy_class_id FOREIGN KEY (dinghy_class_id) REFERENCES dinghy_class (id)
+	CONSTRAINT FK_race_fleet_id FOREIGN KEY (fleet_id) REFERENCES fleet (id)
 ) engine=InnoDB;
 
 CREATE TABLE entry (

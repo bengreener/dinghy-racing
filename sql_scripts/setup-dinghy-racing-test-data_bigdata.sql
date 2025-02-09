@@ -1,4 +1,4 @@
--- v2024.8.1
+-- v2025.1.2
 USE dinghy_racing;
 
 -- clear existing data
@@ -6,6 +6,8 @@ DELETE FROM entry_laps;
 DELETE FROM lap;
 DELETE FROM entry;
 DELETE FROM race;
+DELETE FROM fleet_dinghy_classes;
+DELETE FROM fleet;
 DELETE FROM dinghy;
 DELETE FROM dinghy_class;
 DELETE FROM competitor;
@@ -1428,10 +1430,42 @@ INSERT INTO competitor (id, name, version) VALUES (567, "Zoe Little", 0);
 INSERT INTO competitor (id, name, version) VALUES (568, "Zohaan Coulson", 0);
 INSERT INTO competitor (id, name, version) VALUES (569, "Zuri Bennett", 0);
 
-INSERT INTO race (id, name, duration, planned_laps, planned_start_time, dinghy_class_id, `type`, start_sequence_state, start_type, version) VALUES (1, "Scorpion A", 2700000000000, 5, "2024-11-28 10:10:00", 43, "FLEET", "NONE", "CSCCLUBSTART", 0);
-INSERT INTO race (id, name, duration, planned_laps, planned_start_time, dinghy_class_id, `type`, start_sequence_state, start_type, version) VALUES (2, "Graduate A", 2700000000000, 5, "2024-11-28 10:15:00", 13, "FLEET", "NONE", "CSCCLUBSTART", 0);
-INSERT INTO race (id, name, duration, planned_laps, planned_start_time, dinghy_class_id, `type`, start_sequence_state, start_type, version) VALUES (3, "Comet A", 2100000000000, 4, "2024-11-28 10:20:00", 5, "FLEET", "NONE", "CSCCLUBSTART", 0);
-INSERT INTO race (id, name, duration, planned_laps, planned_start_time, dinghy_class_id, `type`, start_sequence_state, start_type, version) VALUES (4, "Handicap A", 2100000000000, 4, "2024-11-28 14:00:00", null, "FLEET", "NONE", "CSCCLUBSTART", 0);
+INSERT INTO fleet (id, name, version) VALUES (1, "Comet", 0);
+INSERT INTO fleet (id, name, version) VALUES (2, "Enterprise", 0);
+INSERT INTO fleet (id, name, version) VALUES (3, "Firefly", 0);
+INSERT INTO fleet (id, name, version) VALUES (4, "Graduate", 0);
+INSERT INTO fleet (id, name, version) VALUES (5, "Heron", 0);
+INSERT INTO fleet (id, name, version) VALUES (6, "Laser", 0);
+INSERT INTO fleet (id, name, version) VALUES (7, "Optimist", 0);
+INSERT INTO fleet (id, name, version) VALUES (8, "Scorpion", 0);
+INSERT INTO fleet (id, name, version) VALUES (9, "Solo", 0);
+INSERT INTO fleet (id, name, version) VALUES (10, "Topper", 0);
+INSERT INTO fleet (id, name, version) VALUES (11, "Handicap", 0);
+
+INSERT INTO fleet_dinghy_classes (fleet_id, dinghy_classes_id) VALUES (1, 5);
+INSERT INTO fleet_dinghy_classes (fleet_id, dinghy_classes_id) VALUES (1, 7);
+INSERT INTO fleet_dinghy_classes (fleet_id, dinghy_classes_id) VALUES (2, 8);
+INSERT INTO fleet_dinghy_classes (fleet_id, dinghy_classes_id) VALUES (2, 9);
+INSERT INTO fleet_dinghy_classes (fleet_id, dinghy_classes_id) VALUES (3, 11);
+INSERT INTO fleet_dinghy_classes (fleet_id, dinghy_classes_id) VALUES (4, 13);
+INSERT INTO fleet_dinghy_classes (fleet_id, dinghy_classes_id) VALUES (4, 14);
+INSERT INTO fleet_dinghy_classes (fleet_id, dinghy_classes_id) VALUES (5, 16);
+INSERT INTO fleet_dinghy_classes (fleet_id, dinghy_classes_id) VALUES (5, 17);
+INSERT INTO fleet_dinghy_classes (fleet_id, dinghy_classes_id) VALUES (6, 21);
+INSERT INTO fleet_dinghy_classes (fleet_id, dinghy_classes_id) VALUES (6, 22);
+INSERT INTO fleet_dinghy_classes (fleet_id, dinghy_classes_id) VALUES (6, 24);
+INSERT INTO fleet_dinghy_classes (fleet_id, dinghy_classes_id) VALUES (6, 27);
+INSERT INTO fleet_dinghy_classes (fleet_id, dinghy_classes_id) VALUES (7, 31);
+INSERT INTO fleet_dinghy_classes (fleet_id, dinghy_classes_id) VALUES (8, 43);
+INSERT INTO fleet_dinghy_classes (fleet_id, dinghy_classes_id) VALUES (9, 44);
+INSERT INTO fleet_dinghy_classes (fleet_id, dinghy_classes_id) VALUES (10, 48);
+INSERT INTO fleet_dinghy_classes (fleet_id, dinghy_classes_id) VALUES (10, 49);
+INSERT INTO fleet_dinghy_classes (fleet_id, dinghy_classes_id) VALUES (10, 50);
+
+INSERT INTO race (id, name, duration, planned_laps, planned_start_time, fleet_id, `type`, start_type, version) VALUES (1, "Scorpion A", 2700000000000, 5, "2025-02-09 10:10:00", 8, "FLEET", "CSCCLUBSTART", 0);
+INSERT INTO race (id, name, duration, planned_laps, planned_start_time, fleet_id, `type`, start_type, version) VALUES (2, "Graduate A", 2700000000000, 5, "2025-02-09 10:15:00", 4, "FLEET", "CSCCLUBSTART", 0);
+INSERT INTO race (id, name, duration, planned_laps, planned_start_time, fleet_id, `type`, start_type, version) VALUES (3, "Comet A", 2100000000000, 4, "2025-02-09 10:20:00", 1, "FLEET", "CSCCLUBSTART", 0);
+INSERT INTO race (id, name, duration, planned_laps, planned_start_time, fleet_id, `type`, start_type, version) VALUES (4, "Handicap A", 2100000000000, 4, "2025-02-09 10:25:00", 11, "FLEET", "CSCCLUBSTART", 0);
 
 INSERT INTO entry (id, helm_id, dinghy_id, race_id, crew_id, version) VALUES (42, 328, 13, 3, NULL, 0);
 INSERT INTO entry (id, helm_id, dinghy_id, race_id, crew_id, version) VALUES (43, 93, 15, 3, NULL, 0);
