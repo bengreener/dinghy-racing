@@ -1571,3 +1571,4 @@ UPDATE dinghy_class_seq SET next_val = (SELECT MAX(id) + 50 FROM dinghy_class);
 UPDATE lap_seq SET next_val = 1;
 UPDATE entry_seq SET next_val = (SELECT MAX(id) + 50 FROM entry);
 UPDATE race_seq SET next_val = (SELECT MAX(id) + 50 FROM race);
+UPDATE fleet_seq SET next_val = (SELECT MAX(id) + 50 FROM fleet);
