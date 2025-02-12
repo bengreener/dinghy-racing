@@ -6,6 +6,8 @@ DELETE FROM entry_laps;
 DELETE FROM lap;
 DELETE FROM entry;
 DELETE FROM race;
+DELETE FROM fleet_dinghy_classes;
+DELETE FROM fleet;
 DELETE FROM dinghy;
 DELETE FROM dinghy_class;
 DELETE FROM competitor;
