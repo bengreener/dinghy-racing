@@ -85,3 +85,6 @@ ALTER TABLE race
 ALTER TABLE race 
 	ADD COLUMN fleet_id BIGINT NOT NULL,
 	ADD CONSTRAINT FK_race_fleet_id FOREIGN KEY (fleet_id) REFERENCES fleet (id);
+	
+ALTER TABLE dinghy_class
+	ADD COLUMN external_name VARCHAR(255);

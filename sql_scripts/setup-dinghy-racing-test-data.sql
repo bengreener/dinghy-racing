@@ -20,9 +20,9 @@ INSERT INTO competitor (id, name, version) VALUES (4, "Lou Screw", 0);
 INSERT INTO competitor (id, name, version) VALUES (5, "Liu Bao", 0);
 INSERT INTO competitor (id, name, version) VALUES (6, "Owain Davies", 0);
 
-INSERT INTO dinghy_class (id, name, crew_size, portsmouth_number, version) VALUES (1, "Scorpion", 2, 1043, 0);
-INSERT INTO dinghy_class (id, name, crew_size, portsmouth_number, version) VALUES (2, "Graduate", 2, 1110, 0);
-INSERT INTO dinghy_class (id, name, crew_size, portsmouth_number, version) VALUES (3, "Comet", 1, 1210, 0);
+INSERT INTO dinghy_class (id, name, crew_size, portsmouth_number, external_name, version) VALUES (1, "Scorpion", 2, 1043, null, 0);
+INSERT INTO dinghy_class (id, name, crew_size, portsmouth_number, external_name, version) VALUES (2, "Graduate", 2, 1110, "GRADUATE", 0);
+INSERT INTO dinghy_class (id, name, crew_size, portsmouth_number, external_name, version) VALUES (3, "Comet", 1, 1210, null, 0);
 
 INSERT INTO fleet (id, name) VALUES (1, "Scorpion");
 INSERT INTO fleet (id, name) VALUES (2, "Graduate");

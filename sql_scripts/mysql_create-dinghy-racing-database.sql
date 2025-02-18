@@ -51,6 +51,7 @@ CREATE TABLE dinghy_class (
 	name VARCHAR(255) NOT NULL,
     crew_size TINYINT NOT NULL,
 	portsmouth_number SMALLINT,
+	external_name VARCHAR(255),
 	version BIGINT, 
 	CONSTRAINT PK_dinghy_class_id PRIMARY KEY (id),
 	CONSTRAINT UK_dinghy_class_name UNIQUE (name)
