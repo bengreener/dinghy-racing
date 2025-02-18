@@ -41,6 +41,8 @@ public class DinghyClass {
 	
 	private Integer portsmouthNumber;
 	
+	private String externalName;
+	
 	//Required by JPA
 	//Not recommended by Spring Data
 	public DinghyClass() {}
@@ -54,7 +56,14 @@ public class DinghyClass {
 		this.name = name;
 		this.crewSize = crewSize;
 		this.portsmouthNumber = portsmouthNumber;
-	}	
+	}
+	
+	public DinghyClass(String name, Integer crewSize, Integer portsmouthNumber, String externalName) {
+		this.name = name;
+		this.crewSize = crewSize;
+		this.portsmouthNumber = portsmouthNumber;
+		this.externalName = externalName;
+	}
 	
 	public Long getId() {
 		return id;
@@ -86,6 +95,14 @@ public class DinghyClass {
 
 	public void setPortsmouthNumber(Integer portsmouthNumber) {
 		this.portsmouthNumber = portsmouthNumber;
+	}
+
+	public String getExternalName() {
+		return externalName;
+	}
+
+	public void setExternalName(String externalName) {
+		this.externalName = externalName;
 	}
 
 	@Override

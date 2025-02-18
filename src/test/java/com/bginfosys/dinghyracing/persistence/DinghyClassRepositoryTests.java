@@ -103,4 +103,16 @@ public class DinghyClassRepositoryTests {
 		
 		assertThat(entityManager.find(DinghyClass.class, entityManager.getId(dc2)).getPortsmouthNumber()).isEqualTo(999);
 	}
+	
+	@Test
+	void when_savingDInghyClass_savesExternalName() {
+		DinghyClass dc1;
+		DinghyClass dc2;
+				
+		dc1 = new DinghyClass("TestClass", 1);
+		dc1.setExternalName("Test Classis");
+		dc2 = dinghyClassRepository.save(dc1);
+		
+		assertThat(entityManager.find(DinghyClass.class, entityManager.getId(dc2)).getExternalName()).isEqualTo("Test Classis");
+	}
 }
