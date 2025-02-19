@@ -303,7 +303,7 @@ class RaceTests {
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("Competitor Two");
 		Competitor competitor3 = new Competitor("Competitor Three");
-		DinghyClass dc2 = new DinghyClass("Dinghy Class Two", 1);
+		DinghyClass dc2 = new DinghyClass("Dinghy Class Two", 1, 1000);
 		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
 		Dinghy dinghy2 = new Dinghy("4567", dinghyClass);
 		Dinghy dinghy3 = new Dinghy("999", dc2);

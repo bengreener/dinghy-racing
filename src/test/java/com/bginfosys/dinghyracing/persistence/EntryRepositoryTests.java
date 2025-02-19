@@ -180,7 +180,7 @@ public class EntryRepositoryTests {
 	
 	@Test
 	void when_dinghyDinghyClassMatchesRaceFleetDinghyClass_then_savesRace() {
-		DinghyClass dinghyClass = new DinghyClass("Scorpion", 2);
+		DinghyClass dinghyClass = new DinghyClass("Scorpion", 2, 1041);
 		entityManager.persist(dinghyClass);
 		
 		Set<DinghyClass> dinghyClasses = new HashSet<DinghyClass>(64);
@@ -209,7 +209,7 @@ public class EntryRepositoryTests {
 		Competitor helm = new Competitor("A Competitor");
 		entityManager.persist(helm);
 		
-		DinghyClass dinghyClass = new DinghyClass("Test Dinghyclass", 1);
+		DinghyClass dinghyClass = new DinghyClass("Test Dinghyclass", 1, 1000);
 		entityManager.persist(dinghyClass);
 		
 		Fleet fleet = new Fleet("Test Fleet");
@@ -232,8 +232,8 @@ public class EntryRepositoryTests {
 		Competitor helm = new Competitor("A Competitor");
 		entityManager.persist(helm);
 		
-		DinghyClass dinghyClass1 = new DinghyClass("Test Dinghyclass", 1);
-		DinghyClass dinghyClass2 = new DinghyClass("Different Dinghyclass", 1);
+		DinghyClass dinghyClass1 = new DinghyClass("Test Dinghyclass", 1, 1000);
+		DinghyClass dinghyClass2 = new DinghyClass("Different Dinghyclass", 1, 1000);
 		entityManager.persist(dinghyClass1);
 		entityManager.persist(dinghyClass2);
 		
@@ -258,7 +258,7 @@ public class EntryRepositoryTests {
 		Competitor helm = new Competitor("A Competitor");
 		entityManager.persist(helm);
 		
-		DinghyClass dinghyClass = new DinghyClass("Scorpion", 2);
+		DinghyClass dinghyClass = new DinghyClass("Scorpion", 2, 1041);
 		entityManager.persist(dinghyClass);
 		
 		Set<DinghyClass> dinghyClasses = new HashSet<DinghyClass>(64);
@@ -293,7 +293,7 @@ public class EntryRepositoryTests {
 		Competitor helm2 = new Competitor("B Competitor");
 		entityManager.persist(helm2);
 		
-		DinghyClass dinghyClass = new DinghyClass("Scorpion", 2);
+		DinghyClass dinghyClass = new DinghyClass("Scorpion", 2, 1041);
 		entityManager.persist(dinghyClass);
 		
 		Set<DinghyClass> dinghyClasses = new HashSet<DinghyClass>(64);
@@ -322,7 +322,7 @@ public class EntryRepositoryTests {
 		Competitor helm1 = new Competitor("A Competitor");
 		entityManager.persist(helm1);
 		
-		DinghyClass dinghyClass = new DinghyClass("Scorpion", 2);
+		DinghyClass dinghyClass = new DinghyClass("Scorpion", 2, 1041);
 		entityManager.persist(dinghyClass);
 		
 		Set<DinghyClass> dinghyClasses = new HashSet<DinghyClass>(64);
@@ -353,7 +353,7 @@ public class EntryRepositoryTests {
 		entityManager.persist(c1);
 		entityManager.persist(c2);
 		
-		DinghyClass dc1 = new DinghyClass("Dinghy Class One", 1);
+		DinghyClass dc1 = new DinghyClass("Dinghy Class One", 1, 1000);
 		entityManager.persist(dc1);
 		
 		Dinghy d1 = new Dinghy("1", dc1);
@@ -381,7 +381,7 @@ public class EntryRepositoryTests {
 
 	@Test
 	void when_entryHasEmptyLaps_then_savesEntry() {
-		DinghyClass dc1 = new DinghyClass("Dinghy Class One", 1);
+		DinghyClass dc1 = new DinghyClass("Dinghy Class One", 1, 1000);
 		entityManager.persist(dc1);
 		
 		Competitor helm = new Competitor();
@@ -447,7 +447,7 @@ public class EntryRepositoryTests {
 		entityManager.persist(helmA);
 		entityManager.persist(helmB);
 		
-		DinghyClass dinghyClass = new DinghyClass("Laser", 1);
+		DinghyClass dinghyClass = new DinghyClass("Laser", 1, 1100);
 		entityManager.persist(dinghyClass);
 		
 		Set<DinghyClass> dinghyClasses = new HashSet<DinghyClass>(64);
@@ -483,7 +483,7 @@ public class EntryRepositoryTests {
 		entityManager.persist(helmB);
 		entityManager.persist(crew);
 		
-		DinghyClass dinghyClass = new DinghyClass("Scorpion", 2);
+		DinghyClass dinghyClass = new DinghyClass("Scorpion", 2, 1041);
 		entityManager.persist(dinghyClass);
 		
 		Set<DinghyClass> dinghyClasses = new HashSet<DinghyClass>(64);
@@ -514,7 +514,7 @@ public class EntryRepositoryTests {
 
 	@Test
 	void when_scoringAbbreviationLessThan3Characters_then_throwsValidationError() {
-		DinghyClass dinghyClass = new DinghyClass("Scorpion", 2);
+		DinghyClass dinghyClass = new DinghyClass("Scorpion", 2, 1041);
 		entityManager.persist(dinghyClass);
 		
 		Set<DinghyClass> dinghyClasses = new HashSet<DinghyClass>(64);
@@ -535,7 +535,7 @@ public class EntryRepositoryTests {
 	
 	@Test
 	void when_scoringAbbreviationMoreThan3Characters_then_throwsValidationError() {
-		DinghyClass dinghyClass = new DinghyClass("Scorpion", 2);
+		DinghyClass dinghyClass = new DinghyClass("Scorpion", 2, 1041);
 		entityManager.persist(dinghyClass);
 		
 		Set<DinghyClass> dinghyClasses = new HashSet<DinghyClass>(64);

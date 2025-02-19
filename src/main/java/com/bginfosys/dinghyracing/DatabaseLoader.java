@@ -62,9 +62,9 @@ public class DatabaseLoader implements CommandLineRunner {
 	
 	@Override
 	public void run(String... args) throws Exception {
-		DinghyClass dcScorpion = new DinghyClass("Scorpion", 2);
-		DinghyClass dcGraduate = new DinghyClass("Graduate", 2);
-		DinghyClass dcComet = new DinghyClass("Comet", 1);
+		DinghyClass dcScorpion = new DinghyClass("Scorpion", 2, 1041);
+		DinghyClass dcGraduate = new DinghyClass("Graduate", 2, 1132);
+		DinghyClass dcComet = new DinghyClass("Comet", 1, 1210);
 		
 		this.dinghyClassRepository.save(dcScorpion);
 		this.dinghyClassRepository.save(dcGraduate);

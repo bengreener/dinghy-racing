@@ -47,7 +47,7 @@ public class DinghyRepositoryTests {
 	void saveDinghy() {
 		Dinghy d1;
 		Dinghy d2;
-		DinghyClass dc = new DinghyClass("TestClass", 1);
+		DinghyClass dc = new DinghyClass("TestClass", 1, 1000);
 		entityManager.persist(dc);
 		
 		d1 = new Dinghy("1234", dc);
@@ -69,7 +69,7 @@ public class DinghyRepositoryTests {
 
 	@Test
 	void addDuplicateDinghyFails() {
-		DinghyClass dc = new DinghyClass("TestClass", 1);
+		DinghyClass dc = new DinghyClass("TestClass", 1, 1000);
 		entityManager.persist(dc);
 		Dinghy d1 = new Dinghy("1234", dc);
 		Dinghy d2 = new Dinghy("1234", dc);
@@ -88,7 +88,7 @@ public class DinghyRepositoryTests {
 	
 	@Test
 	void given_dinghiesOfTheDinghyClassExist_when_searchingForDinghiesByTheDinghyClass_then_dinghiesAreReturned() {
-		DinghyClass dinghyClass = new DinghyClass("DinghyClass", 1);
+		DinghyClass dinghyClass = new DinghyClass("DinghyClass", 1, 1000);
 		entityManager.persist(dinghyClass);
 		
 		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
@@ -104,7 +104,7 @@ public class DinghyRepositoryTests {
 	
 	@Test
 	void given_theDinghyExists_when_searchingForTheDinghyBySailNumberAndDinghyClass_then_theDinghyIsReturned() {
-		DinghyClass dinghyClass = new DinghyClass("DinghyClass", 1);
+		DinghyClass dinghyClass = new DinghyClass("DinghyClass", 1, 1000);
 		entityManager.persist(dinghyClass);
 		
 		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
@@ -117,8 +117,8 @@ public class DinghyRepositoryTests {
 
 	@Test
 	void given_dinghiesExistWithTheSailNumber_when_searchingForDinghiesBySailNumber_then_theDinghiesAreReturned() {
-		DinghyClass dc1 = new DinghyClass("Scorpion", 1);
-		DinghyClass dc2 = new DinghyClass("Comet", 2);
+		DinghyClass dc1 = new DinghyClass("Scorpion", 1, 1000);
+		DinghyClass dc2 = new DinghyClass("Comet", 2, 1000);
 		
 		entityManager.persist(dc1);
 		entityManager.persist(dc2);

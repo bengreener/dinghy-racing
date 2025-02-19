@@ -26,7 +26,7 @@ import org.junit.jupiter.api.Test;
 
 public class DinghyClassTests {
 	
-	private DinghyClass dinghyClass = new DinghyClass("Test Class", 1);
+	private DinghyClass dinghyClass = new DinghyClass("Test Class", 1, 1000);
 	
 	@Test
 	void DinghyClassCreated() {

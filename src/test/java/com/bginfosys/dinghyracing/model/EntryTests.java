@@ -60,8 +60,8 @@ public class EntryTests {
 	
 	@Test
 	void when_constructorCalledWithArgumentsAndRaceFleetDinghyClassIsNotNullAndDoesNotMatchDinghyDinghyClass_then_throwsDinghyClassMismatchException() {
-		DinghyClass dc1 = new DinghyClass("Scorpion", 2);
-		DinghyClass dc2 = new DinghyClass("Graduate", 2);
+		DinghyClass dc1 = new DinghyClass("Scorpion", 2, 1041);
+		DinghyClass dc2 = new DinghyClass("Graduate", 2, 1100);
 		
 		Set<DinghyClass> dinghyClasses = new HashSet<DinghyClass>();
 		dinghyClasses.add(dc2);
@@ -80,7 +80,7 @@ public class EntryTests {
 	
 	@Test
 	void when_constructorCalledWithArgumentsAndRaceFleetDinghyClassIsNullAndDoesNotMatchDinghyDinghyClass_then_itInstantiatesAndSetsPropertyValues() {
-		DinghyClass dc1 = new DinghyClass("Scorpion", 2);
+		DinghyClass dc1 = new DinghyClass("Scorpion", 2, 1041);
 		Competitor helm = new Competitor();
 		Dinghy dinghy = new Dinghy();
 		dinghy.setDinghyClass(dc1);
@@ -106,7 +106,7 @@ public class EntryTests {
 	
 	@Test
 	void when_settingDinghyAndDinghyDinghyClassEqualsRaceFleetDinghyClass_then_itSetsDinghy() {
-		DinghyClass dinghyClass = new DinghyClass("Scorpion", 2);
+		DinghyClass dinghyClass = new DinghyClass("Scorpion", 2, 1041);
 						
 		Set<DinghyClass> dinghyClasses = new HashSet<DinghyClass>();
 		dinghyClasses.add(dinghyClass);
@@ -124,8 +124,8 @@ public class EntryTests {
 	
 	@Test
 	void when_settingDinghyAndDinghyDinghyClassDoesNotMatchRaceFleetDinghyClass_then_throwsDinghyClassMismatchException() {
-		DinghyClass dc1 = new DinghyClass("Scorpion", 2);
-		DinghyClass dc2 = new DinghyClass("Graduate", 2);
+		DinghyClass dc1 = new DinghyClass("Scorpion", 2, 1041);
+		DinghyClass dc2 = new DinghyClass("Graduate", 2, 1100);
 		
 		Set<DinghyClass> dinghyClasses = new HashSet<DinghyClass>();
 		dinghyClasses.add(dc1);
@@ -147,7 +147,7 @@ public class EntryTests {
 		
 	@Test
 	void when_settingDinghyAndRaceFleetDinghyClassIsNull_then_setsDinghy() {
-		DinghyClass dinghyClass = new DinghyClass("Scorpion", 2);
+		DinghyClass dinghyClass = new DinghyClass("Scorpion", 2, 1041);
 		Fleet fleet = new Fleet("Test Fleet");
 		Race race = new Race();
 		race.setFleet(fleet);
@@ -162,7 +162,7 @@ public class EntryTests {
 	
 	@Test
 	void when_settingDinghyAndDinghyDinghyClassIsNotNullAndRaceisNull_then_setsDinghy() {
-		DinghyClass dinghyClass = new DinghyClass("Scorpion", 2);
+		DinghyClass dinghyClass = new DinghyClass("Scorpion", 2, 1041);
 		Entry entry = new Entry();
 		Dinghy dinghy = new Dinghy();
 		dinghy.setDinghyClass(dinghyClass);
@@ -193,7 +193,7 @@ public class EntryTests {
 
 	@Test
 	void when_settingRaceAndRaceFleetDinghyClassIsNotNullAndDinghyIsNull_then_setsRace() {
-		DinghyClass dinghyClass = new DinghyClass("Scorpion", 2);
+		DinghyClass dinghyClass = new DinghyClass("Scorpion", 2, 1041);
 		
 		Set<DinghyClass> dinghyClasses = new HashSet<DinghyClass>();
 		dinghyClasses.add(dinghyClass);
@@ -208,7 +208,7 @@ public class EntryTests {
 	
 	@Test
 	void when_settingRaceAndRaceFleetDinghyClassIsNotNullAndMatchesDinghyDinghyClass_then_setsRace() {
-		DinghyClass dinghyClass = new DinghyClass("Scorpion", 2);
+		DinghyClass dinghyClass = new DinghyClass("Scorpion", 2, 1041);
 		Dinghy dinghy = new Dinghy();
 		dinghy.setDinghyClass(dinghyClass);
 		
@@ -226,8 +226,8 @@ public class EntryTests {
 	
 	@Test
 	void when_settingRaceAndRaceFleetDinghyClassIsNotNullAndDinghyDinghyClassIsNotNullAndRaceFleetDinghyClassDoesNotMatchDinghyDinghyClass_then_throwsDinghyMismAtchException() {
-		DinghyClass dc1 = new DinghyClass("Scorpion", 2);
-		DinghyClass dc2 = new DinghyClass("Graduate", 2);
+		DinghyClass dc1 = new DinghyClass("Scorpion", 2, 1041);
+		DinghyClass dc2 = new DinghyClass("Graduate", 2, 1100);
 		Dinghy dinghy = new Dinghy();
 		dinghy.setDinghyClass(dc1);
 		
@@ -248,7 +248,7 @@ public class EntryTests {
 	
 	@Test
 	void when_settingRaceAndRaceFleetDinghyClassesIsEmpty_then_setsRace() {
-		DinghyClass dinghyClass = new DinghyClass("Scorpion", 2);
+		DinghyClass dinghyClass = new DinghyClass("Scorpion", 2, 1041);
 		Dinghy dinghy = new Dinghy();
 		dinghy.setDinghyClass(dinghyClass);
 		

@@ -152,7 +152,7 @@ public class RaceRepositoryTests {
 		Competitor competitor = new Competitor();
 		entityManager.persist(competitor);
 		
-		DinghyClass dinghyClass = new DinghyClass("Test Dinghyclass", 1);
+		DinghyClass dinghyClass = new DinghyClass("Test Dinghyclass", 1, 1000);
 		entityManager.persist(dinghyClass);
 		
 		Fleet fleet = new Fleet("Test Fleet");
@@ -285,7 +285,7 @@ public class RaceRepositoryTests {
 
 	@Test
 	void when_aNewStartSequenceStateIsSet_then_savesWithNewStartSequenceState() {
-		DinghyClass dinghyClass = new DinghyClass("Test Dinghyclass", 1);
+		DinghyClass dinghyClass = new DinghyClass("Test Dinghyclass", 1, 1000);
 		entityManager.persist(dinghyClass);
 		
 		Fleet fleet = new Fleet("Test Fleet");

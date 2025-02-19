@@ -75,9 +75,9 @@ public class FleetRepositoryTests {
 	
 	@Test
 	void givenDinghyClassExists_when_DinghyClassIsAdded_then_savesFleetWithDinghyClasses() {
-		DinghyClass dinghyClass1 = new DinghyClass("Dinghyclass One", 1);
+		DinghyClass dinghyClass1 = new DinghyClass("Dinghyclass One", 1, 1000);
 		entityManager.persist(dinghyClass1);
-		DinghyClass dinghyClass2 = new DinghyClass("Dinghyclass Two", 1);
+		DinghyClass dinghyClass2 = new DinghyClass("Dinghyclass Two", 1, 1000);
 		entityManager.persist(dinghyClass2);
 		
 		Set<DinghyClass> dinghyClasses1 = new HashSet<DinghyClass>();
