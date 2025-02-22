@@ -88,4 +88,5 @@ ALTER TABLE race
 	
 ALTER TABLE dinghy_class
 	ADD COLUMN external_name VARCHAR(255),
-	MODIFY COLUMN portsmouth_number SMALLINT NOT NULL;
+	MODIFY COLUMN portsmouth_number SMALLINT NOT NULL,
+	DROP COLUMN start_sequence_state;
