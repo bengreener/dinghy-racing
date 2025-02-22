@@ -93,9 +93,6 @@ public class Race implements Serializable {
 	@OrderBy("id ASC")
 	private Set<Entry> signedUp = new HashSet<Entry>(64);
 	
-	@Enumerated(EnumType.STRING)
-	private StartSequence startSequenceState;
-	
 	@NotNull
 	@Enumerated(EnumType.STRING)
 	private StartType startType;
@@ -184,14 +181,6 @@ public class Race implements Serializable {
 	
 	public void setSignedUp(Set<Entry> signedUp) {
 		this.signedUp = signedUp;
-	}
-	
-	public StartSequence getStartSequenceState() {
-		return startSequenceState;
-	}
-
-	public void setStartSequenceState(StartSequence startSequenceState) {
-		this.startSequenceState = startSequenceState;
 	}
 
 	public StartType getStartType() {
@@ -359,7 +348,7 @@ public class Race implements Serializable {
 	public String toString() {
 		return "Race [id=" + id + ", version=" + version + ", name=" + name + ", plannedStartTime=" + plannedStartTime
 				+ ", fleet=" + fleet.getName() + ", duration=" + duration + ", plannedLaps=" + plannedLaps + ", type="
-				+ type + ", startSequenceState=" + startSequenceState + ", startType="
+				+ type + ", startType="
 				+ startType + "]";
 	}
 	

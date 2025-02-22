@@ -288,13 +288,6 @@ class RaceTests {
 		
 		assertEquals(4D, race.getLapForecast());
 	}
-	
-	@Test
-	void given_raceExists_when_validStartSequenceStateProvided_then_setsStartSequenceStateToSuppliedValue() {
-		race.setStartSequenceState(StartSequence.ONEMINUTE);
-		
-		assertEquals(race.getStartSequenceState(), StartSequence.ONEMINUTE);
-	}
 
 	@Test
 	void given_raceHasEntries_when_dinghyClassesRequested_then_returnsSetOfDinghyClassesForBoatsInEntries() {
