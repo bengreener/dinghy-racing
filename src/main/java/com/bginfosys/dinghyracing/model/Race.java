@@ -25,8 +25,6 @@ public class Race {
 	private @Id @GeneratedValue Long id;
 	private @Version @JsonIgnore Long version;
 	
-
-	
 	public Long getId() {
 		return id;
 	}
