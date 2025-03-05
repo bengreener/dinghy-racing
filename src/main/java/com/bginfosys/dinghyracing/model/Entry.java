@@ -71,7 +71,7 @@ public class Entry {
 	@NaturalId (mutable = true)
 	@NotNull
 	@ManyToOne
-	private Race race;
+	private DirectRace race;
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	private SortedSet<Lap> laps = new ConcurrentSkipListSet<Lap>((Lap firstLap, Lap secondLap) -> Integer.compare(firstLap.getNumber(), secondLap.getNumber()));
@@ -85,7 +85,7 @@ public class Entry {
 	
 	public Entry() {}
 	
-	public Entry(Competitor helm, Dinghy dinghy, Race race) {
+	public Entry(Competitor helm, Dinghy dinghy, DirectRace race) {
 		if (race.getFleet().getDinghyClasses().isEmpty() || race.getFleet().getDinghyClasses().contains(dinghy.getDinghyClass())) {
 			this.dinghy = dinghy;
 			this.helm = helm;
@@ -129,11 +129,11 @@ public class Entry {
 		this.crew = crew;
 	}
 
-	public Race getRace() {
+	public DirectRace getRace() {
 		return race;
 	}
 
-	public void setRace(Race race) {
+	public void setRace(DirectRace race) {
 		if (dinghy == null || race.getFleet().getDinghyClasses().isEmpty() || race.getFleet().getDinghyClasses().contains(dinghy.getDinghyClass())) {
 			this.race = race;
 			race.signUp(this);

@@ -33,7 +33,7 @@ import org.springframework.stereotype.Component;
 
 import com.bginfosys.dinghyracing.model.Entry;
 import com.bginfosys.dinghyracing.model.Lap;
-import com.bginfosys.dinghyracing.model.Race;
+import com.bginfosys.dinghyracing.model.DirectRace;
 
 @Component
 @RepositoryEventHandler(Entry.class)
@@ -57,7 +57,7 @@ public class EntryEventHandler {
 		}
 		this.websocket.convertAndSend(MESSAGE_PREFIX + "/createEntry", getURI(entry));
 		// notify listeners on race events that a new entry has been added for the race
-		Race race = entry.getRace();
+		DirectRace race = entry.getRace();
 		this.websocket.convertAndSend(MESSAGE_PREFIX + "/updateRace", getURI(race));
 	}
 	
@@ -84,7 +84,7 @@ public class EntryEventHandler {
 		}
 		this.websocket.convertAndSend(MESSAGE_PREFIX + "/deleteEntry", getURI(entry));
 		// notify listeners on race events that an entry has been removed for the race
-		Race race = entry.getRace();
+		DirectRace race = entry.getRace();
 		this.websocket.convertAndSend(MESSAGE_PREFIX + "/updateRace", getURI(race));
 	}
 	
@@ -99,9 +99,9 @@ public class EntryEventHandler {
 			Entry entry = (Entry) entity;
 			uri = this.entityLinks.linkToItemResource(Entry.class, entry.getId()).toUri().toString();	
 		}
-		else if (entity instanceof Race) {
-			Race race = (Race) entity;
-			uri = this.entityLinks.linkToItemResource(Race.class, race.getId()).toUri().toString();
+		else if (entity instanceof DirectRace) {
+			DirectRace race = (DirectRace) entity;
+			uri = this.entityLinks.linkToItemResource(DirectRace.class, race.getId()).toUri().toString();
 		}
 		return uri;
 	}

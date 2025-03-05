@@ -24,11 +24,11 @@ import org.springframework.data.repository.query.Param;
 import com.bginfosys.dinghyracing.model.Competitor;
 import com.bginfosys.dinghyracing.model.Dinghy;
 import com.bginfosys.dinghyracing.model.Entry;
-import com.bginfosys.dinghyracing.model.Race;
+import com.bginfosys.dinghyracing.model.DirectRace;
 
 public interface EntryRepository extends JpaRepository<Entry, Long> {
 
-	Page<Entry> findByRace(@Param("race") Race race, Pageable pageable);
+	Page<Entry> findByRace(@Param("race") DirectRace race, Pageable pageable);
 	
-	Entry findByRaceAndHelmAndDinghy(@Param("race") Race race, @Param("helm") Competitor helm, @Param("dinghy") Dinghy dinghy);
+	Entry findByRaceAndHelmAndDinghy(@Param("race") DirectRace race, @Param("helm") Competitor helm, @Param("dinghy") Dinghy dinghy);
 }

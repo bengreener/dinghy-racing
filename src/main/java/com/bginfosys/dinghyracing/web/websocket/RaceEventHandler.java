@@ -28,10 +28,10 @@ import org.springframework.hateoas.server.EntityLinks;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 
-import com.bginfosys.dinghyracing.model.Race;
+import com.bginfosys.dinghyracing.model.DirectRace;
 
 @Component
-@RepositoryEventHandler(Race.class)
+@RepositoryEventHandler(DirectRace.class)
 public class RaceEventHandler {
 	
 	Logger logger = LoggerFactory.getLogger(RaceEventHandler.class);
@@ -46,7 +46,7 @@ public class RaceEventHandler {
 	}
 
 	@HandleAfterCreate
-	public void newRace(Race race) {
+	public void newRace(DirectRace race) {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Create race: " + race.toString());
 		}
@@ -54,7 +54,7 @@ public class RaceEventHandler {
 	}
 
 	@HandleAfterDelete
-	public void deleteRace(Race race) {
+	public void deleteRace(DirectRace race) {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Delete race: " + race.toString());
 		}
@@ -62,7 +62,7 @@ public class RaceEventHandler {
 	}
 
 	@HandleAfterSave
-	public void updateRace(Race race) {
+	public void updateRace(DirectRace race) {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Update race: " + race.toString());
 		}
@@ -71,11 +71,11 @@ public class RaceEventHandler {
 	}
 	
 	/**
-	 * Take an {@link Race} and get the URI using Spring Data REST's {@link EntityLinks}.
+	 * Take an {@link DirectRace} and get the URI using Spring Data REST's {@link EntityLinks}.
 	 *
 	 * @param race
 	 */
-	private String getURI(Race race) {
+	private String getURI(DirectRace race) {
 		return this.entityLinks.linkToItemResource(race.getClass(), race.getId()).toUri().toString();
 	}
 }

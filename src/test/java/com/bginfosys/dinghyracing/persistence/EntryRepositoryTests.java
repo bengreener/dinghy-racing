@@ -43,7 +43,7 @@ import com.bginfosys.dinghyracing.model.DinghyClass;
 import com.bginfosys.dinghyracing.model.Entry;
 import com.bginfosys.dinghyracing.model.Fleet;
 import com.bginfosys.dinghyracing.model.Lap;
-import com.bginfosys.dinghyracing.model.Race;
+import com.bginfosys.dinghyracing.model.DirectRace;
 import com.bginfosys.dinghyracing.model.RaceType;
 import com.bginfosys.dinghyracing.model.StartType;
 
@@ -63,7 +63,7 @@ public class EntryRepositoryTests {
 		Fleet fleet = new Fleet("Test Fleet");
 		entityManager.persist(fleet);
 		
-		Race race = new Race();
+		DirectRace race = new DirectRace();
 		race.setFleet(fleet);		
 		entityManager.persist(race);
 		
@@ -83,7 +83,7 @@ public class EntryRepositoryTests {
 		Fleet fleet = new Fleet("Test Fleet");
 		entityManager.persist(fleet);
 		
-		Race race = new Race();
+		DirectRace race = new DirectRace();
 		race.setFleet(fleet);		
 		entityManager.persist(race);
 		
@@ -102,7 +102,7 @@ public class EntryRepositoryTests {
 		Fleet fleet = new Fleet("Test Fleet");
 		entityManager.persist(fleet);
 		
-		Race race = new Race();
+		DirectRace race = new DirectRace();
 		race.setFleet(fleet);		
 		entityManager.persist(race);
 		
@@ -123,7 +123,7 @@ public class EntryRepositoryTests {
 		Fleet fleet = new Fleet("Test Fleet");
 		entityManager.persist(fleet);
 		
-		Race race = new Race();
+		DirectRace race = new DirectRace();
 		race.setFleet(fleet);		
 		entityManager.persist(race);
 		
@@ -143,7 +143,7 @@ public class EntryRepositoryTests {
 		Fleet fleet = new Fleet("Test Fleet");
 		entityManager.persist(fleet);
 		
-		Race race = new Race();
+		DirectRace race = new DirectRace();
 		race.setFleet(fleet);		
 		entityManager.persist(race);
 		
@@ -195,7 +195,7 @@ public class EntryRepositoryTests {
 		dinghy.setDinghyClass(dinghyClass);
 		entityManager.persist(dinghy);
 		
-		Race race = new Race();
+		DirectRace race = new DirectRace();
 		race.setFleet(fleet);
 		entityManager.persist(race);
 		
@@ -215,7 +215,7 @@ public class EntryRepositoryTests {
 		Fleet fleet = new Fleet("Test Fleet");
 		entityManager.persist(fleet);
 		
-		Race race = new Race("Race A", LocalDateTime.of(2023, 7, 25, 11, 54, 30), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace race = new DirectRace("Race A", LocalDateTime.of(2023, 7, 25, 11, 54, 30), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		entityManager.persist(race);
 		
 		Dinghy dinghy = new Dinghy("1234", dinghyClass);
@@ -242,7 +242,7 @@ public class EntryRepositoryTests {
 		Fleet fleet = new Fleet("Test Fleet", dinghyClasses);
 		entityManager.persist(fleet);
 		
-		Race race = new Race("Race A", LocalDateTime.of(2023, 7, 25, 11, 54, 30), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace race = new DirectRace("Race A", LocalDateTime.of(2023, 7, 25, 11, 54, 30), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		entityManager.persist(race);
 		
 		Dinghy dinghy = new Dinghy("1234", dinghyClass1);
@@ -266,7 +266,7 @@ public class EntryRepositoryTests {
 		Fleet fleet = new Fleet("Test Fleet", dinghyClasses);
 		entityManager.persist(fleet);
 		
-		Race race = new Race("A race", LocalDateTime.of(2023,  3, 24, 12, 30, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace race = new DirectRace("A race", LocalDateTime.of(2023,  3, 24, 12, 30, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		entityManager.persist(race);
 		
 		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
@@ -301,7 +301,7 @@ public class EntryRepositoryTests {
 		Fleet fleet = new Fleet("Test Fleet", dinghyClasses);
 		entityManager.persist(fleet);
 		
-		Race race = new Race("A race", LocalDateTime.of(2023,  3, 24, 12, 30, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace race = new DirectRace("A race", LocalDateTime.of(2023,  3, 24, 12, 30, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		entityManager.persist(race);
 		
 		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
@@ -330,7 +330,7 @@ public class EntryRepositoryTests {
 		Fleet fleet = new Fleet("Test Fleet", dinghyClasses);
 		entityManager.persist(fleet);
 		
-		Race race = new Race("A race", LocalDateTime.of(2023,  3, 24, 12, 30, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace race = new DirectRace("A race", LocalDateTime.of(2023,  3, 24, 12, 30, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		entityManager.persist(race);
 		
 		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
@@ -366,7 +366,7 @@ public class EntryRepositoryTests {
 		Fleet fleet = new Fleet("Test Fleet", dinghyClasses);
 		entityManager.persist(fleet);
 		
-		Race r1 = new Race("Race One", LocalDateTime.of(2023, 5, 13, 12, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace r1 = new DirectRace("Race One", LocalDateTime.of(2023, 5, 13, 12, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		entityManager.persist(r1);
 		
 		Entry e1 = new Entry(c1, d1, r1);
@@ -396,7 +396,7 @@ public class EntryRepositoryTests {
 		Fleet fleet = new Fleet("Test Fleet", dinghyClasses);
 		entityManager.persist(fleet);		
 
-		Race race = new Race();
+		DirectRace race = new DirectRace();
 		race.setFleet(fleet);
 		entityManager.persist(race);
 		
@@ -417,7 +417,7 @@ public class EntryRepositoryTests {
 		Fleet fleet = new Fleet("Test Fleet");
 		entityManager.persist(fleet);
 		
-		Race race = new Race();
+		DirectRace race = new DirectRace();
 		race.setFleet(fleet);
 		entityManager.persist(race);
 		
@@ -455,7 +455,7 @@ public class EntryRepositoryTests {
 		Fleet fleet = new Fleet("Test Fleet", dinghyClasses);
 		entityManager.persist(fleet);
 		
-		Race race = new Race("A race", LocalDateTime.of(2023,  3, 24, 12, 30, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace race = new DirectRace("A race", LocalDateTime.of(2023,  3, 24, 12, 30, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		entityManager.persist(race);
 		
 		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
@@ -491,7 +491,7 @@ public class EntryRepositoryTests {
 		Fleet fleet = new Fleet("Test Fleet", dinghyClasses);
 		entityManager.persist(fleet);
 		
-		Race race = new Race("A race", LocalDateTime.of(2023,  3, 24, 12, 30, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace race = new DirectRace("A race", LocalDateTime.of(2023,  3, 24, 12, 30, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		entityManager.persist(race);
 		
 		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
@@ -522,7 +522,7 @@ public class EntryRepositoryTests {
 		Fleet fleet = new Fleet("Test Fleet", dinghyClasses);
 		entityManager.persist(fleet);
 		
-		Race race = new Race("A race", LocalDateTime.of(2023,  3, 24, 12, 30, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace race = new DirectRace("A race", LocalDateTime.of(2023,  3, 24, 12, 30, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		entityManager.persist(race);
 		Entry entry = new Entry();
 		entry.setRace(race);
@@ -543,7 +543,7 @@ public class EntryRepositoryTests {
 		Fleet fleet = new Fleet("Test Fleet", dinghyClasses);
 		entityManager.persist(fleet);
 		
-		Race race = new Race("A race", LocalDateTime.of(2023,  3, 24, 12, 30, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace race = new DirectRace("A race", LocalDateTime.of(2023,  3, 24, 12, 30, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		entityManager.persist(race);
 		Entry entry = new Entry();
 		entry.setRace(race);

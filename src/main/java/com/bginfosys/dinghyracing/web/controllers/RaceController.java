@@ -37,15 +37,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.bginfosys.dinghyracing.model.Entry;
-import com.bginfosys.dinghyracing.model.Race;
-import com.bginfosys.dinghyracing.persistence.RaceRepository;
+import com.bginfosys.dinghyracing.model.DirectRace;
+import com.bginfosys.dinghyracing.persistence.DirectRaceRepository;
 
 import jakarta.transaction.Transactional;
 
 @RepositoryRestController
 public class RaceController implements ApplicationEventPublisherAware {
 	
-	private final RaceRepository raceRepository;
+	private final DirectRaceRepository raceRepository;
 	
 	private final PersistentEntities persistentEntities;
 
@@ -55,7 +55,7 @@ public class RaceController implements ApplicationEventPublisherAware {
 
 	private ApplicationEventPublisher publisher;
 	
-	RaceController(RaceRepository raceRepository, PersistentEntities persistentEntities, RepositoryInvokerFactory repositoryInvokerFactory,
+	RaceController(DirectRaceRepository raceRepository, PersistentEntities persistentEntities, RepositoryInvokerFactory repositoryInvokerFactory,
 			@Qualifier("mvcConversionService") ConversionService conversionService) {
 		this.raceRepository = raceRepository;
 		this.persistentEntities = persistentEntities;
@@ -70,9 +70,9 @@ public class RaceController implements ApplicationEventPublisherAware {
 	
 	@Transactional
 	@PatchMapping(path = "/races/{raceId}/updateEntryPosition")
-	public ResponseEntity<Race> updateEntryPosition(@PathVariable("raceId") Long raceId, @RequestParam(name = "entry") String entryURI, @RequestParam(name = "position") Integer newPosition) {
-		Optional<Race> optRace = raceRepository.findById(raceId);
-		Race race = optRace.get();
+	public ResponseEntity<DirectRace> updateEntryPosition(@PathVariable("raceId") Long raceId, @RequestParam(name = "entry") String entryURI, @RequestParam(name = "position") Integer newPosition) {
+		Optional<DirectRace> optRace = raceRepository.findById(raceId);
+		DirectRace race = optRace.get();
 		
 		TypeDescriptor entryType = TypeDescriptor.valueOf(Entry.class);
 		
@@ -81,7 +81,7 @@ public class RaceController implements ApplicationEventPublisherAware {
 		// relying on framework to handle actual entity save and assuming this is done
 		publisher.publishEvent(new AfterSaveEvent(entry));
 		
-		return new ResponseEntity<Race>(HttpStatus.NO_CONTENT);
+		return new ResponseEntity<DirectRace>(HttpStatus.NO_CONTENT);
 	}
 
 	private Object getEntityFromUri(URI uri, TypeDescriptor targetType) {
