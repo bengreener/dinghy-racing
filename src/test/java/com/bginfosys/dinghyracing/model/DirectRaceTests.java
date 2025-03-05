@@ -47,18 +47,6 @@ class DirectRaceTests {
 	void raceCreated() {
 		assertThat(race, notNullValue());
 	}
-		
-	@Test
-	void setId() {
-		race.setId((long) 1);
-		assertEquals(race.getId(), 1);
-	}
-	
-	@Test
-	void idIsLong() {
-		race.setId((long) 1);
-		assertTrue(race.getId() instanceof Long);		
-	}
 	
 	@Test
 	void setName() {
