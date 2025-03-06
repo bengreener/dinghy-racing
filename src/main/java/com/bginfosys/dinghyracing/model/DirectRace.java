@@ -27,8 +27,6 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -42,14 +40,8 @@ import java.util.Map;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
-@Table(uniqueConstraints = {
-		@UniqueConstraint(columnNames = {"name", "plannedStartTime"})
-})
 public class DirectRace extends Race {
-	
-	@NotNull
-	private String name;
-	
+		
 	@NotNull
 	private LocalDateTime plannedStartTime;
 		
@@ -81,21 +73,13 @@ public class DirectRace extends Race {
 	public DirectRace() {}
 	
 	public DirectRace(String name, LocalDateTime plannedStartTime, Fleet fleet, Duration duration, Integer plannedLaps, RaceType type, StartType startType) {
-		this.name = name;
+		super(name);
 		this.plannedStartTime = plannedStartTime;
 		this.fleet = fleet;
 		this.duration = duration;
 		this.plannedLaps = plannedLaps;
 		this.type = type;
 		this.startType = startType;
-	}
-	
-	public void setName(String name) {
-		this.name = name;
-	}
-	
-	public String getName() {
-		return this.name;
 	}
 	
 	public LocalDateTime getPlannedStartTime() {
@@ -317,7 +301,7 @@ public class DirectRace extends Race {
 	
 	@Override
 	public String toString() {
-		return "Race [id=" + getId() + ", name=" + name + ", plannedStartTime=" + plannedStartTime
+		return "Race [id=" + getId() + ", name=" + getName() + ", plannedStartTime=" + plannedStartTime
 				+ ", fleet=" + fleet.getName() + ", duration=" + duration + ", plannedLaps=" + plannedLaps + ", type="
 				+ type + ", startType="
 				+ startType + "]";

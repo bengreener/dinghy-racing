@@ -12,6 +12,7 @@ import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.Transient;
 import jakarta.persistence.Version;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -24,6 +25,15 @@ public class Race {
 	
 	private @Id @GeneratedValue Long id;
 	private @Version @JsonIgnore Long version;
+
+	@NotNull
+	private String name;
+	
+	public Race() {}
+	
+	public Race(String name) {
+		this.name = name;
+	}
 	
 	public Long getId() {
 		return id;
@@ -31,5 +41,13 @@ public class Race {
 	
 	public void setId(Long id) {
 		this.id = id;
+	}
+	
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	public String getName() {
+		return this.name;
 	}
 }

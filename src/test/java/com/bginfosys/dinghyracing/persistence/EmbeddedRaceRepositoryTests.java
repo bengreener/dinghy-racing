@@ -30,9 +30,10 @@ public class EmbeddedRaceRepositoryTests {
 	
 	@Test
 	void given_embeddedRaceExists_then_savesEmbeddedRace() {
-		EmbeddedRace er1 = new EmbeddedRace();
+		EmbeddedRace er1 = new EmbeddedRace("Embedded Race");
 		
 		EmbeddedRace er2 = embeddedRaceRepository.save(er1);
+		entityManager.flush();
 				
 		assertThat(entityManager.find(EmbeddedRace.class, entityManager.getId(er2))).isEqualTo(er1);
 	}
@@ -45,11 +46,12 @@ public class EmbeddedRaceRepositoryTests {
 		DirectRace dr1 = new DirectRace("DR1", LocalDateTime.now(), fleet1, Duration.ofHours(1), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		entityManager.persist(dr1);
 		
-		EmbeddedRace er1 = new EmbeddedRace();
+		EmbeddedRace er1 = new EmbeddedRace("Embedded Race");
 		Set<Race> hosts = new HashSet<Race>();
 		hosts.add(dr1);
 		er1.setHosts(hosts);
 		EmbeddedRace er2 = embeddedRaceRepository.save(er1);
+		entityManager.flush();
 				
 		assertThat(entityManager.find(EmbeddedRace.class, entityManager.getId(er2))).isEqualTo(er1);
 	}

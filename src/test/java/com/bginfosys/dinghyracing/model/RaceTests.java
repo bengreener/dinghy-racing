@@ -13,4 +13,12 @@ public class RaceTests {
 		
 		assertEquals(race.getId(), 1L);
 	}
+	
+	@Test
+	void when_nameIsSet_then_returns_name() {
+		Race race = new Race();
+		race.setName("Race 1");
+		
+		assertEquals(race.getName(), "Race 1");
+	}
 }

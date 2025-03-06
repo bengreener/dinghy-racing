@@ -14,6 +14,10 @@ public class EmbeddedRace extends Race {
 
 	public EmbeddedRace() {}
 	
+	public EmbeddedRace(String name) {
+		super(name);
+	}
+	
 	public Set<Race> getHosts() {
 		return hosts;
 	}

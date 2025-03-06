@@ -217,26 +217,6 @@ public class DirectRaceRepositoryTests {
 	}
 
 	@Test
-	void given_raceExistsWithNameAndStartTime_when_creatingAnotherRaceWithTheSameNameAndStartTime_then_throwsError() {
-		Fleet fleet = new Fleet("Test Fleet");
-		entityManager.persist(fleet);
-				
-		DirectRace race1 = new DirectRace("Test Race", LocalDateTime.of(2023, 10, 13, 12, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
-		entityManager.persistAndFlush(race1);
-		
-		DirectRace race2 = new DirectRace();
-		race2.setName("Test Race");
-		race2.setPlannedStartTime(LocalDateTime.of(2023, 10, 13, 12, 00));
-		race2.setDuration(Duration.ofMinutes(45));
-		race1.setPlannedLaps(5);
-		
-		assertThrows(ConstraintViolationException.class, () -> {
-			raceRepository.save(race2);
-			entityManager.flush();
-		});
-	}
-
-	@Test
 	void when_aCollectionOfRacesBetweenCertainTimesIsRequested_then_ACollectionContainingOnlyRacesBetweenThomseTimesAreReturned() {
 		Fleet fleet = new Fleet("Test Fleet");
 		entityManager.persist(fleet);
