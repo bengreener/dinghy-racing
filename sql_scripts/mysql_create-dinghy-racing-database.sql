@@ -85,18 +85,33 @@ CREATE TABLE dinghy (
 ) engine=InnoDB;
 
 CREATE TABLE race (
+	id BIGINT NOT NULL,  
+	name VARCHAR(255) NOT NULL, 
+	version BIGINT,
+	CONSTRAINT PK_race_id PRIMARY KEY (id)
+) engine=InnoDB;
+
+CREATE TABLE direct_race (
 	id BIGINT NOT NULL, 
 	fleet_id BIGINT, 
-	duration BIGINT NOT NULL, 
-	name VARCHAR(255) NOT NULL, 
+	duration BIGINT NOT NULL,
 	planned_laps integer NOT NULL, 
 	planned_start_time DATETIME(6) NOT NULL, 
 	`type` VARCHAR(50) NOT NULL,
 	start_type VARCHAR(50) NOT NULL,
-	version BIGINT,
 	CONSTRAINT PK_race_id PRIMARY KEY (id),
-	CONSTRAINT UK_race_name_planned_start_time UNIQUE (name, planned_start_time),
 	CONSTRAINT FK_race_fleet_id FOREIGN KEY (fleet_id) REFERENCES fleet (id)
+) engine=InnoDB;
+
+CREATE TABLE embedded_race (
+	id BIGINT NOT NULL, 
+	CONSTRAINT PK_race_id PRIMARY KEY (id)
+) engine=InnoDB;
+
+CREATE TABLE embedded_race_hosts (
+	embedded_race_id BIGINT NOT NULL, 
+	hosts_id BIGINT NOT NULL, 
+	CONSTRAINT PK_embedded_race_id_hosts_id PRIMARY KEY (embedded_race_id, hosts_id)
 ) engine=InnoDB;
 
 CREATE TABLE entry (

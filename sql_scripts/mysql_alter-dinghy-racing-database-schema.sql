@@ -93,3 +93,34 @@ ALTER TABLE race
 ALTER TABLE dinghy_class
 	ADD COLUMN external_name VARCHAR(255),
 	MODIFY COLUMN portsmouth_number SMALLINT NOT NULL;
+
+ALTER TABLE race
+	DROP COLUMN start_sequence_state;
+
+-- new race tables mean version moves to new race table while much of the data moves to direct_race table (created by renaming old race table)
+--  1) Generate scipt to populate new race table with id and version number from old race table (which becomes direct_race
+
+RENAME TABLE race TO direct_race;
+
+CREATE TABLE race (
+	id BIGINT NOT NULL,  
+	name VARCHAR(255) NOT NULL, 
+	version BIGINT, 
+	CONSTRAINT PK_race_id PRIMARY KEY (id)
+) engine=InnoDB;
+
+ALTER TABLE direct_race
+	DROP COLUMN version, 
+	DROP COLUMN name;
+
+CREATE TABLE embedded_race (
+	id BIGINT NOT NULL, 
+	CONSTRAINT PK_race_id PRIMARY KEY (id)
+) engine=InnoDB;
+
+CREATE TABLE embedded_race_hosts (
+	embedded_race_id BIGINT NOT NULL, 
+	hosts_id BIGINT NOT NULL, 
+	CONSTRAINT PK_embedded_race_id_hosts_id PRIMARY KEY (embedded_race_id, hosts_id)
+) engine=InnoDB;
+

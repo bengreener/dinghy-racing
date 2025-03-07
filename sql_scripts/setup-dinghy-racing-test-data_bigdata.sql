@@ -5,14 +5,25 @@ USE dinghy_racing;
 DELETE FROM entry_laps;
 DELETE FROM lap;
 DELETE FROM entry;
+DELETE FROM embedded_race_hosts;
+DELETE FROM direct_race;
+DELETE FROM embedded_race;
 DELETE FROM race;
 DELETE FROM fleet_dinghy_classes;
 DELETE FROM fleet;
 DELETE FROM dinghy;
 DELETE FROM dinghy_class;
 DELETE FROM competitor;
+DELETE FROM competitor_seq;
+DELETE FROM dinghy_seq;
+DELETE FROM dinghy_class_seq;
+DELETE FROM entry_seq;
+DELETE FROM lap_seq;
+DELETE FROM race_seq;
+DELETE FROM fleet_seq;
 
 -- create testing data
+-- create dinghy class records
 INSERT INTO dinghy_class (id, name, crew_size, portsmouth_number, external_name, version) VALUES (1, "Albacore", 2, 1037, null, 0);
 INSERT INTO dinghy_class (id, name, crew_size, portsmouth_number, external_name, version) VALUES (2, "Byte", 1, 1217, null, 0);
 INSERT INTO dinghy_class (id, name, crew_size, portsmouth_number, external_name, version) VALUES (3, "Byte C2", 1, 1132, null, 0);
@@ -66,6 +77,7 @@ INSERT INTO dinghy_class (id, name, crew_size, portsmouth_number, external_name,
 INSERT INTO dinghy_class (id, name, crew_size, portsmouth_number, external_name, version) VALUES (52, "Wanderer", 2, 1188, null, 0);
 INSERT INTO dinghy_class (id, name, crew_size, portsmouth_number, external_name, version) VALUES (53, "Wayfarer", 2, 1109, null, 0);
 
+-- create dinghy records
 INSERT INTO dinghy (id, sail_number, dinghy_class_id, version) VALUES (1, "5897", 1, 0);
 INSERT INTO dinghy (id, sail_number, dinghy_class_id, version) VALUES (2, "7415", 1, 0);
 INSERT INTO dinghy (id, sail_number, dinghy_class_id, version) VALUES (3, "8330", 1, 0);
@@ -859,6 +871,7 @@ INSERT INTO dinghy (id, sail_number, dinghy_class_id, version) VALUES (790, "112
 INSERT INTO dinghy (id, sail_number, dinghy_class_id, version) VALUES (791, "11203", 53, 0);
 INSERT INTO dinghy (id, sail_number, dinghy_class_id, version) VALUES (792, "11370", 53, 0);
 
+-- create competitor records
 INSERT INTO competitor (id, name, version) VALUES (1, "Aaliyah Radford", 0);
 INSERT INTO competitor (id, name, version) VALUES (2, "Aarav Malik", 0);
 INSERT INTO competitor (id, name, version) VALUES (3, "Aarav Wade", 0);
@@ -1429,6 +1442,7 @@ INSERT INTO competitor (id, name, version) VALUES (567, "Zoe Little", 0);
 INSERT INTO competitor (id, name, version) VALUES (568, "Zohaan Coulson", 0);
 INSERT INTO competitor (id, name, version) VALUES (569, "Zuri Bennett", 0);
 
+-- create fleet records
 INSERT INTO fleet (id, name, version) VALUES (1, "Comet", 0);
 INSERT INTO fleet (id, name, version) VALUES (2, "Enterprise", 0);
 INSERT INTO fleet (id, name, version) VALUES (3, "Firefly", 0);
@@ -1441,6 +1455,7 @@ INSERT INTO fleet (id, name, version) VALUES (9, "Solo", 0);
 INSERT INTO fleet (id, name, version) VALUES (10, "Topper", 0);
 INSERT INTO fleet (id, name, version) VALUES (11, "Handicap", 0);
 
+-- assign dinghy classes to fleets
 INSERT INTO fleet_dinghy_classes (fleet_id, dinghy_classes_id) VALUES (1, 5);
 INSERT INTO fleet_dinghy_classes (fleet_id, dinghy_classes_id) VALUES (1, 7);
 INSERT INTO fleet_dinghy_classes (fleet_id, dinghy_classes_id) VALUES (2, 8);
@@ -1461,11 +1476,26 @@ INSERT INTO fleet_dinghy_classes (fleet_id, dinghy_classes_id) VALUES (10, 48);
 INSERT INTO fleet_dinghy_classes (fleet_id, dinghy_classes_id) VALUES (10, 49);
 INSERT INTO fleet_dinghy_classes (fleet_id, dinghy_classes_id) VALUES (10, 50);
 
-INSERT INTO race (id, name, duration, planned_laps, planned_start_time, fleet_id, `type`, start_type, version) VALUES (1, "Scorpion A", 2700000000000, 5, "2025-02-09 10:10:00", 8, "FLEET", "CSCCLUBSTART", 0);
-INSERT INTO race (id, name, duration, planned_laps, planned_start_time, fleet_id, `type`, start_type, version) VALUES (2, "Graduate A", 2700000000000, 5, "2025-02-09 10:15:00", 4, "FLEET", "CSCCLUBSTART", 0);
-INSERT INTO race (id, name, duration, planned_laps, planned_start_time, fleet_id, `type`, start_type, version) VALUES (3, "Comet A", 2100000000000, 4, "2025-02-09 10:20:00", 1, "FLEET", "CSCCLUBSTART", 0);
-INSERT INTO race (id, name, duration, planned_laps, planned_start_time, fleet_id, `type`, start_type, version) VALUES (4, "Handicap A", 2100000000000, 4, "2025-02-09 10:25:00", 11, "FLEET", "CSCCLUBSTART", 0);
+-- create race records
+INSERT INTO race (id, name, version) VALUES (1, "Scorpion A", 0);
+INSERT INTO race (id, name, version) VALUES (2, "Graduate A", 0);
+INSERT INTO race (id, name, version) VALUES (3, "Comet A", 0);
+INSERT INTO race (id, name, version) VALUES (4, "Handicap A", 0);
+INSERT INTO race (id, name, version) VALUES (5, "Veterans A", 0);
 
+-- create direct race records
+INSERT INTO direct_race (id, duration, planned_laps, planned_start_time, fleet_id, `type`, start_type) VALUES (1, 2700000000000, 5, "2025-02-09 10:10:00", 8, "FLEET", "CSCCLUBSTART");
+INSERT INTO direct_race (id, duration, planned_laps, planned_start_time, fleet_id, `type`, start_type) VALUES (2, 2700000000000, 5, "2025-02-09 10:15:00", 4, "FLEET", "CSCCLUBSTART");
+INSERT INTO direct_race (id, duration, planned_laps, planned_start_time, fleet_id, `type`, start_type) VALUES (3, 2100000000000, 4, "2025-02-09 10:20:00", 1, "FLEET", "CSCCLUBSTART");
+INSERT INTO direct_race (id, duration, planned_laps, planned_start_time, fleet_id, `type`, start_type) VALUES (4, 2100000000000, 4, "2025-02-09 10:25:00", 11, "FLEET", "CSCCLUBSTART");
+	
+-- create embedded races
+INSERT INTO embedded_race (id) VALUES (5);
+
+INSERT INTO embedded_race_hosts (embedded_race_id, hosts_id) VALUES (5, 3);
+INSERT INTO embedded_race_hosts (embedded_race_id, hosts_id) VALUES (5, 4);
+
+-- create entries
 INSERT INTO entry (id, helm_id, dinghy_id, race_id, crew_id, version) VALUES (42, 328, 13, 3, NULL, 0);
 INSERT INTO entry (id, helm_id, dinghy_id, race_id, crew_id, version) VALUES (43, 93, 15, 3, NULL, 0);
 INSERT INTO entry (id, helm_id, dinghy_id, race_id, crew_id, version) VALUES (44, 373, 19, 3, NULL, 0);
@@ -1564,10 +1594,10 @@ INSERT INTO entry (id, helm_id, dinghy_id, race_id, crew_id, version) VALUES (93
 INSERT INTO entry (id, helm_id, dinghy_id, race_id, crew_id, version) VALUES (94, 497, 76, 4, 1, 0);
 INSERT INTO entry (id, helm_id, dinghy_id, race_id, crew_id, version) VALUES (96, 235, 791, 4, 400, 0);
 
-UPDATE competitor_seq SET next_val = (SELECT MAX(id) + 50 FROM competitor);
-UPDATE dinghy_seq SET next_val = (SELECT MAX(id) + 50 FROM dinghy);
-UPDATE dinghy_class_seq SET next_val = (SELECT MAX(id) + 50 FROM dinghy_class);
-UPDATE lap_seq SET next_val = 1;
-UPDATE entry_seq SET next_val = (SELECT MAX(id) + 50 FROM entry);
-UPDATE race_seq SET next_val = (SELECT MAX(id) + 50 FROM race);
-UPDATE fleet_seq SET next_val = (SELECT MAX(id) + 50 FROM fleet);
+INSERT INTO competitor_seq SET next_val = (SELECT MAX(id) + 50 FROM competitor);
+INSERT INTO dinghy_seq SET next_val = (SELECT MAX(id) + 50 FROM dinghy);
+INSERT INTO dinghy_class_seq SET next_val = (SELECT MAX(id) + 50 FROM dinghy_class);
+INSERT INTO entry_seq SET next_val = (SELECT MAX(id) + 50 FROM entry);
+INSERT INTO lap_seq SET next_val = 1;
+INSERT INTO race_seq SET next_val = (SELECT MAX(id) + 50 FROM race);
+INSERT INTO fleet_seq SET next_val = (SELECT MAX(id) + 50 FROM fleet);
