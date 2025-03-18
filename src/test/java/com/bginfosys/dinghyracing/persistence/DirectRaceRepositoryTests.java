@@ -36,6 +36,7 @@ import org.springframework.data.domain.Pageable;
 import jakarta.validation.ConstraintViolationException;
 
 import com.bginfosys.dinghyracing.model.DirectRace;
+import com.bginfosys.dinghyracing.model.EmbeddedRace;
 import com.bginfosys.dinghyracing.model.RaceType;
 import com.bginfosys.dinghyracing.model.StartType;
 import com.bginfosys.dinghyracing.model.Dinghy;
@@ -260,5 +261,23 @@ public class DirectRaceRepositoryTests {
 		
 		assertThat(result).contains(race2, race3);
 		assertThat(result).doesNotContain(race1, race4);
+	}
+
+	@Test
+	void given_directRaceHasEmbeddedSet_then_savesDirectRace() {
+		Fleet fleet1 = new Fleet("Fleet1");
+		entityManager.persist(fleet1);
+		
+		EmbeddedRace er1 = new EmbeddedRace("Embedded Race");
+		entityManager.persist(er1);
+		
+		DirectRace dr1 = new DirectRace("DR1", LocalDateTime.now(), fleet1, Duration.ofHours(1), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Set<EmbeddedRace> embedded = new HashSet<EmbeddedRace>();
+		embedded.add(er1);
+		dr1.setEmbedded(embedded);
+		DirectRace dr2 = raceRepository.save(dr1);
+		entityManager.flush();
+		
+		assertThat(entityManager.find(DirectRace.class, entityManager.getId(dr2))).isEqualTo(dr1);
 	}
 }

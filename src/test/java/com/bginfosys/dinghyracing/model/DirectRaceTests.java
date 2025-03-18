@@ -946,4 +946,15 @@ class DirectRaceTests {
 		assertEquals(5, entry2.getPosition());
 		assertEquals(5, entry3.getPosition());
 	}
+	
+	@Test
+	void when_embeddedIsSet_then_returnsEmbedded() {
+		DirectRace dr = new DirectRace();
+		EmbeddedRace er = new EmbeddedRace("Embedded");
+		Set<EmbeddedRace> embedded = new HashSet<EmbeddedRace>();
+		embedded.add(er);
+		dr.setEmbedded(embedded);
+		
+		assertEquals(embedded, dr.getEmbedded());		
+	}
 }

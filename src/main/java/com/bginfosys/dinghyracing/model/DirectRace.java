@@ -24,6 +24,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
@@ -63,6 +64,9 @@ public class DirectRace extends Race {
 	@OneToMany(mappedBy = "race", cascade = CascadeType.ALL, orphanRemoval = true)
 	@OrderBy("id ASC")
 	private Set<Entry> signedUp = new HashSet<Entry>(64);
+	
+	@ManyToMany(mappedBy = "hosts")
+	private Set<EmbeddedRace> embedded = new HashSet<EmbeddedRace>(64);
 	
 	@NotNull
 	@Enumerated(EnumType.STRING)
@@ -136,6 +140,14 @@ public class DirectRace extends Race {
 	
 	public void setSignedUp(Set<Entry> signedUp) {
 		this.signedUp = signedUp;
+	}
+
+	public Set<EmbeddedRace> getEmbedded() {
+		return embedded;
+	}
+
+	public void setEmbedded(Set<EmbeddedRace> embedded) {
+		this.embedded = embedded;
 	}
 
 	public StartType getStartType() {
