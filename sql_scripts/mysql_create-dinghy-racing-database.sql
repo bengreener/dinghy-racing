@@ -109,9 +109,9 @@ CREATE TABLE embedded_race (
 ) engine=InnoDB;
 
 CREATE TABLE embedded_race_hosts (
-	embedded_race_id BIGINT NOT NULL, 
+	embedded_id BIGINT NOT NULL, 
 	hosts_id BIGINT NOT NULL, 
-	CONSTRAINT PK_embedded_race_id_hosts_id PRIMARY KEY (embedded_race_id, hosts_id)
+	CONSTRAINT PK_embedded_race_id_hosts_id PRIMARY KEY (embedded_id, hosts_id)
 ) engine=InnoDB;
 
 CREATE TABLE entry (

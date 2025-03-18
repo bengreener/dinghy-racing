@@ -73,8 +73,8 @@ INSERT INTO race (id, name, version)
 	VALUES (5, "Veterans 1", 0);
 
 INSERT INTO embedded_race (id) VALUES (5);
-INSERT INTO embedded_race_hosts (embedded_race_id, hosts_id) VALUES (5, 3);
-INSERT INTO embedded_race_hosts (embedded_race_id, hosts_id) VALUES (5, 4);
+INSERT INTO embedded_race_hosts (embedded_id, hosts_id) VALUES (5, 3);
+INSERT INTO embedded_race_hosts (embedded_id, hosts_id) VALUES (5, 4);
 
 INSERT INTO entry (id, helm_id, dinghy_id, race_id, crew_id, version) VALUES (1, 1, 1, 1, 4, 0);
 INSERT INTO entry (id, helm_id, dinghy_id, race_id, crew_id, version) VALUES (2, 2, 3, 1, 6, 0);

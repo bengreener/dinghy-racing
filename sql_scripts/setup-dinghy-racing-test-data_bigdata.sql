@@ -1492,8 +1492,8 @@ INSERT INTO direct_race (id, duration, planned_laps, planned_start_time, fleet_i
 -- create embedded races
 INSERT INTO embedded_race (id) VALUES (5);
 
-INSERT INTO embedded_race_hosts (embedded_race_id, hosts_id) VALUES (5, 3);
-INSERT INTO embedded_race_hosts (embedded_race_id, hosts_id) VALUES (5, 4);
+INSERT INTO embedded_race_hosts (embedded_id, hosts_id) VALUES (5, 3);
+INSERT INTO embedded_race_hosts (embedded_id, hosts_id) VALUES (5, 4);
 
 -- create entries
 INSERT INTO entry (id, helm_id, dinghy_id, race_id, crew_id, version) VALUES (42, 328, 13, 3, NULL, 0);
