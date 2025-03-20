@@ -33,6 +33,7 @@ import org.springframework.stereotype.Component;
 
 import com.bginfosys.dinghyracing.model.Entry;
 import com.bginfosys.dinghyracing.model.Lap;
+import com.bginfosys.dinghyracing.model.Race;
 import com.bginfosys.dinghyracing.model.DirectRace;
 
 @Component
@@ -57,7 +58,7 @@ public class EntryEventHandler {
 		}
 		this.websocket.convertAndSend(MESSAGE_PREFIX + "/createEntry", getURI(entry));
 		// notify listeners on race events that a new entry has been added for the race
-		DirectRace race = entry.getRace();
+		Race race = entry.getRace();
 		this.websocket.convertAndSend(MESSAGE_PREFIX + "/updateRace", getURI(race));
 	}
 	
@@ -84,7 +85,7 @@ public class EntryEventHandler {
 		}
 		this.websocket.convertAndSend(MESSAGE_PREFIX + "/deleteEntry", getURI(entry));
 		// notify listeners on race events that an entry has been removed for the race
-		DirectRace race = entry.getRace();
+		Race race = entry.getRace();
 		this.websocket.convertAndSend(MESSAGE_PREFIX + "/updateRace", getURI(race));
 	}
 	

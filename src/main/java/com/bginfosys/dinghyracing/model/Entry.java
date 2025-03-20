@@ -71,7 +71,7 @@ public class Entry {
 	@NaturalId (mutable = true)
 	@NotNull
 	@ManyToOne
-	private DirectRace race;
+	private Race race;
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	private SortedSet<Lap> laps = new ConcurrentSkipListSet<Lap>((Lap firstLap, Lap secondLap) -> Integer.compare(firstLap.getNumber(), secondLap.getNumber()));
@@ -85,11 +85,12 @@ public class Entry {
 	
 	public Entry() {}
 	
-	public Entry(Competitor helm, Dinghy dinghy, DirectRace race) {
+	public Entry(Competitor helm, Dinghy dinghy, Race race) {
 		if (race.getFleet().getDinghyClasses().isEmpty() || race.getFleet().getDinghyClasses().contains(dinghy.getDinghyClass())) {
 			this.dinghy = dinghy;
 			this.helm = helm;
 			this.race = race;
+			race.signUp(this);
 		}
 		else {
 			throw new DinghyClassMismatchException();
@@ -129,12 +130,16 @@ public class Entry {
 		this.crew = crew;
 	}
 
-	public DirectRace getRace() {
+	public Race getRace() {
 		return race;
 	}
 
-	public void setRace(DirectRace race) {
-		if (dinghy == null || race.getFleet().getDinghyClasses().isEmpty() || race.getFleet().getDinghyClasses().contains(dinghy.getDinghyClass())) {
+	public void setRace(Race race) {
+//		if (dinghy == null || race.getFleet().getDinghyClasses().isEmpty() || race.getFleet().getDinghyClasses().contains(dinghy.getDinghyClass())) {
+//			this.race = race;
+//			race.signUp(this);
+//		}
+		if (race.isDinghyEligible(dinghy)) {
 			this.race = race;
 			race.signUp(this);
 		}
@@ -245,20 +250,14 @@ public class Entry {
 	 * Return true of the boat is on it's last lap of the race
 	 */
 	public boolean getOnLastLap() {
-		if (laps.size() == race.getPlannedLaps() - 1) {
-			return true;
-		}
-		return false;
+		return race.isOnLastLap(this);
 	}
 	
 	/**
 	 * Return true if the boat has finished the race
 	 */
 	public boolean getFinishedRace() {
-		if (laps.size() == race.getPlannedLaps()) {
-			return true;
-		}
-		return false;
+		return race.hasFinishedRace(this);
 	}
 	
 	/**
