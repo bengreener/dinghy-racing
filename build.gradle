@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'com.bginfosys'
-version = '2025.1.1'
+version = '2025.1.2.dev'
 java {
 	sourceCompatibility = '17'
 }

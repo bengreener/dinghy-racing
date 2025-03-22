@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Test;
 
 class DinghyTests {
 	
-	private Dinghy dinghy = new Dinghy("2689", new DinghyClass("Scorpion", 2));
+	private Dinghy dinghy = new Dinghy("2689", new DinghyClass("Scorpion", 2, 1041));
 	
 	@Test
 	void dinghyCreated() {
@@ -60,14 +60,14 @@ class DinghyTests {
 	
 	@Test
 	void setDinghyClass() {
-		DinghyClass dc = new DinghyClass("Comet", 1);
+		DinghyClass dc = new DinghyClass("Comet", 1, 1210);
 		dinghy.setDinghyClass(dc);
 		assertEquals(dinghy.getDinghyClass(), dc);
 	}
 	
 	@Test
 	void dinghyClassIsDinghyClass() {
-		dinghy.setDinghyClass(new DinghyClass("Comet", 1));
+		dinghy.setDinghyClass(new DinghyClass("Comet", 1, 1210));
 		assertTrue(dinghy.getDinghyClass() instanceof DinghyClass);
 	}
 }

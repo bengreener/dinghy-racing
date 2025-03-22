@@ -39,7 +39,7 @@ public class CompetitorRepositoryTests {
 	CompetitorRepository competitorRepository;
 	
 	@Test
-	void when_providedWithAValidInstanceOfCompetitor_then_samesCompetitor() {
+	void when_providedWithAValidInstanceOfCompetitor_then_savesCompetitor() {
 		Competitor competitor1 = new Competitor("Some Name");
 		Competitor insertedCompetitor = competitorRepository.save(competitor1);
 		
