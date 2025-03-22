@@ -71,6 +71,9 @@ CREATE TABLE fleet_seq (
 INSERT INTO fleet_seq VALUES ( 1 );
 
 -- exisitng data needs race records to be mapped to fleet records so migration will be more complicated
+--	0) Create required fleet records
+-- 	0.1) Create Fleets
+--	0.2) Map dinghy classes to fleets
 --	1) Determine Race to fleet mappings for existing data
 --	2) Generate script to map race records to fleet records
 --	3) Drop race.dinghy_class_id table
@@ -84,9 +87,9 @@ ALTER TABLE race
 
 ALTER TABLE race 
 	ADD COLUMN fleet_id BIGINT NOT NULL,
+	DROP COLUMN start_sequence_state,
 	ADD CONSTRAINT FK_race_fleet_id FOREIGN KEY (fleet_id) REFERENCES fleet (id);
 	
 ALTER TABLE dinghy_class
 	ADD COLUMN external_name VARCHAR(255),
-	MODIFY COLUMN portsmouth_number SMALLINT NOT NULL,
-	DROP COLUMN start_sequence_state;
+	MODIFY COLUMN portsmouth_number SMALLINT NOT NULL;
