@@ -34,4 +34,6 @@ public interface DinghyClassRepository extends JpaRepository<DinghyClass, Long> 
 	void delete(@Param("dinghyClass") DinghyClass dinghyClass);
 	
 	DinghyClass findByName(@Param("name") String Name);
+	
+	DinghyClass findTopByOrderByPortsmouthNumberDesc();
 }
