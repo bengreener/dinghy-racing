@@ -126,4 +126,24 @@ public class DinghyClassRepositoryTests {
 		
 		assertThat(entityManager.find(DinghyClass.class, entityManager.getId(dc2)).getExternalName()).isEqualTo("Test Classis");
 	}
+
+	@Test
+	void when_slowestDinghyClassIsRequested_then_returnsTheDinghyClassWithTheHighestPortsmouthNumber() {
+		DinghyClass dc1 = new DinghyClass("dc1", 1, 1000);
+		DinghyClass dc2 = new DinghyClass("dc2", 2, 1100);
+		DinghyClass dc3 = new DinghyClass("dc3", 1, 998);
+		DinghyClass dc4 = new DinghyClass("dc4", 3, 2000);
+		DinghyClass dc5 = new DinghyClass("dc5", 1, 1041);
+		
+		entityManager.persist(dc1);
+		entityManager.persist(dc2);
+		entityManager.persist(dc3);
+		entityManager.persist(dc4);
+		entityManager.persist(dc5);
+		entityManager.flush();
+		
+		DinghyClass result = dinghyClassRepository.findTopByOrderByPortsmouthNumberDesc();
+		
+		assertThat(result).isEqualTo(dc4);		
+	}
 }
