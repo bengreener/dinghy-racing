@@ -3,7 +3,6 @@ package com.bginfosys.dinghyracing.web.websocket;
 import static com.bginfosys.dinghyracing.web.websocket.WebSocketConfiguration.MESSAGE_PREFIX;
 
 import java.util.Set;
-import java.util.SortedSet;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
