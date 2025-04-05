@@ -24,7 +24,7 @@ INSERT INTO dinghy_class (id, name, crew_size, portsmouth_number, external_name,
 INSERT INTO dinghy_class (id, name, crew_size, portsmouth_number, external_name, version) VALUES (2, "RS Tera", 1, 1445, null, 0);
 INSERT INTO dinghy_class (id, name, crew_size, portsmouth_number, external_name, version) VALUES (3, "Topper 4.2", 1, 1440, null, 0);
 
-INSERT INTO fleet (id, name) VALUES (1, "Handicap");
+INSERT INTO fleet (id, name, version) VALUES (1, "Handicap", 0);
 
 INSERT INTO fleet_dinghy_classes (fleet_id, dinghy_classes_id) VALUES (1, 1);
 INSERT INTO fleet_dinghy_classes (fleet_id, dinghy_classes_id) VALUES (1, 2);
