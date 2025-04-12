@@ -17,7 +17,6 @@
 package com.bginfosys.dinghyracing.model;
 
 import java.time.Duration;
-import java.util.Objects;
 import java.util.SortedSet;
 import java.util.concurrent.ConcurrentSkipListSet;
 
@@ -276,11 +275,11 @@ public class Entry {
 				crewName = crew.getName();
 			}
 			return "Entry [id=" + id + ", version=" + version + ", helm=" + helm.getName()+ ", crew=" + crewName + ", dinghy=" + dinghy.getDinghyClass().getName() + " " + dinghy.getSailNumber()
-			+ ", race=" + race.getName() + ", position=" + position + "]";
+			+ ", race=" + race.getName() + ", correctedTime=" + (correctedTime == null ? "0" : correctedTime.toString()) + ", lapsSailed=" + getLapsSailed() + ", position=" + position + "]";
 		}
 		else {
 			return "Entry [id=" + id + ", version=" + version + ", helm=" + helm.getName()+ ", dinghy=" + dinghy.getDinghyClass().getName() + " " + dinghy.getSailNumber()
-			+ ", race=" + race.getName() + ", position=" + position + "]";	
+			+ ", race=" + race.getName() + ", correctedTime=" + (correctedTime == null ? "0" : correctedTime.toString())  + ", lapsSailed=" + getLapsSailed() + ", position=" + position + "]";	
 		}
 		
 	}
