@@ -17,7 +17,6 @@
 package com.bginfosys.dinghyracing.model;
 
 import java.time.Duration;
-import java.util.Objects;
 import java.util.SortedSet;
 import java.util.concurrent.ConcurrentSkipListSet;
 
@@ -212,7 +211,7 @@ public class Entry {
 	 * If boat has not finished the race add a new lap
 	 */
 	public boolean addLap(Lap lap) {
-		if (getFinishedRace() || Objects.equals("DNS", scoringAbbreviation) || Objects.equals("RET", scoringAbbreviation) || Objects.equals("DSQ", scoringAbbreviation)) {
+		if (getFinishedRace() || (scoringAbbreviation != null && scoringAbbreviation != "")) {
 			return false;
 		}
 		boolean result = laps.add(lap); 
@@ -276,11 +275,11 @@ public class Entry {
 				crewName = crew.getName();
 			}
 			return "Entry [id=" + id + ", version=" + version + ", helm=" + helm.getName()+ ", crew=" + crewName + ", dinghy=" + dinghy.getDinghyClass().getName() + " " + dinghy.getSailNumber()
-			+ ", race=" + race.getName() + ", position=" + position + "]";
+			+ ", race=" + race.getName() + ", correctedTime=" + (correctedTime == null ? "0" : correctedTime.toString()) + ", lapsSailed=" + getLapsSailed() + ", position=" + position + "]";
 		}
 		else {
 			return "Entry [id=" + id + ", version=" + version + ", helm=" + helm.getName()+ ", dinghy=" + dinghy.getDinghyClass().getName() + " " + dinghy.getSailNumber()
-			+ ", race=" + race.getName() + ", position=" + position + "]";	
+			+ ", race=" + race.getName() + ", correctedTime=" + (correctedTime == null ? "0" : correctedTime.toString())  + ", lapsSailed=" + getLapsSailed() + ", position=" + position + "]";	
 		}
 		
 	}
