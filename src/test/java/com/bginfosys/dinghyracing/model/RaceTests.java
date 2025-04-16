@@ -177,7 +177,7 @@ class RaceTests {
 	}
 	
 	@Test
-	void given_TwoEntriesHaveCompletedTheSameNumberOfLaps_when_requestLeadEntryInRace_then_returnsLeadEntryInRace() {
+	void given_twoEntriesHaveCompletedTheSameNumberOfLaps_when_requestLeadEntryInRace_then_returnsEntryWithFastestTime() {
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("competitor Two");
 		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
@@ -197,7 +197,7 @@ class RaceTests {
 	}
 	
 	@Test
-	void given_OneEntryHasCompletedMoreLaps_when_requestLeadEntryInRace_then_returnsLeadEntryInRace() {
+	void given_oneEntryHasCompletedMoreLaps_when_requestLeadEntryInRace_then_returnsEntryWithMostLaps() {
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("competitor Two");
 		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
@@ -861,7 +861,6 @@ class RaceTests {
 	}
 
 	// Scoring abbreviation
-
 	@Test
 	void given_raceIsFleet_when_scoringAbbreviationSetForEntry_then_positionSetEqualToNumberOfEntriesInRace() {
 		Fleet fleet = new Fleet("Test Fleet");
@@ -1006,5 +1005,30 @@ class RaceTests {
 		assertEquals(3, entry4.getPosition());
 		assertEquals(5, entry2.getPosition());
 		assertEquals(5, entry3.getPosition());
+	}
+
+	// lap removed
+	@Test
+	void given_raceIsFleetAndOnlyEntryHasSailedTheMostLapsAndThatEntryWasNotTheLeadBoatOnTheLastLapSailedByMoreThanOneBoat_when_lapRemovedFromLeadBoat_then_correctlyCalculatesPositions() {
+	// when lap is removed from the lead boat after which it is no longer the lead boat need to recalculate positions for all boats
+		DinghyClass scorpion = new DinghyClass("Scorpion", 2, 1043);
+		
+		Fleet fleet = new Fleet("Test Fleet");
+		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Competitor competitor1 = new Competitor("Competitor One");
+		Competitor competitor2 = new Competitor("Competitor Two");
+		Dinghy dinghy1 = new Dinghy("1234", scorpion);
+		Dinghy dinghy2 = new Dinghy("4567", scorpion);
+		Entry entry1 = new Entry(competitor1, dinghy1, race);
+		Entry entry2 = new Entry(competitor2, dinghy2, race);
+		race.signUp(entry1);
+		race.signUp(entry2);
+		entry1.addLap(new Lap(1, Duration.ofSeconds(300))); // corrected time 300.000
+		entry2.addLap(new Lap(1, Duration.ofSeconds(310)));
+		entry2.addLap(new Lap(2, Duration.ofSeconds(90)));
+		entry2.removeLap(new Lap(2, Duration.ofSeconds(90))); // corrected time 310.000
+
+		assertEquals(1, entry1.getPosition());
+		assertEquals(2, entry2.getPosition());
 	}
 }
