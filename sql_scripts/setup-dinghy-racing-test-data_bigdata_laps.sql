@@ -902,3 +902,8 @@ UPDATE entry SET position = 24, corrected_time = 4407575153115 WHERE id = 96;
 UPDATE entry SET position = 25, corrected_time = 3506492073919 WHERE id = 97;
 
 UPDATE lap_seq SET next_val = (SELECT MAX(id) + 50 FROM lap);
+
+UPDATE race SET last_lead_entry_id = 1 WHERE id = 1;
+UPDATE race SET last_lead_entry_id = 12 WHERE id = 2;
+UPDATE race SET last_lead_entry_id = 42 WHERE id = 3;
+UPDATE race SET last_lead_entry_id = 70 WHERE id = 4;
