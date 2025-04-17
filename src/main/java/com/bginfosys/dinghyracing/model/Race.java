@@ -30,6 +30,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Version;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
@@ -97,8 +98,10 @@ public class Race implements Serializable {
 	@Enumerated(EnumType.STRING)
 	private StartType startType;
 	
-	@Transient
-	Entry lastLeadEntry; // used to check if positions need to be recalculated because leadEntry has chnaged; for eample if a lap is removed from the last lead entry 
+	// tried making this @Transient but value not retained. Appears to be unsafe to assume Spring will use the same instance of the entity
+	// tried setting JsonIgnore but link was still output in Json
+	@OneToOne
+	private Entry lastLeadEntry; // used to check if positions need to be recalculated because leadEntry has chnaged; for eample if a lap is removed from the last lead entry 
 	
 	//Required by JPA
 	//Not recommended by Spring Data
@@ -192,6 +195,10 @@ public class Race implements Serializable {
 
 	public void setStartType(StartType startType) {
 		this.startType = startType;
+	}
+
+	public Entry getLastLeadEntry() {
+		return lastLeadEntry;
 	}
 
 	public void signUp(Entry entry) {
