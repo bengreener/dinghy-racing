@@ -30,6 +30,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Version;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
@@ -96,6 +97,11 @@ public class Race implements Serializable {
 	@NotNull
 	@Enumerated(EnumType.STRING)
 	private StartType startType;
+	
+	// tried making this @Transient but value not retained. Appears to be unsafe to assume Spring will use the same instance of the entity
+	// tried setting JsonIgnore but link was still output in Json
+	@OneToOne
+	private Entry lastLeadEntry; // used to check if positions need to be recalculated because leadEntry has chnaged; for eample if a lap is removed from the last lead entry 
 	
 	//Required by JPA
 	//Not recommended by Spring Data
@@ -191,6 +197,10 @@ public class Race implements Serializable {
 		this.startType = startType;
 	}
 
+	public Entry getLastLeadEntry() {
+		return lastLeadEntry;
+	}
+
 	public void signUp(Entry entry) {
 		if (signedUp == null) {
 			signedUp = new HashSet<Entry>(64);
@@ -205,7 +215,7 @@ public class Race implements Serializable {
 	public Entry getLeadEntry() {
 		if (signedUp != null && signedUp.size() > 0 ) {
 			// get entries that have completed the same number of laps as lead boat
-			Integer leadLapCount = this.leadEntrylapsCompleted(); 
+			Integer leadLapCount = this.leadEntrylapsCompleted();
 			Stream<Entry> entriesOnLeadLap = signedUp.stream().filter(entry -> entry.getLaps().size() == leadLapCount);
 			// return entry on lead lap with lowest sum of lap times
 			return entriesOnLeadLap.min(Comparator.comparing(Entry::getSumOfLapTimes)).orElse(null);	
@@ -243,7 +253,9 @@ public class Race implements Serializable {
 		else {
 			if (this.type == RaceType.FLEET) {
 				// if this is the lead entry need to calculate corrected time for all entries in the race
-				if (entry == this.getLeadEntry()) {
+				Entry leadEntry = getLeadEntry();
+				if (entry == leadEntry || entry == lastLeadEntry) {
+					lastLeadEntry = leadEntry; // set lastLeadEntry for reference
 					signedUp.forEach(e -> updateCorrectedTime(e));
 				}
 				else {

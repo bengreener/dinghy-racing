@@ -93,6 +93,7 @@ CREATE TABLE race (
 	planned_start_time DATETIME(6) NOT NULL, 
 	`type` VARCHAR(50) NOT NULL,
 	start_type VARCHAR(50) NOT NULL,
+	last_lead_entry_id BIGINT,
 	version BIGINT,
 	CONSTRAINT PK_race_id PRIMARY KEY (id),
 	CONSTRAINT UK_race_name_planned_start_time UNIQUE (name, planned_start_time),

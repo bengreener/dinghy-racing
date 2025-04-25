@@ -93,3 +93,7 @@ ALTER TABLE race
 ALTER TABLE dinghy_class
 	ADD COLUMN external_name VARCHAR(255),
 	MODIFY COLUMN portsmouth_number SMALLINT NOT NULL;
+	
+-- v2024.1.2 to 2025.4.3
+ALTER TABLE race
+	ADD COLUMN last_lead_entry_id BIGINT;
