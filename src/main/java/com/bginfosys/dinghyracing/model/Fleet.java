@@ -18,6 +18,7 @@ package com.bginfosys.dinghyracing.model;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -75,5 +76,23 @@ public class Fleet implements Serializable {
 
 	public void setDinghyClasses(Set<DinghyClass> dinghyClasses) {
 		this.dinghyClasses = dinghyClasses;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(dinghyClasses, id, name, version);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Fleet other = (Fleet) obj;
+		return Objects.equals(dinghyClasses, other.dinghyClasses) && Objects.equals(id, other.id)
+				&& Objects.equals(name, other.name) && Objects.equals(version, other.version);
 	}	
 }

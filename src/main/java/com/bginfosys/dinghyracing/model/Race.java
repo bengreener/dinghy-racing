@@ -47,6 +47,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 
 import jakarta.validation.constraints.NotNull;
 
@@ -385,6 +386,27 @@ public class Race implements Serializable {
 				+ ", fleet=" + fleet.getName() + ", duration=" + duration + ", plannedLaps=" + plannedLaps + ", type="
 				+ type + ", startType="
 				+ startType + "]";
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(duration, fleet, id, name, plannedLaps, plannedStartTime, startType, type, version);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Race other = (Race) obj;
+		return Objects.equals(duration, other.duration) && Objects.equals(fleet, other.fleet)
+				&& Objects.equals(id, other.id) && Objects.equals(name, other.name)
+				&& Objects.equals(plannedLaps, other.plannedLaps)
+				&& Objects.equals(plannedStartTime, other.plannedStartTime) && startType == other.startType
+				&& type == other.type && Objects.equals(version, other.version);
 	}
 	
 	public class PursuitEntriesComparator implements Comparator<Entry> {

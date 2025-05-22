@@ -24,6 +24,8 @@ import jakarta.persistence.Version;
 
 import jakarta.validation.constraints.NotNull;
 
+import java.util.Objects;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
@@ -105,5 +107,24 @@ public class DinghyClass {
 	public String toString() {
 		return "DinghyClass [id=" + id + ", version=" + version + ", name=" + name + ", crewSize=" + crewSize
 				+ ", portsmouthNumber=" + portsmouthNumber + "]";
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(crewSize, externalName, id, name, portsmouthNumber, version);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		DinghyClass other = (DinghyClass) obj;
+		return Objects.equals(crewSize, other.crewSize) && Objects.equals(externalName, other.externalName)
+				&& Objects.equals(id, other.id) && Objects.equals(name, other.name)
+				&& Objects.equals(portsmouthNumber, other.portsmouthNumber) && Objects.equals(version, other.version);
 	}
 }

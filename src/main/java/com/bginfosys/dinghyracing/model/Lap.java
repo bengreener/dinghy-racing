@@ -17,6 +17,7 @@
 package com.bginfosys.dinghyracing.model;
 
 import java.time.Duration;
+import java.util.Objects;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -32,7 +33,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 @Entity
 public class Lap implements Comparable<Lap> {
-	
+
 	@Id	
 	@GeneratedValue 
 	private Long id;
@@ -95,5 +96,23 @@ public class Lap implements Comparable<Lap> {
 	@Override
 	public String toString() {
 		return "Lap [id=" + id + ", version=" + version + ", number=" + number + ", time=" + time + "]";
+	}
+	
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, number, time, version);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Lap other = (Lap) obj;
+		return Objects.equals(id, other.id) && Objects.equals(number, other.number) && Objects.equals(time, other.time)
+				&& Objects.equals(version, other.version);
 	}
 }
