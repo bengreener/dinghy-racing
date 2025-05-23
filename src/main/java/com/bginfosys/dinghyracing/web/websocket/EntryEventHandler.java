@@ -50,6 +50,7 @@ public class EntryEventHandler {
 		this.entityLinks = entityLinks;
 	}
 	
+	// entry created
 	@HandleAfterCreate
 	public void newEntry(Entry entry) {
 		if (logger.isDebugEnabled()) {
@@ -61,6 +62,7 @@ public class EntryEventHandler {
 		this.websocket.convertAndSend(MESSAGE_PREFIX + "/updateRace", getURI(race));
 	}
 	
+	// entry updated
 	@HandleAfterSave
 	public void updateEntry(Entry entry) {
 		if (logger.isDebugEnabled()) {
@@ -69,12 +71,16 @@ public class EntryEventHandler {
 		this.websocket.convertAndSend(MESSAGE_PREFIX + "/updateEntry", getURI(entry));
 	}
 	
+	// entry laps updated
 	@HandleAfterLinkSave
 	public void updateEntryLink(Entry entry, SortedSet<Lap> laps) {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Update entry link: " + entry.toString());
 		}
 		this.websocket.convertAndSend(MESSAGE_PREFIX + "/updateEntry", getURI(entry));
+		// notify listeners on race events that race may have updated
+		Race race = entry.getRace();
+		this.websocket.convertAndSend(MESSAGE_PREFIX + "/updateRaceEntryLaps", getURI(race)); // use a different message type so as not to force refresh on race watchers not interested in race lap updates
 	}
 	
 	@HandleAfterDelete
