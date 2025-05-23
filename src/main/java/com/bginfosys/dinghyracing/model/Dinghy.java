@@ -24,6 +24,8 @@ import jakarta.persistence.ManyToOne;
 
 import jakarta.validation.constraints.NotNull;
 
+import java.util.Objects;
+
 import org.hibernate.annotations.NaturalId;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -77,5 +79,23 @@ public class Dinghy {
 	@Override
 	public String toString() {
 		return "Dinghy [id=" + id + ", version=" + version + ", dinghyClass=" + dinghyClass.getName() + ", sailNumber=" + sailNumber + "]";
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(dinghyClass, id, sailNumber, version);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Dinghy other = (Dinghy) obj;
+		return Objects.equals(dinghyClass, other.dinghyClass) && Objects.equals(id, other.id)
+				&& Objects.equals(sailNumber, other.sailNumber) && Objects.equals(version, other.version);
 	}
 }
