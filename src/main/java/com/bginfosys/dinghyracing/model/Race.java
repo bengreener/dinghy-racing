@@ -102,7 +102,12 @@ public class Race implements Serializable {
 	// tried making this @Transient but value not retained. Appears to be unsafe to assume Spring will use the same instance of the entity
 	// tried setting JsonIgnore but link was still output in Json
 	@OneToOne
-	private Entry lastLeadEntry; // used to check if positions need to be recalculated because leadEntry has chnaged; for eample if a lap is removed from the last lead entry 
+	private Entry lastLeadEntry; // used to check if positions need to be recalculated because leadEntry has changed; for example if a lap is removed from the last lead entry
+	
+	// track laps completed by lead entry in database so race id (and ETag) are updated when the lead entry completes a lap without the lead entry changing
+	// a better solution to remove lead entry information from race entity and provide through a seperate API call to a controller? (log technical debt and attempt this as quick solution for now)
+	@JsonIgnore
+	private Integer lastLeadEntryLapsCompleted;
 	
 	//Required by JPA
 	//Not recommended by Spring Data
@@ -257,6 +262,7 @@ public class Race implements Serializable {
 				Entry leadEntry = getLeadEntry();
 				if (entry == leadEntry || entry == lastLeadEntry) {
 					lastLeadEntry = leadEntry; // set lastLeadEntry for reference
+					lastLeadEntryLapsCompleted = lastLeadEntry.getLapsSailed();
 					signedUp.forEach(e -> updateCorrectedTime(e));
 				}
 				else {

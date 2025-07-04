@@ -97,3 +97,7 @@ ALTER TABLE dinghy_class
 -- v2024.1.2 to 2025.4.3
 ALTER TABLE race
 	ADD COLUMN last_lead_entry_id BIGINT;
+	
+-- v2025.4.3 to 2025.7.2
+ALTER TABLE race
+	ADD COLUMN last_lead_entry_laps_completed INTEGER;
