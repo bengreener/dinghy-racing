@@ -38,10 +38,10 @@ INSERT INTO dinghy (id, sail_number, dinghy_class_id, version) VALUES (4, "28345
 INSERT INTO race (id, name, duration, planned_laps, planned_start_time, fleet_id, `type`, start_type, version) 
 	VALUES (1, "Pursuit A", 2700000000000, 5, "2025-04-03 9:10:00", 1, "PURSUIT", "RRS26", 0);
 
-INSERT INTO entry (id, helm_id, dinghy_id, race_id, crew_id, version) VALUES (1, 1, 1, 1, null, 0);
-INSERT INTO entry (id, helm_id, dinghy_id, race_id, crew_id, version) VALUES (2, 2, 2, 1, null, 0);
-INSERT INTO entry (id, helm_id, dinghy_id, race_id, crew_id, version) VALUES (3, 3, 3, 1, null, 0);
-INSERT INTO entry (id, helm_id, dinghy_id, race_id, crew_id, version) VALUES (4, 4, 4, 1, null, 0);
+INSERT INTO entry (id, helm_id, dinghy_id, race_id, crew_id, on_last_lap, version) VALUES (1, 1, 1, 1, null, FALSE, 0);
+INSERT INTO entry (id, helm_id, dinghy_id, race_id, crew_id, on_last_lap, version) VALUES (2, 2, 2, 1, null, FALSE, 0);
+INSERT INTO entry (id, helm_id, dinghy_id, race_id, crew_id, on_last_lap, version) VALUES (3, 3, 3, 1, null, FALSE, 0);
+INSERT INTO entry (id, helm_id, dinghy_id, race_id, crew_id, on_last_lap, version) VALUES (4, 4, 4, 1, null, FALSE, 0);
 
 UPDATE competitor_seq SET next_val = (SELECT MAX(id) + 50 FROM competitor);
 UPDATE dinghy_seq SET next_val = (SELECT MAX(id) + 50 FROM dinghy);

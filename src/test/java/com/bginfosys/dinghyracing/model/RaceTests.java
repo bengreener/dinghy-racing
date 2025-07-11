@@ -261,8 +261,8 @@ class RaceTests {
 	
 	@Test
 	void given_NoBoatsHaveSignedUp_when_requestLapsForecast_then_returnsNumberOfPlannedLaps() {	
-		race.setPlannedLaps(5);		
-		assertEquals(5, race.getLapForecast());		
+		race.setPlannedLaps(5);
+		assertEquals(5, race.getLapForecast());
 	}
 
 	@Test
@@ -314,6 +314,20 @@ class RaceTests {
 		assertThat(dinghyClasses, hasItem(dc2));
 	}
 
+	// Shorten course
+	@Test
+	void when_raceIsShortened_then_updatesEntriesNowOnLastLap() {
+		Fleet fleet = new Fleet("Test Fleet");
+		Race race = new Race("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 3, RaceType.PURSUIT, StartType.CSCCLUBSTART);
+		Competitor competitor1 = new Competitor("Competitor One");
+		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
+		Entry entry1 = new Entry(competitor1, dinghy1, race);
+		race.signUp(entry1);
+		entry1.addLap(new Lap(1, Duration.ofMinutes(14)));
+		race.setPlannedLaps(2);
+		assertTrue(entry1.getOnLastLap());
+	}
+	
 	// Pursuit Race Position Tests
 	@Test
 	void given_race_is_pursuit_when_oneEntryHasFinishedLap_then_correctly_calculatesPosition() {

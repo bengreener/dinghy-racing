@@ -83,6 +83,8 @@ public class Entry {
 	
 	private Duration correctedTime;
 	
+	private boolean onLastLap; // record value so it is stored in database and version/ ETag is updated if it changes; helps keep clients up to date
+	
 	public Entry() {}
 	
 	public Entry(Competitor helm, Dinghy dinghy, Race race) {
@@ -207,49 +209,6 @@ public class Entry {
 			this.correctedTime = correctedTime;
 		}
 	}
-
-	/**
-	 * If boat has not finished the race add a new lap
-	 */
-	public boolean addLap(Lap lap) {
-		if (getFinishedRace() || (scoringAbbreviation != null && scoringAbbreviation != "")) {
-			return false;
-		}
-		boolean result = laps.add(lap); 
-		if (result) {
-			this.race.calculatePositions(this);
-		}
-		return result;
-	}
-	
-	public boolean removeLap(Lap lap) {
-		boolean result = laps.remove(lap); 
-		if (result) {
-			this.race.calculatePositions(this);
-		}
-		return result;
-	}
-	
-	// only the last recorded lap can be updated
-	public void updateLap(Lap lap) {
-		if (lap.getNumber() != laps.size()) {
-			throw new IllegalArgumentException("Only the last recorded lap for an entry can be changed.");
-		}
-		// swapping out old and new laps was causing a referential integrity error after controller method returned :-(
-		// appeared to be caused by system trying to delete the original referenced lap before updating the reference in the database to the new lap; original lap is not deleted as it is still recorded as a mapped to the entry
-		laps.last().setTime(lap.getTime());
-		this.race.calculatePositions(this);
-	}
-		
-	/**
-	 * Return true of the boat is on it's last lap of the race
-	 */
-	public boolean getOnLastLap() {
-		if (laps.size() == race.getPlannedLaps() - 1) {
-			return true;
-		}
-		return false;
-	}
 	
 	/**
 	 * Return true if the boat has finished the race
@@ -266,6 +225,61 @@ public class Entry {
 	 */
 	public int getLapsSailed() {
 		return laps.size();
+	}
+	
+	public void setOnLastLap() {
+		if (laps.size() == race.getPlannedLaps() - 1) {
+			this.onLastLap = true;
+		}
+		else {
+			this.onLastLap = false;
+		}	
+	}
+	
+	public void setOnLastLap(boolean onLastLap) {
+		this.onLastLap = onLastLap;
+	}
+	
+	/**
+	 * Return true of the boat is on it's last lap of the race
+	 */
+	public boolean getOnLastLap() {
+		return this.onLastLap;
+	}
+
+	/**
+	 * If boat has not finished the race add a new lap
+	 */
+	public boolean addLap(Lap lap) {
+		if (getFinishedRace() || (scoringAbbreviation != null && scoringAbbreviation != "")) {
+			return false;
+		}
+		boolean result = laps.add(lap); 
+		if (result) {
+			this.race.calculatePositions(this);
+			setOnLastLap();
+		}
+		return result;
+	}
+	
+	public boolean removeLap(Lap lap) {
+		boolean result = laps.remove(lap); 
+		if (result) {
+			this.race.calculatePositions(this);
+			setOnLastLap();
+		}
+		return result;
+	}
+	
+	// only the last recorded lap can be updated
+	public void updateLap(Lap lap) {
+		if (lap.getNumber() != laps.size()) {
+			throw new IllegalArgumentException("Only the last recorded lap for an entry can be changed.");
+		}
+		// swapping out old and new laps was causing a referential integrity error after controller method returned :-(
+		// appeared to be caused by system trying to delete the original referenced lap before updating the reference in the database to the new lap; original lap is not deleted as it is still recorded as a mapped to the entry
+		laps.last().setTime(lap.getTime());
+		this.race.calculatePositions(this);
 	}
 
 	@Override
