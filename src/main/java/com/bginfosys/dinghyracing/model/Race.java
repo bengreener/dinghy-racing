@@ -59,9 +59,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 })
 public class Race implements Serializable {
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Transient
@@ -174,6 +171,7 @@ public class Race implements Serializable {
 
 	public void setPlannedLaps(Integer plannedLaps) {
 		this.plannedLaps = plannedLaps;
+		signedUp.forEach(entry -> entry.setOnLastLap());
 	}
 
 	public RaceType getType() {
