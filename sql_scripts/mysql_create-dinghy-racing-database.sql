@@ -110,6 +110,7 @@ CREATE TABLE entry (
 	scoring_abbreviation CHAR(3) NULL, 
 	position SMALLINT NULL,
 	corrected_time BIGINT,
+	on_last_lap BOOLEAN,
 	version BIGINT, 
 	CONSTRAINT PK_entry_id PRIMARY KEY (id),
 	CONSTRAINT UK_entry_helm_id_dinghy_id_race_id UNIQUE (helm_id, dinghy_id, race_id),

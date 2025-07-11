@@ -101,3 +101,9 @@ ALTER TABLE race
 -- v2025.4.3 to 2025.7.2
 ALTER TABLE race
 	ADD COLUMN last_lead_entry_laps_completed INTEGER;
+	
+-- v2025.7.2 to 2025.7.3
+ALTER TABLE entry
+	ADD COLUMN on_last_lap BOOLEAN;
+	
+UPDATE entry SET on_last_lap = FALSE;
