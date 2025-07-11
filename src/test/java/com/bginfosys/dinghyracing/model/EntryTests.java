@@ -732,6 +732,29 @@ public class EntryTests {
 	}
 	
 	@Test
+	void given_raceIsAPursuitRace_when_lapUpdated_then_updatesCorrectedTime() {
+		Competitor competitor1 = new Competitor("Bob");
+		Competitor competitor2 = new Competitor("Joan");
+		DinghyClass graduate = new DinghyClass("Graduate", 2 , 1110);
+		Dinghy dinghy1 = new Dinghy("1234", graduate);
+		Dinghy dinghy2 = new Dinghy("5678", graduate);
+		Fleet fleet = new Fleet("Test Fleet");
+		Race race = new Race("Race1", LocalDateTime.now(), fleet, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART);
+		Entry entry1 = new Entry(competitor1, dinghy1, race);
+		race.signUp(entry1);
+		Entry entry2 = new Entry(competitor2, dinghy2, race);
+		race.signUp(entry2);
+		entry1.addLap(new Lap(1, Duration.ofMinutes(12)));
+		entry1.addLap(new Lap(2, Duration.ofMinutes(13)));
+		entry2.addLap(new Lap(1, Duration.ofMinutes(13)));
+		entry2.addLap(new Lap(2, Duration.ofMinutes(13)));
+		
+		entry1.updateLap(new Lap(2, Duration.ofMinutes(15)));
+		
+		assertEquals(Duration.ofMinutes(27), entry1.getCorrectedTime());
+	}
+	
+	@Test
 	void when_scoringAbrreviationIsSet_then_recalculatesPositionOfEntriesInRace() {
 		Competitor competitor1 = new Competitor("Bob");
 		Competitor competitor2 = new Competitor("Joan");
@@ -795,8 +818,6 @@ public class EntryTests {
 		entry1.addLap(new Lap(2, Duration.ofMinutes(13)));
 		assertFalse(entry1.getOnLastLap());		
 	}
-	
-
 	
 	@Test
 	void when_entryHasFinishingLapRemovedAndIsNowSailingPenultimateLap_onLastLapIsTrue() {

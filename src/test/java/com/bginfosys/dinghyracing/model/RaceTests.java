@@ -261,8 +261,8 @@ class RaceTests {
 	
 	@Test
 	void given_NoBoatsHaveSignedUp_when_requestLapsForecast_then_returnsNumberOfPlannedLaps() {	
-		race.setPlannedLaps(5);		
-		assertEquals(5, race.getLapForecast());		
+		race.setPlannedLaps(5);
+		assertEquals(5, race.getLapForecast());
 	}
 
 	@Test

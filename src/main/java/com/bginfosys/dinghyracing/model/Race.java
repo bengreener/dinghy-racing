@@ -274,6 +274,7 @@ public class Race implements Serializable {
 			else if (this.type == RaceType.PURSUIT) {
 				List<Entry> entriesInPosition = signedUp.stream().sorted(new PursuitEntriesComparator()).toList();
 				updateEntryPosition(entry, entriesInPosition.lastIndexOf(entry) + 1);
+				updateCorrectedTime(entry);
 			}
 		}		
 	}
@@ -352,7 +353,12 @@ public class Race implements Serializable {
 			entry.setCorrectedTime(Duration.ofSeconds((long)Double.POSITIVE_INFINITY));
 		}
 		else {
-			entry.setCorrectedTime(entry.getSumOfLapTimes().multipliedBy(this.getLeadEntry().getLapsSailed() * 1000).dividedBy(entry.getDinghy().getDinghyClass().getPortsmouthNumber() * entry.getLapsSailed()));	
+			if (entry.getRace().type == RaceType.FLEET) {
+				entry.setCorrectedTime(entry.getSumOfLapTimes().multipliedBy(this.getLeadEntry().getLapsSailed() * 1000).dividedBy(entry.getDinghy().getDinghyClass().getPortsmouthNumber() * entry.getLapsSailed()));
+			}
+			else {
+				entry.setCorrectedTime(entry.getSumOfLapTimes());
+			}
 		}
 	}
 	
