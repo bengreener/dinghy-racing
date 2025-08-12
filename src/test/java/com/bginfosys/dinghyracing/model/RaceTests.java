@@ -553,7 +553,7 @@ class RaceTests {
 
 	// Same Portsmouth Number
 	@Test
-	void given_raceIsFleetAndEntriesHaveSamePortsmouthNumberAndSailedTheSameLaps_whenOnEntryHasFasterCorrectedTime_then_entryWithFasterTimeWins() {
+	void given_raceIsFleetAndEntriesHaveSamePortsmouthNumberAndSailedTheSameLaps_whenOneEntryHasFasterCorrectedTime_then_entryWithFasterTimeWins() {
 		DinghyClass scorpion = new DinghyClass("Scorpion", 2, 1043);
 		
 		Fleet fleet = new Fleet("Test Fleet");
@@ -576,7 +576,7 @@ class RaceTests {
 	}
 	
 	@Test
-	void given_raceIsFleetAndEntriesHaveSamePortsmouthNumberAndSailedTheSameLapsAndHaveTheSameTime_then_theyAreAllAssignedTheLowestPositionOfAnyEntryWithThatCorrectedTime() {
+	void given_raceIsFleetAndEntriesHaveSamePortsmouthNumberAndSailedTheSameLapsAndHaveTheSameTime_then_theyAreAllAssignedTheHighestPositionOfAnyEntryWithThatCorrectedTime() {
 		DinghyClass scorpion = new DinghyClass("Scorpion", 2, 1043);
 		
 		Fleet fleet = new Fleet("Test Fleet");
@@ -592,8 +592,8 @@ class RaceTests {
 		entry1.addLap(new Lap(1, Duration.ofSeconds(660))); // corrected time 632.790
 		entry2.addLap(new Lap(1, Duration.ofSeconds(660))); // corrected time 632.790
 
-		assertEquals(2, entry1.getPosition());
-		assertEquals(2, entry2.getPosition());
+		assertEquals(1, entry1.getPosition());
+		assertEquals(1, entry2.getPosition());
 	}
 
 	@Test
@@ -758,7 +758,7 @@ class RaceTests {
 	}
 
 	@Test
-	void given_raceIsFleetAndEntryHasLargerPortsmouthNumberAndSailedTheSameLapsAndHaveTheSameCorrecedTime_then_entriesAllAssignedTheLowestPositionOfAnyEntryWithThatCorrectedTime() {
+	void given_raceIsFleetAndEntryHasLargerPortsmouthNumberAndSailedTheSameLapsAndHaveTheSameCorrecedTime_then_entriesAllAssignedTheHighestPositionOfAnyEntryWithThatCorrectedTime() {
 		DinghyClass graduate = new DinghyClass("Graduate", 2, 1500);
 		DinghyClass scorpion = new DinghyClass("Scorpion", 2, 1000);
 		
@@ -777,8 +777,8 @@ class RaceTests {
 		entry1.addLap(new Lap(2, Duration.ofSeconds(750))); // corrected time 1000.000
 		entry2.addLap(new Lap(2, Duration.ofSeconds(500))); // corrected time 1000.000
 
-		assertEquals(2, entry1.getPosition());
-		assertEquals(2, entry2.getPosition());
+		assertEquals(1, entry1.getPosition());
+		assertEquals(1, entry2.getPosition());
 	}
 	
 	@Test
@@ -829,7 +829,7 @@ class RaceTests {
 	}
 
 	@Test
-	void given_raceIsFleetAndEntryHasLargerPortsmouthNumberAndSameCorrectedTime_when_largerPortsmouthNumberEntrySailedLessLaps_then_entriesAllAssignedTheLowestPositionOfAnyEntryWithThatCorrectedTime() {
+	void given_raceIsFleetAndEntryHasLargerPortsmouthNumberAndSameCorrectedTime_when_largerPortsmouthNumberEntrySailedLessLaps_then_entriesAllAssignedTheHighestPositionOfAnyEntryWithThatCorrectedTime() {
 		DinghyClass graduate = new DinghyClass("Graduate", 2, 1500);
 		DinghyClass scorpion = new DinghyClass("Scorpion", 2, 1000);
 		
@@ -847,8 +847,8 @@ class RaceTests {
 		entry1.addLap(new Lap(1, Duration.ofSeconds(750))); // corrected time 1000.000
 		entry2.addLap(new Lap(2, Duration.ofSeconds(500))); // corrected time 1000.000
 
-		assertEquals(2, entry1.getPosition());
-		assertEquals(2, entry2.getPosition());
+		assertEquals(1, entry1.getPosition());
+		assertEquals(1, entry2.getPosition());
 	}
 	
 	@Test
@@ -1014,11 +1014,11 @@ class RaceTests {
 		entry4.addLap(new Lap(1, Duration.ofSeconds(650)));
 		entry5.addLap(new Lap(1, Duration.ofSeconds(600)));
 
-		assertEquals(2, entry1.getPosition());
-		assertEquals(2, entry5.getPosition());
+		assertEquals(1, entry1.getPosition());
+		assertEquals(1, entry5.getPosition());
 		assertEquals(3, entry4.getPosition());
-		assertEquals(5, entry2.getPosition());
-		assertEquals(5, entry3.getPosition());
+		assertEquals(4, entry2.getPosition());
+		assertEquals(4, entry3.getPosition());
 	}
 
 	// lap removed

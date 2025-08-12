@@ -297,7 +297,7 @@ public class Race implements Serializable {
 			}
 			if (ties.size() > 1) {
 				ties.sort(Comparator.comparing(Entry::getPosition));
-				ties.forEach(e -> e.setPosition(ties.get(ties.size() - 1).getPosition()));
+				ties.forEach(e -> e.setPosition(ties.get(0).getPosition()));
 			}
 			adjustForTies(entries, index + 1);
 		}		
