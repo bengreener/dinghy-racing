@@ -85,6 +85,8 @@ public class Entry {
 	
 	private boolean onLastLap; // record value so it is stored in database and version/ ETag is updated if it changes; helps keep clients up to date
 	
+	private boolean finishedRace; // record value so it is stored in database and version/ ETag is updated if it changes; helps keep clients up to date
+	
 	public Entry() {}
 	
 	public Entry(Competitor helm, Dinghy dinghy, Race race) {
@@ -214,10 +216,14 @@ public class Entry {
 	 * Return true if the boat has finished the race
 	 */
 	public boolean getFinishedRace() {
-		if (laps.size() == race.getPlannedLaps()) {
-			return true;
+		return finishedRace;
+	}
+	
+	public void setFinishedRace(boolean finishedRace) {
+		this.finishedRace = finishedRace;
+		if (finishedRace) {
+			setOnLastLap(false);
 		}
-		return false;
 	}
 	
 	/**
@@ -227,26 +233,39 @@ public class Entry {
 		return laps.size();
 	}
 	
-	public void setOnLastLap() {
-		if (laps.size() == race.getPlannedLaps() - 1) {
-			this.onLastLap = true;
-		}
-		else {
-			this.onLastLap = false;
-		}	
-	}
-	
-	public void setOnLastLap(boolean onLastLap) {
-		this.onLastLap = onLastLap;
-	}
-	
 	/**
 	 * Return true of the boat is on it's last lap of the race
 	 */
 	public boolean getOnLastLap() {
 		return this.onLastLap;
 	}
+	
+	public void setOnLastLap() {
+		if (laps.size() == race.getPlannedLaps() - 1) {
+			this.onLastLap = true;
+		}
+		else {
+			this.onLastLap = false;
+		}
+	}
+	
+	public void setOnLastLap(boolean onLastLap) {
+		this.onLastLap = onLastLap;
+	}
 
+	public void updateProgressIndicators() {
+		if (laps.size() == race.getPlannedLaps()) {
+			this.setFinishedRace(true);
+		}
+		else if (laps.size() == race.getPlannedLaps() - 1) {
+			this.setOnLastLap(true);
+		}
+		else {
+			this.finishedRace = false;
+			this.onLastLap = false;
+		}
+	}
+	
 	/**
 	 * If boat has not finished the race add a new lap
 	 */
@@ -257,7 +276,7 @@ public class Entry {
 		boolean result = laps.add(lap); 
 		if (result) {
 			this.race.calculatePositions(this);
-			setOnLastLap();
+			updateProgressIndicators();
 		}
 		return result;
 	}
@@ -266,7 +285,7 @@ public class Entry {
 		boolean result = laps.remove(lap); 
 		if (result) {
 			this.race.calculatePositions(this);
-			setOnLastLap();
+			updateProgressIndicators();
 		}
 		return result;
 	}

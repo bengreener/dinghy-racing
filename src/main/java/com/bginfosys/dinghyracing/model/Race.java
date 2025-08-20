@@ -171,7 +171,7 @@ public class Race implements Serializable {
 
 	public void setPlannedLaps(Integer plannedLaps) {
 		this.plannedLaps = plannedLaps;
-		signedUp.forEach(entry -> entry.setOnLastLap());
+		signedUp.forEach(entry -> entry.updateProgressIndicators());
 	}
 
 	public RaceType getType() {
