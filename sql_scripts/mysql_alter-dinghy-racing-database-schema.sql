@@ -107,3 +107,9 @@ ALTER TABLE entry
 	ADD COLUMN on_last_lap BOOLEAN;
 	
 UPDATE entry SET on_last_lap = FALSE;
+
+-- v2025.7.3 to v2025.8.2
+ALTER TABLE entry
+	ADD COLUMN finished_race BOOLEAN;
+	
+UPDATE entry SET finished_race = FALSE;

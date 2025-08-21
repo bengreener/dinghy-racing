@@ -1,4 +1,4 @@
--- v2025.7.2
+-- v2025.8.2
 CREATE DATABASE IF NOT EXISTS `dinghy_racing` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
 
 USE dinghy_racing;
@@ -111,6 +111,7 @@ CREATE TABLE entry (
 	position SMALLINT NULL,
 	corrected_time BIGINT,
 	on_last_lap BOOLEAN,
+	finished_race BOOLEAN,
 	version BIGINT, 
 	CONSTRAINT PK_entry_id PRIMARY KEY (id),
 	CONSTRAINT UK_entry_helm_id_dinghy_id_race_id UNIQUE (helm_id, dinghy_id, race_id),

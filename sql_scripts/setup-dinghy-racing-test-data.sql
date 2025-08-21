@@ -1,4 +1,4 @@
--- v2025.1.2
+-- v2025.8.2
 USE dinghy_racing;
 
 -- clear existing data
@@ -48,12 +48,12 @@ INSERT INTO race (id, name, duration, planned_laps, planned_start_time, fleet_id
 INSERT INTO race (id, name, duration, planned_laps, planned_start_time, fleet_id, `type`, start_type, version) 
 	VALUES (4, "Handicap A", 2700000000000, 4, "2024-12-09 14:10:00", 4, "FLEET", "CSCCLUBSTART", 0);
 
-INSERT INTO entry (id, helm_id, dinghy_id, race_id, crew_id, on_Last_lap, version) VALUES (1, 1, 1, 1, 4, FALSE, 0);
-INSERT INTO entry (id, helm_id, dinghy_id, race_id, crew_id, on_Last_lap, version) VALUES (2, 2, 3, 1, 6, FALSE, 0);
-INSERT INTO entry (id, helm_id, dinghy_id, race_id, crew_id, on_Last_lap, version) VALUES (3, 3, 4, 2, null, FALSE, 0);
-INSERT INTO entry (id, helm_id, dinghy_id, race_id, crew_id, on_Last_lap, version) VALUES (4, 3, 5, 3, null, FALSE, 0);	
-INSERT INTO entry (id, helm_id, dinghy_id, race_id, crew_id, on_Last_lap, version) VALUES (5, 1, 1, 4, 4, FALSE, 0);
-INSERT INTO entry (id, helm_id, dinghy_id, race_id, crew_id, on_Last_lap, version) VALUES (6, 3, 5, 4, null, FALSE, 0);
+INSERT INTO entry (id, helm_id, dinghy_id, race_id, crew_id, on_Last_lap, finished_race, version) VALUES (1, 1, 1, 1, 4, FALSE, FALSE, 0);
+INSERT INTO entry (id, helm_id, dinghy_id, race_id, crew_id, on_Last_lap, finished_race, version) VALUES (2, 2, 3, 1, 6, FALSE, FALSE, 0);
+INSERT INTO entry (id, helm_id, dinghy_id, race_id, crew_id, on_Last_lap, finished_race, version) VALUES (3, 3, 4, 2, null, FALSE, FALSE, 0);
+INSERT INTO entry (id, helm_id, dinghy_id, race_id, crew_id, on_Last_lap, finished_race, version) VALUES (4, 3, 5, 3, null, FALSE, FALSE, 0);	
+INSERT INTO entry (id, helm_id, dinghy_id, race_id, crew_id, on_Last_lap, finished_race, version) VALUES (5, 1, 1, 4, 4, FALSE, FALSE, 0);
+INSERT INTO entry (id, helm_id, dinghy_id, race_id, crew_id, on_Last_lap, finished_race, version) VALUES (6, 3, 5, 4, null, FALSE, FALSE, 0);
 
 UPDATE competitor_seq SET next_val = (SELECT MAX(id) + 50 FROM competitor);
 UPDATE dinghy_seq SET next_val = (SELECT MAX(id) + 50 FROM dinghy);
