@@ -222,7 +222,7 @@ public class Entry {
 	public void setFinishedRace(boolean finishedRace) {
 		this.finishedRace = finishedRace;
 		if (finishedRace) {
-			setOnLastLap(false);
+			this.onLastLap = false;
 		}
 	}
 	
@@ -240,25 +240,19 @@ public class Entry {
 		return this.onLastLap;
 	}
 	
-	public void setOnLastLap() {
-		if (laps.size() == race.getPlannedLaps() - 1) {
-			this.onLastLap = true;
-		}
-		else {
-			this.onLastLap = false;
-		}
-	}
-	
 	public void setOnLastLap(boolean onLastLap) {
 		this.onLastLap = onLastLap;
+		if (onLastLap) {
+			this.finishedRace = false;
+		}
 	}
 
 	public void updateProgressIndicators() {
 		if (laps.size() == race.getPlannedLaps()) {
-			this.setFinishedRace(true);
+			this.setFinishedRace(true); // will unset onLastLap
 		}
 		else if (laps.size() == race.getPlannedLaps() - 1) {
-			this.setOnLastLap(true);
+			this.setOnLastLap(true); // will unset finishedRace
 		}
 		else {
 			this.finishedRace = false;

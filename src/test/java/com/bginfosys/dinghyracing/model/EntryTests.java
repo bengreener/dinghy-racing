@@ -755,7 +755,7 @@ public class EntryTests {
 	}
 	
 	@Test
-	void when_scoringAbrreviationIsSet_then_recalculatesPositionOfEntriesInRace() {
+	void when_scoringAbbreviationIsSet_then_recalculatesPositionOfEntriesInRace() {
 		Competitor competitor1 = new Competitor("Bob");
 		Competitor competitor2 = new Competitor("Joan");
 		DinghyClass graduate = new DinghyClass("Graduate", 2 , 1110);
@@ -778,7 +778,7 @@ public class EntryTests {
 	}
 
 	@Test
-	void when_entryCompletesPenultimateLap_setsOnLastLapToTrue() {
+	void when_entryStartsLastLap_setsOnLastLapToTrue() {
 		Competitor competitor1 = new Competitor("Bob");
 		DinghyClass graduate = new DinghyClass("Graduate", 2 , 1110);
 		Dinghy dinghy1 = new Dinghy("1234", graduate);
@@ -791,6 +791,20 @@ public class EntryTests {
 		assertTrue(entry1.getOnLastLap());		
 	}
 
+	@Test
+	void when_entryHasPenultimateLapRemoved_onLastLapIsFalse() {
+		Competitor competitor1 = new Competitor("Bob");
+		DinghyClass graduate = new DinghyClass("Graduate", 2 , 1110);
+		Dinghy dinghy1 = new Dinghy("1234", graduate);
+		Fleet fleet = new Fleet("Test Fleet");
+		Race race = new Race("Race1", LocalDateTime.now(), fleet, Duration.ofMinutes(45), 2, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Entry entry = new Entry(competitor1, dinghy1, race);
+		race.signUp(entry);
+		entry.addLap(new Lap(1, Duration.ofMinutes(3L)));
+		entry.removeLap(new Lap(1, Duration.ofMinutes(3L)));
+		assertFalse(entry.getOnLastLap());
+	}
+	
 	@Test
 	void when_entryNotSailingFinalLap_onLastLapIsFalse() {
 		Competitor competitor1 = new Competitor("Bob");
@@ -820,7 +834,7 @@ public class EntryTests {
 	}
 	
 	@Test
-	void when_entryHasFinishingLapRemovedAndIsNowSailingPenultimateLap_onLastLapIsTrue() {
+	void when_entryHasFinishingLapRemovedAndIsNowSailingPenultimateLap_onLastLapIsTrueAndFinishedRaceIsFalse() {
 		Competitor competitor1 = new Competitor("Bob");
 		DinghyClass graduate = new DinghyClass("Graduate", 2 , 1110);
 		Dinghy dinghy1 = new Dinghy("1234", graduate);
@@ -832,5 +846,6 @@ public class EntryTests {
 		entry1.addLap(new Lap(2, Duration.ofMinutes(13)));
 		entry1.removeLap(new Lap(2, Duration.ofMinutes(13)));
 		assertTrue(entry1.getOnLastLap());		
+		assertFalse(entry1.getFinishedRace());
 	}
 }
