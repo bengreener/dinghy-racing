@@ -248,10 +248,10 @@ public class Entry {
 	}
 
 	public void updateProgressIndicators() {
-		if (laps.size() == race.getPlannedLaps()) {
+		if (race.completedLastLap(this)) {
 			this.setFinishedRace(true); // will unset onLastLap
 		}
-		else if (laps.size() == race.getPlannedLaps() - 1) {
+		else if (race.onLastLap(this)) {
 			this.setOnLastLap(true); // will unset finishedRace
 		}
 		else {

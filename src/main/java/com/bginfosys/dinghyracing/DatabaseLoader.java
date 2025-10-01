@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component;
 import com.bginfosys.dinghyracing.model.Competitor;
 import com.bginfosys.dinghyracing.model.Dinghy;
 import com.bginfosys.dinghyracing.model.DinghyClass;
-import com.bginfosys.dinghyracing.model.Race;
+import com.bginfosys.dinghyracing.model.DirectRace;
 import com.bginfosys.dinghyracing.model.RaceType;
 import com.bginfosys.dinghyracing.model.StartType;
 import com.bginfosys.dinghyracing.model.Entry;
@@ -98,10 +98,10 @@ public class DatabaseLoader implements CommandLineRunner {
 		LocalDateTime now = LocalDateTime.now();
 		now = now.minusNanos(now.getNano()); // avoid precision issues saving and retrieving from database
 		
-		Race rScorpionA = new Race("Scorpion A", now.plusMinutes(0L), fScorpion, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
-		Race rGraduateA = new Race("Graduate A", now.plusMinutes(6L), fGraduate, Duration.ofMinutes(35), 4, RaceType.FLEET, StartType.CSCCLUBSTART);
-		Race rCometA = new Race("Comet A", now.plusMinutes(11L), fComet, Duration.ofMinutes(35), 4, RaceType.FLEET, StartType.CSCCLUBSTART);
-		Race rHandicapA = new Race("Handicap A", now.plusMinutes(1L), fHandicap, Duration.ofMinutes(35), 4, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace rScorpionA = new DirectRace("Scorpion A", now.plusMinutes(0L), fScorpion, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace rGraduateA = new DirectRace("Graduate A", now.plusMinutes(6L), fGraduate, Duration.ofMinutes(35), 4, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace rCometA = new DirectRace("Comet A", now.plusMinutes(11L), fComet, Duration.ofMinutes(35), 4, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace rHandicapA = new DirectRace("Handicap A", now.plusMinutes(1L), fHandicap, Duration.ofMinutes(35), 4, RaceType.FLEET, StartType.CSCCLUBSTART);
 		
 		this.raceRepository.save(rScorpionA);
 		this.raceRepository.save(rGraduateA);

@@ -17,11 +17,7 @@
 package com.bginfosys.dinghyracing.persistence;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.time.Duration;
-import java.time.LocalDateTime;
 
 import java.util.Set;
 import java.util.HashSet;
@@ -30,14 +26,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 import jakarta.validation.ConstraintViolationException;
 
 import com.bginfosys.dinghyracing.model.Race;
-import com.bginfosys.dinghyracing.model.RaceType;
-import com.bginfosys.dinghyracing.model.StartType;
 import com.bginfosys.dinghyracing.model.Dinghy;
 import com.bginfosys.dinghyracing.model.DinghyClass;
 import com.bginfosys.dinghyracing.model.Entry;
@@ -58,8 +50,7 @@ public class RaceRepositoryTests {
 		Fleet fleet = new Fleet("Test Fleet");
 		entityManager.persist(fleet);
 		
-		Race race1 = new Race("Test Race", LocalDateTime.of(2023, 5, 13, 12, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
-		race1.setPlannedLaps(5);
+		Race race1 = new Race("Test Race", fleet);
 		Race race2 = raceRepository.save(race1);
 		
 		assertThat(entityManager.find(Race.class, entityManager.getId(race2))).isEqualTo(race1);
@@ -71,43 +62,7 @@ public class RaceRepositoryTests {
 		entityManager.persist(fleet);
 				
 		Race race1 = new Race();
-		race1.setPlannedStartTime(LocalDateTime.of(2023, 5, 13, 12, 00));
 		race1.setFleet(fleet);
-		race1.setDuration(Duration.ofMinutes(45));
-		race1.setPlannedLaps(5);
-		raceRepository.save(race1);
-		
-		assertThrows(ConstraintViolationException.class, () -> {
-			entityManager.flush();
-		});
-	}
-	
-	@Test
-	void when_raceHasNoPlannedStartTime_then_throwsException() {
-		Fleet fleet = new Fleet("Test Fleet");
-		entityManager.persist(fleet);
-				
-		Race race1 = new Race();
-		race1.setName("Test Race");
-		race1.setFleet(fleet);
-		race1.setPlannedLaps(5);
-		raceRepository.save(race1);
-		
-		assertThrows(ConstraintViolationException.class, () -> {
-			entityManager.flush();
-		});
-	}
-	
-	@Test
-	void when_raceHasNoPlannedLaps_then_throwsException() {
-		Fleet fleet = new Fleet("Test Fleet");
-		entityManager.persist(fleet);
-				
-		Race race1 = new Race();
-		race1.setName("Test Race");
-		race1.setPlannedStartTime(LocalDateTime.of(2023, 5, 13, 12, 00));
-		race1.setFleet(fleet);
-		race1.setDuration(Duration.ofMinutes(45));
 		raceRepository.save(race1);
 		
 		assertThrows(ConstraintViolationException.class, () -> {
@@ -119,26 +74,6 @@ public class RaceRepositoryTests {
 	void when_raceHasNoFleet_then_throwsException() {
 		Race race1 = new Race();
 		race1.setName("Test Race");
-		race1.setPlannedStartTime(LocalDateTime.of(2023, 5, 13, 12, 00));
-		race1.setDuration(Duration.ofMinutes(45));
-		race1.setPlannedLaps(5);
-		raceRepository.save(race1);
-		
-		assertThrows(ConstraintViolationException.class, () -> {
-			entityManager.flush();
-		});
-	}
-	
-	@Test
-	void when_raceHasNoDuration_then_throwsException() {
-		Fleet fleet = new Fleet("Test Fleet");
-		entityManager.persist(fleet);
-				
-		Race race1 = new Race();
-		race1.setName("Test Race");
-		race1.setPlannedStartTime(LocalDateTime.of(2023, 5, 13, 12, 00));
-		race1.setFleet(fleet);
-		race1.setPlannedLaps(5);
 		raceRepository.save(race1);
 		
 		assertThrows(ConstraintViolationException.class, () -> {
@@ -160,7 +95,7 @@ public class RaceRepositoryTests {
 		Dinghy dinghy = new Dinghy("1234", dinghyClass);
 		entityManager.persist(dinghy);
 				
-		Race race1 = new Race("Test Race", LocalDateTime.of(2023, 5, 13, 12, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Race race1 = new Race("Test Race", fleet);
 		entityManager.persist(race1);
 		// remove entity from session (detach entity). Not doing so can result in a false positive dependent on the logic used to check for an existing entity in repository save method
 		entityManager.detach(race1);
@@ -176,109 +111,7 @@ public class RaceRepositoryTests {
 		assertThat(race1.getId() == race2.getId()
 			&& race1.getName() == race2.getName()
 			&& race1.getFleet() == race2.getFleet() 
-			&& race1.getPlannedStartTime() == race2.getPlannedStartTime()
 			&& race1.getSignedUp() == race2.getSignedUp()
 		);
-	}
-
-	@Test
-	void when_aCollectionOfRacesAfterACertainTimeIsRequested_then_ACollectionContainingOnlyRacesThatStartAtOrAfterThatTimeIsReturned() {
-		Fleet fleet = new Fleet("Test Fleet");
-		entityManager.persist(fleet);
-		
-		Race race1 = new Race("Test Race1", LocalDateTime.of(2023, 5, 13, 11, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
-		race1 = entityManager.persist(race1);
-		Race race2 = new Race("Test Race2", LocalDateTime.of(2023, 5, 13, 12, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
-		race2 = entityManager.persist(race2);
-		Race race3 = new Race("Test Race3", LocalDateTime.of(2023, 5, 13, 13, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
-		race3 = entityManager.persist(race3);
-		
-		Page<Race> result = raceRepository.findByPlannedStartTimeGreaterThanEqual(LocalDateTime.of(2023, 5, 13, 12, 00), Pageable.ofSize(5));
-		
-		assertThat(result).contains(race2, race3);
-	}
-	
-	@Test
-	void when_raceIsRequestedByNameAndPlannedStartTime_then_raceIsReturned() {
-		Fleet fleet = new Fleet("Test Fleet");
-		entityManager.persist(fleet);
-		
-		Race race1 = new Race("Test Race1", LocalDateTime.of(2023, 5, 13, 11, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
-		entityManager.persist(race1);
-		Race race2 = new Race("Test Race2", LocalDateTime.of(2023, 5, 13, 12, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
-		entityManager.persist(race2);
-		Race race3 = new Race("Test Race3", LocalDateTime.of(2023, 5, 13, 13, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
-		entityManager.persist(race3);
-		entityManager.flush();
-		
-		Race result = raceRepository.findByNameAndPlannedStartTime("Test Race2", LocalDateTime.of(2023, 5, 13, 12, 00));
-		
-		assertEquals(race2, result);
-	}
-
-	@Test
-	void given_raceExistsWithNameAndStartTime_when_creatingAnotherRaceWithTheSameNameAndStartTime_then_throwsError() {
-		Fleet fleet = new Fleet("Test Fleet");
-		entityManager.persist(fleet);
-				
-		Race race1 = new Race("Test Race", LocalDateTime.of(2023, 10, 13, 12, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
-		entityManager.persistAndFlush(race1);
-		
-		Race race2 = new Race();
-		race2.setName("Test Race");
-		race2.setPlannedStartTime(LocalDateTime.of(2023, 10, 13, 12, 00));
-		race2.setDuration(Duration.ofMinutes(45));
-		race1.setPlannedLaps(5);
-		
-		assertThrows(ConstraintViolationException.class, () -> {
-			raceRepository.save(race2);
-			entityManager.flush();
-		});
-	}
-
-	@Test
-	void when_aCollectionOfRacesBetweenCertainTimesIsRequested_then_ACollectionContainingOnlyRacesBetweenThomseTimesAreReturned() {
-		Fleet fleet = new Fleet("Test Fleet");
-		entityManager.persist(fleet);
-		
-		Race race1 = new Race("Test Race1", LocalDateTime.of(2023, 5, 13, 11, 59), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
-		race1 = entityManager.persist(race1);
-		Race race2 = new Race("Test Race2", LocalDateTime.of(2023, 5, 13, 12, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
-		race2 = entityManager.persist(race2);
-		Race race3 = new Race("Test Race3", LocalDateTime.of(2023, 5, 13, 13, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
-		race3 = entityManager.persist(race3);
-		Race race4 = new Race("Test Race4", LocalDateTime.of(2023, 5, 13, 13, 01), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
-		race4 = entityManager.persist(race4);
-		
-		Page<Race> result = raceRepository.findByPlannedStartTimeBetween(LocalDateTime.of(2023, 5, 13, 12, 00), 
-				LocalDateTime.of(2023, 5, 13, 13, 00), Pageable.ofSize(5));
-		
-		assertThat(result).contains(race2, race3);
-		assertThat(result).doesNotContain(race1, race4);
-	}
-	
-	@Test
-	void when_aCollectionOfRacesBetweenCertainTimesAndTypeEqualsIsRequested_then_ACollectionContainingOnlyRacesBetweenThoseTimesWithThatTypeAreReturned() {
-		Fleet fleet = new Fleet("Test Fleet");
-		entityManager.persist(fleet);
-		
-		Race race1 = new Race("Test Race1", LocalDateTime.of(2023, 5, 13, 11, 59), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
-		race1 = entityManager.persist(race1);
-		Race race2 = new Race("Test Race2", LocalDateTime.of(2023, 5, 13, 12, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
-		race2 = entityManager.persist(race2);
-		Race race3 = new Race("Test Race3", LocalDateTime.of(2023, 5, 13, 13, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
-		race3 = entityManager.persist(race3);
-		Race race4 = new Race("Test Race4", LocalDateTime.of(2023, 5, 13, 13, 01), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
-		race4 = entityManager.persist(race4);
-		Race race5 = new Race("Test Race5", LocalDateTime.of(2023, 5, 13, 12, 00), fleet, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART);
-		race5 = entityManager.persist(race5);
-		Race race6 = new Race("Test Race6", LocalDateTime.of(2023, 5, 13, 13, 00), fleet, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART);
-		race6 = entityManager.persist(race6);
-		
-		Page<Race> result = raceRepository.findByPlannedStartTimeBetweenAndTypeEquals(LocalDateTime.of(2023, 5, 13, 12, 00), 
-				LocalDateTime.of(2023, 5, 13, 13, 00), RaceType.FLEET, Pageable.ofSize(5));
-		
-		assertThat(result).contains(race2, race3);
-		assertThat(result).doesNotContain(race1, race4);
 	}
 }

@@ -28,6 +28,7 @@ import org.springframework.hateoas.server.EntityLinks;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 
+import com.bginfosys.dinghyracing.model.DirectRace;
 import com.bginfosys.dinghyracing.model.Race;
 
 @Component
@@ -75,7 +76,16 @@ public class RaceEventHandler {
 	 *
 	 * @param race
 	 */
-	private String getURI(Race race) {
-		return this.entityLinks.linkToItemResource(race.getClass(), race.getId()).toUri().toString();
+	private String getURI(Object entity) {
+		String uri = "";
+		if (entity instanceof DirectRace) {
+			DirectRace race = (DirectRace) entity;
+			uri = this.entityLinks.linkToItemResource(DirectRace.class, race.getId()).toUri().toString(); 
+		}
+		else if (entity instanceof Race) {
+			Race race = (Race) entity;
+			uri = this.entityLinks.linkToItemResource(Race.class, race.getId()).toUri().toString();
+		}
+		return uri;
 	}
 }

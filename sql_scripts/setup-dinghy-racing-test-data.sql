@@ -1,10 +1,11 @@
--- v2025.8.2
+-- v2025.9.2
 USE dinghy_racing;
 
 -- clear existing data
 DELETE FROM entry_laps;
 DELETE FROM lap;
 DELETE FROM entry;
+DELETE FROM direct_race;
 DELETE FROM race;
 DELETE FROM fleet_dinghy_classes;
 DELETE FROM fleet;
@@ -39,14 +40,23 @@ INSERT INTO dinghy (id, sail_number, dinghy_class_id, version) VALUES (3, "6745"
 INSERT INTO dinghy (id, sail_number, dinghy_class_id, version) VALUES (4, "2928", 2, 0);
 INSERT INTO dinghy (id, sail_number, dinghy_class_id, version) VALUES (5, "826", 3, 0);
 
-INSERT INTO race (id, name, duration, planned_laps, planned_start_time, fleet_id, `type`, start_type, version) 
-	VALUES (1, "Scorpion A", 2700000000000, 5, "2024-12-09 14:10:00", 1, "FLEET", "CSCCLUBSTART", 0);
-INSERT INTO race (id, name, duration, planned_laps, planned_start_time, fleet_id, `type`, start_type, version) 
-	VALUES (2, "Graduate A", 2700000000000, 4, "2024-12-09 14:30:00", 2, "FLEET", "CSCCLUBSTART", 0);
-INSERT INTO race (id, name, duration, planned_laps, planned_start_time, fleet_id, `type`, start_type, version) 
-	VALUES (3, "Comet A", 2700000000000, 4, "2024-12-09 14:30:00", 3, "FLEET", "CSCCLUBSTART", 0);
-INSERT INTO race (id, name, duration, planned_laps, planned_start_time, fleet_id, `type`, start_type, version) 
-	VALUES (4, "Handicap A", 2700000000000, 4, "2024-12-09 14:10:00", 4, "FLEET", "CSCCLUBSTART", 0);
+INSERT INTO race (id, name, fleet_id, version) 
+	VALUES (1, "Scorpion A", 1, 0);
+INSERT INTO race (id, name, fleet_id, version) 
+	VALUES (2, "Graduate A", 2, 0);
+INSERT INTO race (id, name, fleet_id, version) 
+	VALUES (3, "Comet A", 3, 0);
+INSERT INTO race (id, name, fleet_id, version) 
+	VALUES (4, "Handicap A", 4, 0);
+	
+INSERT INTO direct_race (id, duration, planned_laps, planned_start_time, `type`, start_type) 
+	VALUES (1, 2700000000000, 5, "2024-12-09 14:10:00", "FLEET", "CSCCLUBSTART");
+INSERT INTO direct_race (id, duration, planned_laps, planned_start_time, `type`, start_type) 
+	VALUES (2, 2700000000000, 4, "2024-12-09 14:30:00", "FLEET", "CSCCLUBSTART");
+INSERT INTO direct_race (id, duration, planned_laps, planned_start_time, `type`, start_type) 
+	VALUES (3, 2700000000000, 4, "2024-12-09 14:30:00", "FLEET", "CSCCLUBSTART");
+INSERT INTO direct_race (id, duration, planned_laps, planned_start_time, `type`, start_type) 
+	VALUES (4, 2700000000000, 4, "2024-12-09 14:10:00", "FLEET", "CSCCLUBSTART");
 
 INSERT INTO entry (id, helm_id, dinghy_id, race_id, crew_id, on_Last_lap, finished_race, version) VALUES (1, 1, 1, 1, 4, FALSE, FALSE, 0);
 INSERT INTO entry (id, helm_id, dinghy_id, race_id, crew_id, on_Last_lap, finished_race, version) VALUES (2, 2, 3, 1, 6, FALSE, FALSE, 0);

@@ -113,3 +113,27 @@ ALTER TABLE entry
 	ADD COLUMN finished_race BOOLEAN;
 	
 UPDATE entry SET finished_race = FALSE;
+
+-- v2025.8.2 to v2025.9.2
+CREATE TABLE direct_race (
+	id BIGINT NOT NULL, 
+	duration BIGINT NOT NULL, 
+	planned_laps INTEGER NOT NULL, 
+	planned_start_time DATETIME(6) NOT NULL, 
+	`type` VARCHAR(50) NOT NULL,
+	start_type VARCHAR(50) NOT NULL,
+	CONSTRAINT FK_direct_race_id FOREIGN KEY (id) REFERENCES race (id)
+	
+) engine=InnoDB;
+
+INSERT INTO direct_race (id, duration, planned_laps, planned_start_time, `type`, start_type)
+SELECT id, duration, planned_laps, planned_start_time, `type`, start_type from race;
+
+ALTER TABLE race
+	DROP COLUMN duration,
+	DROP COLUMN planned_laps,
+	DROP COLUMN planned_start_time,
+	DROP COLUMN start_type,
+	DROP COLUMN type,
+	DROP CONSTRAINT UK_race_name_planned_start_time;
+
