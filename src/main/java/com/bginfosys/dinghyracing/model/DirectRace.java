@@ -154,7 +154,6 @@ public class DirectRace extends Race {
 				}
 				List<Entry> entriesInPosition = setPositions(signedUp.stream().sorted(new FleetEntriesComparator()).toList());
 				entriesInPosition = adjustForAdvantage(entriesInPosition, 0);
-//				applyMatchingCorrectedTimeAdjustments();
 				adjustForTies(entriesInPosition, 0);
 			}
 			else if (this.type == RaceType.PURSUIT) {
