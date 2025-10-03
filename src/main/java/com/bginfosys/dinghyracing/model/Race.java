@@ -164,7 +164,7 @@ public class Race implements Serializable {
 		return false;
 	}
 
-	public void calculatePositions(Entry entry) {
+	public void updatePositions(Entry entry) {
 		// TODO Auto-generated method stub
 		
 	}

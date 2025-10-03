@@ -183,7 +183,7 @@ public class Entry {
 	
 	public void setScoringAbbreviation(String scoringAbbreviation) {
 		this.scoringAbbreviation = scoringAbbreviation;
-		this.race.calculatePositions(this);
+		this.race.updatePositions(this);
 	}
 	
 	public Integer getPosition() {
@@ -269,7 +269,7 @@ public class Entry {
 		}
 		boolean result = laps.add(lap); 
 		if (result) {
-			this.race.calculatePositions(this);
+			this.race.updatePositions(this);
 			updateProgressIndicators();
 		}
 		return result;
@@ -278,7 +278,7 @@ public class Entry {
 	public boolean removeLap(Lap lap) {
 		boolean result = laps.remove(lap); 
 		if (result) {
-			this.race.calculatePositions(this);
+			this.race.updatePositions(this);
 			updateProgressIndicators();
 		}
 		return result;
@@ -292,7 +292,7 @@ public class Entry {
 		// swapping out old and new laps was causing a referential integrity error after controller method returned :-(
 		// appeared to be caused by system trying to delete the original referenced lap before updating the reference in the database to the new lap; original lap is not deleted as it is still recorded as a mapped to the entry
 		laps.last().setTime(lap.getTime());
-		this.race.calculatePositions(this);
+		this.race.updatePositions(this);
 	}
 
 	@Override

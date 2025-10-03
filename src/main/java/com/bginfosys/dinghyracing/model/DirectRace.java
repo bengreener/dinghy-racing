@@ -136,7 +136,7 @@ public class DirectRace extends Race {
 	/**
 	 * Calculate and set the positions of entries in the race based on the number of laps completed and the time taken to complete those laps
 	 */
-	public void calculatePositions(Entry entry) {
+	public void updatePositions(Entry entry) {
 		if (entry.getScoringAbbreviation() != null && entry.getScoringAbbreviation() != "") {
 			updateEntryPosition(entry, signedUp.size());
 		}
