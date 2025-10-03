@@ -302,11 +302,11 @@ public class Entry {
 			if (crew != null) {
 				crewName = crew.getName();
 			}
-			return "Entry [id=" + id + ", version=" + version + ", helm=" + helm.getName()+ ", crew=" + crewName + ", dinghy=" + dinghy.getDinghyClass().getName() + " " + dinghy.getSailNumber()
+			return "Entry [id=" + id + ", version=" + version + ", helm=" + helm.getName() + ", crew=" + crewName + ", dinghy=" + dinghy.getDinghyClass().getName() + " " + dinghy.getSailNumber()
 			+ ", race=" + race.getName() + ", correctedTime=" + (correctedTime == null ? "0" : correctedTime.toString()) + ", lapsSailed=" + getLapsSailed() + ", position=" + position + "]";
 		}
 		else {
-			return "Entry [id=" + id + ", version=" + version + ", helm=" + helm.getName()+ ", dinghy=" + dinghy.getDinghyClass().getName() + " " + dinghy.getSailNumber()
+			return "Entry [id=" + id + ", version=" + version + ", helm=" + helm.getName() + ", dinghy=" + dinghy.getDinghyClass().getName() + " " + dinghy.getSailNumber()
 			+ ", race=" + race.getName() + ", correctedTime=" + (correctedTime == null ? "0" : correctedTime.toString())  + ", lapsSailed=" + getLapsSailed() + ", position=" + position + "]";	
 		}
 		
