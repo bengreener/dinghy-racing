@@ -6,12 +6,22 @@ import com.bginfosys.dinghyracing.persistence.SignedUpId;
 
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MapsId;
 
 @Entity
 public class SignedUp {
 
 	@EmbeddedId
 	SignedUpId id;
+	
+	@ManyToOne
+	@MapsId("raceId")
+	Race race;
+	
+	@ManyToOne
+	@MapsId("entryId")
+	Entry entry;
 	
 	private Integer position;
 	
@@ -31,12 +41,12 @@ public class SignedUp {
 
 	@Override
 	public String toString() {
-		return "SignedUp [id=" + id + ", position=" + position + "]";
+		return "SignedUp [id=" + id + ", race=" + race + ", entry=" + entry + ", position=" + position + "]";
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, position);
+		return Objects.hash(entry, id, position, race);
 	}
 
 	@Override
@@ -48,6 +58,7 @@ public class SignedUp {
 		if (getClass() != obj.getClass())
 			return false;
 		SignedUp other = (SignedUp) obj;
-		return Objects.equals(id, other.id) && Objects.equals(position, other.position);
+		return Objects.equals(entry, other.entry) && Objects.equals(id, other.id)
+				&& Objects.equals(position, other.position) && Objects.equals(race, other.race);
 	}
 }
