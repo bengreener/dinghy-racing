@@ -27,7 +27,14 @@ public class SignedUp {
 	
 	public SignedUp() {};
 	
-	public SignedUp(Integer position) {
+	public SignedUp(Race race, Entry entry) {
+		this.race = race;
+		this.entry = entry;
+	}
+	
+	public SignedUp(Race race, Entry entry, Integer position) {
+		this.race = race;
+		this.entry = entry;
 		this.position = position;
 	}
 
