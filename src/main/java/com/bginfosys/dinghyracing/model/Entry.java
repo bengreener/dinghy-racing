@@ -93,7 +93,7 @@ public class Entry {
 		if (race.getFleet().getDinghyClasses().isEmpty() || race.getFleet().getDinghyClasses().contains(dinghy.getDinghyClass())) {
 			this.dinghy = dinghy;
 			this.helm = helm;
-			this.race = race;
+			this.setRace(race);
 		}
 		else {
 			throw new DinghyClassMismatchException();
