@@ -24,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.concurrent.ConcurrentSkipListSet;
@@ -34,9 +35,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.data.domain.Page;
 
-import com.bginfosys.dinghyracing.exceptions.DinghyClassMismatchException;
 import com.bginfosys.dinghyracing.model.Competitor;
 import com.bginfosys.dinghyracing.model.Dinghy;
 import com.bginfosys.dinghyracing.model.DinghyClass;
@@ -46,6 +45,7 @@ import com.bginfosys.dinghyracing.model.Fleet;
 import com.bginfosys.dinghyracing.model.Lap;
 import com.bginfosys.dinghyracing.model.Race;
 import com.bginfosys.dinghyracing.model.RaceType;
+import com.bginfosys.dinghyracing.model.SignedUp;
 import com.bginfosys.dinghyracing.model.StartType;
 
 @DataJpaTest
@@ -59,20 +59,19 @@ public class EntryRepositoryTests {
 	
 	@Test
 	void when_providedWithAValidInstanceOfEntry_then_savesEntry() {
-		Competitor helm = new Competitor();
-		Dinghy dinghy = new Dinghy();
-		Fleet fleet = new Fleet("Test Fleet");
-		entityManager.persist(fleet);
-		
-		Race race = new Race();
-		race.setFleet(fleet);		
-		entityManager.persist(race);
-		
+		Competitor helm = new Competitor("Bob");
 		entityManager.persist(helm);
+		Competitor crew = new Competitor("Jane");
+		entityManager.persist(crew);
+		DinghyClass dinghyClass = new DinghyClass("Scorpion", 2, 1000);
+		entityManager.persist(dinghyClass);
+		Dinghy dinghy = new Dinghy("1234", dinghyClass);
 		entityManager.persist(dinghy);
-		entityManager.persist(race);
-		
-		Entry entry = new Entry(helm, dinghy, race);
+		entityManager.flush();
+
+		Entry entry = new Entry(helm, dinghy);
+		entry.setCrew(crew);
+	
 		Entry insertedEntry = entryRepository.save(entry);
 		assertThat(entityManager.find(Entry.class, entityManager.getId(insertedEntry))).isEqualTo(entry);
 	}
@@ -80,38 +79,23 @@ public class EntryRepositoryTests {
 	@Test
 	void given_entryHasNotBeenSaved_when_idIsRequested_then_returnsNull() {
 		Competitor helm = new Competitor();
-		Dinghy dinghy = new Dinghy();
-		Fleet fleet = new Fleet("Test Fleet");
-		entityManager.persist(fleet);
-		
-		Race race = new Race();
-		race.setFleet(fleet);		
-		entityManager.persist(race);
-		
 		entityManager.persist(helm);
+		Dinghy dinghy = new Dinghy();
 		entityManager.persist(dinghy);
-		entityManager.persist(race);
 		
-		Entry entry = new Entry(helm, dinghy, race);
+		Entry entry = new Entry(helm, dinghy);
+		
 		assertNull(entry.getId());
 	}
 	
 	@Test
 	void given_entryHasBeenSaved_when_idIsRequested_then_returnsId() {
 		Competitor helm = new Competitor();
-		Dinghy dinghy = new Dinghy();
-		Fleet fleet = new Fleet("Test Fleet");
-		entityManager.persist(fleet);
-		
-		Race race = new Race();
-		race.setFleet(fleet);		
-		entityManager.persist(race);
-		
 		entityManager.persist(helm);
+		Dinghy dinghy = new Dinghy();
 		entityManager.persist(dinghy);
-		entityManager.persist(race);
 		
-		Entry entry = new Entry(helm, dinghy, race);
+		Entry entry = new Entry(helm, dinghy);
 		Entry insertedEntry = entryRepository.save(entry);
 		assertEquals(entityManager.getId(insertedEntry), insertedEntry.getId());
 	}
@@ -121,16 +105,8 @@ public class EntryRepositoryTests {
 		Dinghy dinghy = new Dinghy();
 		entityManager.persist(dinghy);
 		
-		Fleet fleet = new Fleet("Test Fleet");
-		entityManager.persist(fleet);
-		
-		Race race = new Race();
-		race.setFleet(fleet);		
-		entityManager.persist(race);
-		
 		Entry entry = new Entry();
 		entry.setDinghy(dinghy);
-		entry.setRace(race);
 		
 		assertThrows(ConstraintViolationException.class, () -> {
 			entryRepository.save(entry);
@@ -141,267 +117,35 @@ public class EntryRepositoryTests {
 	@Test
 	void when_entryHasNoDinghy_then_throwsException() {
 		Competitor helm = new Competitor();
-		Fleet fleet = new Fleet("Test Fleet");
-		entityManager.persist(fleet);
-		
-		Race race = new Race();
-		race.setFleet(fleet);		
-		entityManager.persist(race);
-		
 		entityManager.persist(helm);
-		entityManager.persist(race);
 		
 		Entry entry = new Entry();
 		entry.setHelm(helm);
-		entry.setRace(race);
 		
 		assertThrows(ConstraintViolationException.class, () -> {
 			entryRepository.save(entry);
 			entityManager.flush();
 		});
-	}
-	
-	@Test
-	void when_entryHasNoRace_then_throwsException() {
-		Competitor helm = new Competitor();
-		Dinghy dinghy = new Dinghy();
-		
-		entityManager.persist(helm);
-		entityManager.persist(dinghy);
-		
-		Entry entry = new Entry();
-		entry.setHelm(helm);
-		entry.setDinghy(dinghy);
-		
-		assertThrows(ConstraintViolationException.class, () -> {
-			entryRepository.save(entry);
-			entityManager.flush();
-		});
-	}
-	
-	@Test
-	void when_dinghyDinghyClassMatchesRaceFleetDinghyClass_then_savesRace() {
-		DinghyClass dinghyClass = new DinghyClass("Scorpion", 2, 1041);
-		entityManager.persist(dinghyClass);
-		
-		Set<DinghyClass> dinghyClasses = new HashSet<DinghyClass>(64);
-		dinghyClasses.add(dinghyClass);		
-		Fleet fleet = new Fleet("Test Fleet", dinghyClasses);
-		entityManager.persist(fleet);
-		
-		Competitor helm = new Competitor();
-		entityManager.persist(helm);
-		
-		Dinghy dinghy = new Dinghy();		
-		dinghy.setDinghyClass(dinghyClass);
-		entityManager.persist(dinghy);
-		
-		Race race = new Race();
-		race.setFleet(fleet);
-		entityManager.persist(race);
-		
-		Entry entry = new Entry(helm, dinghy, race);
-		Entry insertedEntry = entryRepository.save(entry);
-		assertThat(entityManager.find(Entry.class, entityManager.getId(insertedEntry))).isEqualTo(entry);
-	}
-	
-	@Test
-	void when_dinghyDinghyClassDoesNotMatchRaceFleetDinghyClassAndRaceFleetDinghyClassIsNull_then_savesRace() {
-		Competitor helm = new Competitor("A Competitor");
-		entityManager.persist(helm);
-		
-		DinghyClass dinghyClass = new DinghyClass("Test Dinghyclass", 1, 1000);
-		entityManager.persist(dinghyClass);
-		
-		Fleet fleet = new Fleet("Test Fleet");
-		entityManager.persist(fleet);
-		
-		DirectRace race = new DirectRace("Race A", LocalDateTime.of(2023, 7, 25, 11, 54, 30), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
-		entityManager.persist(race);
-		
-		Dinghy dinghy = new Dinghy("1234", dinghyClass);
-		entityManager.persist(dinghy);
-		
-		Entry entry = new Entry(helm, dinghy, race);
-		Entry insertedEntry = entryRepository.save(entry);
-
-		assertThat(entityManager.find(Entry.class, entityManager.getId(insertedEntry))).isEqualTo(entry);
-	}
-	
-	@Test
-	void when_dinghyDinghyClassDoesNotMatchRaceFleetDinghyClassAndRaceFleetDinghyClassIsNotNull_then_throwsException() {
-		Competitor helm = new Competitor("A Competitor");
-		entityManager.persist(helm);
-		
-		DinghyClass dinghyClass1 = new DinghyClass("Test Dinghyclass", 1, 1000);
-		DinghyClass dinghyClass2 = new DinghyClass("Different Dinghyclass", 1, 1000);
-		entityManager.persist(dinghyClass1);
-		entityManager.persist(dinghyClass2);
-		
-		Set<DinghyClass> dinghyClasses = new HashSet<DinghyClass>(64);
-		dinghyClasses.add(dinghyClass2);
-		Fleet fleet = new Fleet("Test Fleet", dinghyClasses);
-		entityManager.persist(fleet);
-		
-		DirectRace race = new DirectRace("Race A", LocalDateTime.of(2023, 7, 25, 11, 54, 30), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
-		entityManager.persist(race);
-		
-		Dinghy dinghy = new Dinghy("1234", dinghyClass1);
-		entityManager.persist(dinghy);
-		
-		assertThrows(DinghyClassMismatchException.class, () -> {
-			new Entry(helm, dinghy, race);
-		});
-	}
-	
-	@Test
-	void givenEntryExistsForACompetitor_when_newEntryForCompetitorIsAttemptedForSameRace_then_creationOfEntryFails() {
-		Competitor helm = new Competitor("A Competitor");
-		entityManager.persist(helm);
-		
-		DinghyClass dinghyClass = new DinghyClass("Scorpion", 2, 1041);
-		entityManager.persist(dinghyClass);
-		
-		Set<DinghyClass> dinghyClasses = new HashSet<DinghyClass>(64);
-		dinghyClasses.add(dinghyClass);
-		Fleet fleet = new Fleet("Test Fleet", dinghyClasses);
-		entityManager.persist(fleet);
-		
-		DirectRace race = new DirectRace("A race", LocalDateTime.of(2023,  3, 24, 12, 30, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
-		entityManager.persist(race);
-		
-		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
-		entityManager.persist(dinghy1);
-		
-		Entry entry1 = new Entry(helm, dinghy1, race);
-		entityManager.persist(entry1);
-		
-		Dinghy dinghy2 = new Dinghy("6789", dinghyClass);
-		entityManager.persist(dinghy2);
-		
-		assertThrows(org.hibernate.exception.ConstraintViolationException.class, () -> {
-			Entry entry2 = new Entry(helm, dinghy2, race);
-			entryRepository.save(entry2);
-			entityManager.flush();
-		});
-	}
-	
-	@Test
-	void givenEntryExistsForADinghy_when_newEntryForDinghyIsAttempted_then_creationOfEntryFails() {
-		Competitor helm1 = new Competitor("A Competitor");
-		entityManager.persist(helm1);
-		
-		Competitor helm2 = new Competitor("B Competitor");
-		entityManager.persist(helm2);
-		
-		DinghyClass dinghyClass = new DinghyClass("Scorpion", 2, 1041);
-		entityManager.persist(dinghyClass);
-		
-		Set<DinghyClass> dinghyClasses = new HashSet<DinghyClass>(64);
-		dinghyClasses.add(dinghyClass);
-		Fleet fleet = new Fleet("Test Fleet", dinghyClasses);
-		entityManager.persist(fleet);
-		
-		DirectRace race = new DirectRace("A race", LocalDateTime.of(2023,  3, 24, 12, 30, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
-		entityManager.persist(race);
-		
-		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
-		entityManager.persist(dinghy1);
-		
-		Entry entry1 = new Entry(helm1, dinghy1, race);
-		entityManager.persist(entry1);
-		
-		assertThrows(org.hibernate.exception.ConstraintViolationException.class, () -> {
-			Entry entry2 = new Entry(helm2, dinghy1, race);
-			entryRepository.save(entry2);
-			entityManager.flush();
-		});
-	}
-	
-	@Test
-	void givenAnEntryAlreadyExistsForARace_when_aNewEntryForTheSameCompetitorAndDinghyIsAttempted_then_creationOfEntryFails() {
-		Competitor helm1 = new Competitor("A Competitor");
-		entityManager.persist(helm1);
-		
-		DinghyClass dinghyClass = new DinghyClass("Scorpion", 2, 1041);
-		entityManager.persist(dinghyClass);
-		
-		Set<DinghyClass> dinghyClasses = new HashSet<DinghyClass>(64);
-		dinghyClasses.add(dinghyClass);
-		Fleet fleet = new Fleet("Test Fleet", dinghyClasses);
-		entityManager.persist(fleet);
-		
-		DirectRace race = new DirectRace("A race", LocalDateTime.of(2023,  3, 24, 12, 30, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
-		entityManager.persist(race);
-		
-		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
-		entityManager.persist(dinghy1);
-		
-		Entry entry1 = new Entry(helm1, dinghy1, race);
-		entityManager.persist(entry1);
-		
-		assertThrows(org.hibernate.exception.ConstraintViolationException.class, () -> {
-			Entry entry2 = new Entry(helm1, dinghy1, race);
-			entryRepository.save(entry2);
-			entityManager.flush();
-		});
-	}
-	
-	@Test
-	void given_entriesExistForRace_when_searchingForEntriesByRace_EntriesAreReturned() {
-		Competitor c1 = new Competitor("Competitor One");
-		Competitor c2 = new Competitor("Competitor Two");
-		entityManager.persist(c1);
-		entityManager.persist(c2);
-		
-		DinghyClass dc1 = new DinghyClass("Dinghy Class One", 1, 1000);
-		entityManager.persist(dc1);
-		
-		Dinghy d1 = new Dinghy("1", dc1);
-		Dinghy d2 = new Dinghy("2", dc1);
-		entityManager.persist(d1);
-		entityManager.persist(d2);
-		
-		Set<DinghyClass> dinghyClasses = new HashSet<DinghyClass>(64);
-		dinghyClasses.add(dc1);
-		Fleet fleet = new Fleet("Test Fleet", dinghyClasses);
-		entityManager.persist(fleet);
-		
-		DirectRace r1 = new DirectRace("Race One", LocalDateTime.of(2023, 5, 13, 12, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
-		entityManager.persist(r1);
-		
-		Entry e1 = new Entry(c1, d1, r1);
-		Entry e2 = new Entry(c2, d2, r1);
-		entityManager.persist(e1);
-		entityManager.persist(e2);
-		
-		Page<Entry> entries = entryRepository.findByRace(r1, null);
-		
-		assertThat(entries).contains(e1, e2);
 	}
 
 	@Test
 	void when_entryHasEmptyLaps_then_savesEntry() {
 		DinghyClass dc1 = new DinghyClass("Dinghy Class One", 1, 1000);
 		entityManager.persist(dc1);
-		
 		Competitor helm = new Competitor();
 		entityManager.persist(helm);
-		
 		Dinghy dinghy = new Dinghy();
 		dinghy.setDinghyClass(dc1);
 		entityManager.persist(dinghy);
-		
 		Set<DinghyClass> dinghyClasses = new HashSet<DinghyClass>(64);
 		dinghyClasses.add(dc1);
 		Fleet fleet = new Fleet("Test Fleet", dinghyClasses);
 		entityManager.persist(fleet);		
-
-		Race race = new Race();
+		Race race = new DirectRace();
 		race.setFleet(fleet);
 		entityManager.persist(race);
 		
-		Entry entry = new Entry(helm, dinghy, race);
+		Entry entry = new Entry(helm, dinghy);
 		entry.setLaps(new ConcurrentSkipListSet<Lap>());
 		Entry insertedEntry = entryRepository.save(entry);
 		assertThat(entityManager.find(Entry.class, entityManager.getId(insertedEntry))).isEqualTo(entry);
@@ -409,25 +153,40 @@ public class EntryRepositoryTests {
 	
 	@Test
 	void when_entryHasLap_then_savesEntry() {
-		Competitor helm = new Competitor();
+		Competitor helm = new Competitor("Bob");
 		entityManager.persist(helm);
 		
-		Dinghy dinghy = new Dinghy();
+		DinghyClass dinghyClass = new DinghyClass("Comet", 1, 1000);
+		entityManager.persist(dinghyClass);
+		Dinghy dinghy = new Dinghy("1234", dinghyClass);
 		entityManager.persist(dinghy);
 		
 		Fleet fleet = new Fleet("Test Fleet");
 		entityManager.persist(fleet);
 		
-		Race race = new Race();
+		Race race = new DirectRace("Test Race", LocalDateTime.of(2023, 5, 13, 12, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		race.setFleet(fleet);
+		entityManager.persist(race);
+		
+		Entry entry = new Entry(helm, dinghy);
+		entityManager.persist(entry);
+		
+		entityManager.flush();
+		
+		SignedUp signedUp = new SignedUp(race, entry);
+		entityManager.persist(signedUp);
+		
+		Set<SignedUp> signedUpTo = new HashSet<SignedUp>(64);
+		entry.setSignedUpTo(signedUpTo);
+		entityManager.persist(entry);
+		race.setSignedUp(signedUpTo);
 		entityManager.persist(race);
 		
 		Lap lap1 = new Lap(1, Duration.ofMinutes(15));
 		entityManager.persist(lap1);
 		Lap lap2 = new Lap(2, Duration.ofMinutes(16));
-		entityManager.persist(lap2);
+		entityManager.persist(lap2);		
 		
-		Entry entry = new Entry(helm, dinghy, race);
 		SortedSet<Lap> laps = new ConcurrentSkipListSet<Lap>();
 		laps.add(lap1);
 		laps.add(lap2);
@@ -438,7 +197,15 @@ public class EntryRepositoryTests {
 
 	@Test
 	void when_entryIncludesCrew_then_savesEntry() {
-		
+		Competitor helm = new Competitor();
+		entityManager.persist(helm);
+		Dinghy dinghy = new Dinghy();
+		entityManager.persist(dinghy);
+
+		Entry entry = new Entry(helm, dinghy);	
+	
+		Entry insertedEntry = entryRepository.save(entry);
+		assertThat(entityManager.find(Entry.class, entityManager.getId(insertedEntry))).isEqualTo(entry);
 	}
 	
 	@Test
@@ -464,53 +231,15 @@ public class EntryRepositoryTests {
 		entityManager.persist(dinghy1);
 		entityManager.persist(dinghy2);
 		
-		Entry entry1 = new Entry(helmA, dinghy1, race);
+		Entry entry1 = new Entry(helmA, dinghy1);
 		entityManager.persist(entry1);
 		
-		Entry entry2 = new Entry(helmB, dinghy2, race);
+		Entry entry2 = new Entry(helmB, dinghy2);
 		entryRepository.save(entry2);
 		entityManager.flush();
 		
-		Page<Entry> entries = entryRepository.findByRace(race, null);
+		List<Entry> entries = entryRepository.findAll();
 		assertThat(entries).contains(entry1, entry2);
-	}
-	
-	@Test
-	void givenEntryExistsForACrew_when_newEntryForCrewIsAttemptedForSameRace_then_creationOfEntryFails() {
-		Competitor helmA = new Competitor("A Competitor");
-		Competitor helmB = new Competitor("B Competitor");
-		Competitor crew = new Competitor("Crew");
-		entityManager.persist(helmA);
-		entityManager.persist(helmB);
-		entityManager.persist(crew);
-		
-		DinghyClass dinghyClass = new DinghyClass("Scorpion", 2, 1041);
-		entityManager.persist(dinghyClass);
-		
-		Set<DinghyClass> dinghyClasses = new HashSet<DinghyClass>(64);
-		dinghyClasses.add(dinghyClass);
-		Fleet fleet = new Fleet("Test Fleet", dinghyClasses);
-		entityManager.persist(fleet);
-		
-		DirectRace race = new DirectRace("A race", LocalDateTime.of(2023,  3, 24, 12, 30, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
-		entityManager.persist(race);
-		
-		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
-		Dinghy dinghy2 = new Dinghy("5678", dinghyClass);
-		entityManager.persist(dinghy1);
-		entityManager.persist(dinghy2);
-		
-		Entry entry1 = new Entry(helmA, dinghy1, race);
-		entry1.setCrew(crew);
-		entityManager.persist(entry1);
-		
-		Entry entry2 = new Entry(helmB, dinghy2, race);
-		entry2.setCrew(crew);
-		
-		assertThrows(org.hibernate.exception.ConstraintViolationException.class, () -> {
-			entryRepository.save(entry2);
-			entityManager.flush();
-		});
 	}
 
 	@Test
@@ -526,7 +255,7 @@ public class EntryRepositoryTests {
 		DirectRace race = new DirectRace("A race", LocalDateTime.of(2023,  3, 24, 12, 30, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		entityManager.persist(race);
 		Entry entry = new Entry();
-		entry.setRace(race);
+//		entry.setRace(race);
 		entry.setScoringAbbreviation("A");
 		assertThrows(ConstraintViolationException.class, () -> {
 			entryRepository.save(entry);
@@ -547,7 +276,7 @@ public class EntryRepositoryTests {
 		DirectRace race = new DirectRace("A race", LocalDateTime.of(2023,  3, 24, 12, 30, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		entityManager.persist(race);
 		Entry entry = new Entry();
-		entry.setRace(race);
+//		entry.setRace(race);
 		entry.setScoringAbbreviation("AYZD");
 		assertThrows(ConstraintViolationException.class, () -> {
 			entryRepository.save(entry);

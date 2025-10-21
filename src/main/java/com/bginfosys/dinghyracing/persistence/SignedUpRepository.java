@@ -20,6 +20,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.bginfosys.dinghyracing.model.SignedUp;
 
-public interface SignedUpRepository extends JpaRepository<SignedUp, SignedUpId> {
+public interface SignedUpRepository extends JpaRepository<SignedUp, Long> {
 
 }

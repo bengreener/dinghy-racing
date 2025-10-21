@@ -42,10 +42,15 @@ INSERT INTO race (id, name, fleet_id, version)
 INSERT INTO direct_race (id, duration, planned_laps, planned_start_time, `type`, start_type) 
 	VALUES (1, 2700000000000, 5, "2025-04-03 9:10:00", "PURSUIT", "RRS26");
 
-INSERT INTO entry (id, helm_id, dinghy_id, race_id, crew_id, on_last_lap, finished_race, version) VALUES (1, 1, 1, 1, null, FALSE, FALSE, 0);
-INSERT INTO entry (id, helm_id, dinghy_id, race_id, crew_id, on_last_lap, finished_race, version) VALUES (2, 2, 2, 1, null, FALSE, FALSE, 0);
-INSERT INTO entry (id, helm_id, dinghy_id, race_id, crew_id, on_last_lap, finished_race, version) VALUES (3, 3, 3, 1, null, FALSE, FALSE, 0);
-INSERT INTO entry (id, helm_id, dinghy_id, race_id, crew_id, on_last_lap, finished_race, version) VALUES (4, 4, 4, 1, null, FALSE, FALSE, 0);
+INSERT INTO entry (id, helm_id, dinghy_id crew_id, on_last_lap, finished_race, version) VALUES (1, 1, 1, null, FALSE, FALSE, 0);
+INSERT INTO entry (id, helm_id, dinghy_id, crew_id, on_last_lap, finished_race, version) VALUES (2, 2, 2, null, FALSE, FALSE, 0);
+INSERT INTO entry (id, helm_id, dinghy_id, crew_id, on_last_lap, finished_race, version) VALUES (3, 3, 3, null, FALSE, FALSE, 0);
+INSERT INTO entry (id, helm_id, dinghy_id, crew_id, on_last_lap, finished_race, version) VALUES (4, 4, 4, null, FALSE, FALSE, 0);
+
+INSERT INTO signed_up (id, entry_id, race_id, version) VALUES (1, 1, 1, 0);
+INSERT INTO signed_up (id, entry_id, race_id, version) VALUES (2, 2, 1, 0);
+INSERT INTO signed_up (id, entry_id, race_id, version) VALUES (3, 3, 1, 0);
+INSERT INTO signed_up (id, entry_id, race_id, version) VALUES (4, 4, 1, 0);
 
 UPDATE competitor_seq SET next_val = (SELECT MAX(id) + 50 FROM competitor);
 UPDATE dinghy_seq SET next_val = (SELECT MAX(id) + 50 FROM dinghy);
@@ -54,3 +59,4 @@ UPDATE entry_seq SET next_val = (SELECT MAX(id) + 50 FROM entry);
 UPDATE lap_seq SET next_val = 1;
 UPDATE race_seq SET next_val = (SELECT MAX(id) + 50 FROM race);
 UPDATE fleet_seq SET next_val = (SELECT MAX(id) + 50 FROM fleet);
+UPDATE signed_up_seq SET next_val = (SELECT MAX(id) + 50 FROM signed_up);

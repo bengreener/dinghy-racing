@@ -18,6 +18,7 @@ package com.bginfosys.dinghyracing.web.websocket;
 
 import static com.bginfosys.dinghyracing.web.websocket.WebSocketConfiguration.MESSAGE_PREFIX;
 
+import java.util.Set;
 import java.util.SortedSet;
 
 import org.slf4j.Logger;
@@ -35,6 +36,7 @@ import com.bginfosys.dinghyracing.model.DirectRace;
 import com.bginfosys.dinghyracing.model.Entry;
 import com.bginfosys.dinghyracing.model.Lap;
 import com.bginfosys.dinghyracing.model.Race;
+import com.bginfosys.dinghyracing.model.SignedUp;
 
 @Component
 @RepositoryEventHandler(Entry.class)
@@ -59,8 +61,7 @@ public class EntryEventHandler {
 		}
 		this.websocket.convertAndSend(MESSAGE_PREFIX + "/createEntry", getURI(entry));
 		// notify listeners on race events that a new entry has been added for the race
-		Race race = entry.getRace();
-		this.websocket.convertAndSend(MESSAGE_PREFIX + "/updateRace", getURI(race));
+		sendToRacesSignedUpTo(entry.getSignedUpTo(), "/updateRace");
 	}
 	
 	// entry updated
@@ -80,8 +81,7 @@ public class EntryEventHandler {
 		}
 		this.websocket.convertAndSend(MESSAGE_PREFIX + "/updateEntry", getURI(entry));
 		// notify listeners on race events that race may have updated
-		Race race = entry.getRace();
-		this.websocket.convertAndSend(MESSAGE_PREFIX + "/updateRaceEntryLaps", getURI(race)); // use a different message type so as not to force refresh on race watchers not interested in race lap updates
+		sendToRacesSignedUpTo(entry.getSignedUpTo(), "/updateRaceEntryLaps");
 	}
 	
 	@HandleAfterDelete
@@ -91,8 +91,14 @@ public class EntryEventHandler {
 		}
 		this.websocket.convertAndSend(MESSAGE_PREFIX + "/deleteEntry", getURI(entry));
 		// notify listeners on race events that an entry has been removed for the race
-		Race race = entry.getRace();
-		this.websocket.convertAndSend(MESSAGE_PREFIX + "/updateRace", getURI(race));
+		sendToRacesSignedUpTo(entry.getSignedUpTo(), "/updateRace");
+	}
+	
+	private void sendToRacesSignedUpTo(Set<SignedUp> signedUpTo, String message) {
+		signedUpTo.forEach(s -> {
+			Race race = s.getRace();
+			this.websocket.convertAndSend(MESSAGE_PREFIX + message, getURI(race));
+		});
 	}
 	
 	/**

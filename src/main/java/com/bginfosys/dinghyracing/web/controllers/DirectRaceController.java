@@ -37,7 +37,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.bginfosys.dinghyracing.model.DirectRace;
-import com.bginfosys.dinghyracing.model.Entry;
+import com.bginfosys.dinghyracing.model.SignedUp;
 import com.bginfosys.dinghyracing.persistence.DirectRaceRepository;
 
 import jakarta.transaction.Transactional;
@@ -70,21 +70,21 @@ public class DirectRaceController implements ApplicationEventPublisherAware {
 	
 	@Transactional
 	@PatchMapping(path = "/directRaces/{raceId}/updateEntryPosition")
-	public ResponseEntity<DirectRace> updateEntryPosition(@PathVariable("raceId") Long raceId, @RequestParam(name = "entry") String entryURI, @RequestParam(name = "position") Integer newPosition) {
+	public ResponseEntity<DirectRace> updateEntryPosition(@PathVariable("raceId") Long raceId, @RequestParam(name = "signedUp") String signedUpURI, @RequestParam(name = "position") Integer newPosition) {
 		Optional<DirectRace> optRace = raceRepository.findById(raceId);
 		DirectRace race = optRace.get();
 		
-		TypeDescriptor entryType = TypeDescriptor.valueOf(Entry.class);
+		TypeDescriptor signedUpType = TypeDescriptor.valueOf(SignedUp.class);
 		
-		Entry entry = (Entry) getEntityFromUri(UriTemplate.of(entryURI).expand(), entryType);
-		race.updateEntryPosition(entry, newPosition);
+		SignedUp signedUp = (SignedUp) getSignedUpFromUri(UriTemplate.of(signedUpURI).expand(), signedUpType);
+		race.updateEntryPositions(signedUp, newPosition);
 		// relying on framework to handle actual entity save and assuming this is done
-		publisher.publishEvent(new AfterSaveEvent(entry));
+		publisher.publishEvent(new AfterSaveEvent(signedUp));
 		
 		return new ResponseEntity<DirectRace>(HttpStatus.NO_CONTENT);
 	}
 
-	private Object getEntityFromUri(URI uri, TypeDescriptor targetType) {
+	private Object getSignedUpFromUri(URI uri, TypeDescriptor targetType) {
 		TypeDescriptor sourceType = TypeDescriptor.valueOf(URI.class);
 
 		UriToEntityConverter uriToEntityConverter = new UriToEntityConverter(persistentEntities, repositoryInvokerFactory, () -> conversionService);

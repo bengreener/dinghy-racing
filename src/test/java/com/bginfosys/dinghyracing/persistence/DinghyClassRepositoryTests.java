@@ -41,11 +41,8 @@ public class DinghyClassRepositoryTests {
 	
 	@Test
 	void saveDinghyClass() {
-		DinghyClass dc1;
-		DinghyClass dc2;
-				
-		dc1 = new DinghyClass("TestClass", 1, 1000);
-		dc2 = dinghyClassRepository.save(dc1);
+		DinghyClass dc1 = new DinghyClass("TestClass", 1, 1000);
+		DinghyClass dc2 = dinghyClassRepository.save(dc1);
 		
 		assertThat(entityManager.find(DinghyClass.class, entityManager.getId(dc2))).isEqualTo(dc1);
 	}
@@ -73,7 +70,7 @@ public class DinghyClassRepositoryTests {
 	}
 	
 	@Test
-	void when_savingDInghyClass_crewSizeCannotBeNull() {
+	void when_savingDinghyClass_crewSizeCannotBeNull() {
 		assertThrows(jakarta.validation.ConstraintViolationException.class, () -> {
 			DinghyClass dc = new DinghyClass();
 			dc.setName("Test Class");
@@ -83,7 +80,7 @@ public class DinghyClassRepositoryTests {
 	}
 	
 	@Test
-	void when_savingDInghyClass_nameCannotBeNull() {
+	void when_savingDinghyClass_nameCannotBeNull() {
 		assertThrows(jakarta.validation.ConstraintViolationException.class, () -> {
 			DinghyClass dc = new DinghyClass();
 			dc.setCrewSize(1);
@@ -93,7 +90,7 @@ public class DinghyClassRepositoryTests {
 	}
 	
 	@Test
-	void when_savingDInghyClass_savesPortsmouthNumber() {
+	void when_savingDinghyClass_savesPortsmouthNumber() {
 		DinghyClass dc1;
 		DinghyClass dc2;
 				

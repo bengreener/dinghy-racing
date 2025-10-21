@@ -17,19 +17,20 @@
 package com.bginfosys.dinghyracing.model;
 
 import java.time.Duration;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
 import jakarta.persistence.Version;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -40,11 +41,6 @@ import com.bginfosys.dinghyracing.exceptions.DinghyClassMismatchException;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-@Table(uniqueConstraints = {
-		@UniqueConstraint(columnNames = {"helm_id", "race_id"}), 
-		@UniqueConstraint(columnNames = {"dinghy_id", "race_id"}),
-		@UniqueConstraint(columnNames = {"crew_id", "race_id"})
-})
 public class Entry {
 
 	@Id	
@@ -67,19 +63,16 @@ public class Entry {
 	@NotNull
 	@OneToOne
 	private Dinghy dinghy;
-	
-	@NaturalId (mutable = true)
-	@NotNull
-	@ManyToOne
-	private Race race;
 
+	@Column(unique=true)
+	@OneToMany(mappedBy = "entry", cascade = CascadeType.ALL, orphanRemoval=true)
+	private Set<SignedUp> signedUpTo = new HashSet<SignedUp>(64);
+	
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	private SortedSet<Lap> laps = new ConcurrentSkipListSet<Lap>((Lap firstLap, Lap secondLap) -> Integer.compare(firstLap.getNumber(), secondLap.getNumber()));
 	
 	@Size(min = 3, max = 3)
 	private String scoringAbbreviation;
-	
-	private Integer position;
 	
 	private Duration correctedTime;
 	
@@ -89,15 +82,15 @@ public class Entry {
 	
 	public Entry() {}
 	
-	public Entry(Competitor helm, Dinghy dinghy, Race race) {
-		if (race.getFleet().getDinghyClasses().isEmpty() || race.getFleet().getDinghyClasses().contains(dinghy.getDinghyClass())) {
-			this.dinghy = dinghy;
-			this.helm = helm;
-			this.setRace(race);
-		}
-		else {
-			throw new DinghyClassMismatchException();
-		}
+	public Entry(Competitor helm, Dinghy dinghy) {
+		this.helm = helm;
+		this.dinghy = dinghy;
+	}
+	
+	public Entry(Competitor helm, Competitor crew, Dinghy dinghy) {
+		this.helm = helm;
+		this.crew = crew;
+		this.dinghy = dinghy;
 	}
 
 	public Long getId() {
@@ -109,8 +102,23 @@ public class Entry {
 	}
 
 	public void setDinghy(Dinghy dinghy) {
-		if (this.race == null || this.getRace().getFleet().getDinghyClasses().isEmpty() || race.getFleet().getDinghyClasses().contains(dinghy.getDinghyClass())) {
+		// get direct race
+		DirectRace race = getDirectRace();
+		if (race == null || race.getFleet().getDinghyClasses().isEmpty() || race.getFleet().getDinghyClasses().contains(dinghy.getDinghyClass())) {
 			this.dinghy = dinghy;
+		}
+		else {
+			throw new DinghyClassMismatchException();
+		}
+	}
+
+	public Set<SignedUp> getSignedUpTo() {
+		return signedUpTo;
+	}
+
+	public void setSignedUpTo(Set<SignedUp> signedUpTo) {
+		if (signedUpTo.stream().allMatch(signedUp -> signedUp.getRace().getFleet().getDinghyClasses().size() == 0 || signedUp.getRace().getFleet().getDinghyClasses().contains(this.dinghy.getDinghyClass()))) {
+			this.signedUpTo = signedUpTo;	
 		}
 		else {
 			throw new DinghyClassMismatchException();
@@ -131,20 +139,6 @@ public class Entry {
 
 	public void setCrew(Competitor crew) {
 		this.crew = crew;
-	}
-
-	public Race getRace() {
-		return race;
-	}
-
-	public void setRace(Race race) {
-		if (dinghy == null || race.getFleet().getDinghyClasses().isEmpty() || race.getFleet().getDinghyClasses().contains(dinghy.getDinghyClass())) {
-			this.race = race;
-			race.signUp(this);
-		}
-		else {
-			throw new DinghyClassMismatchException();
-		}
 	}
 
 	/**
@@ -183,15 +177,7 @@ public class Entry {
 	
 	public void setScoringAbbreviation(String scoringAbbreviation) {
 		this.scoringAbbreviation = scoringAbbreviation;
-		this.race.updatePositions(this);
-	}
-	
-	public Integer getPosition() {
-		return position;
-	}
-
-	public void setPosition(Integer position) {
-		this.position = position;
+		this.signedUpTo.forEach(s -> s.getRace().updatePositions(s));
 	}
 
 	public Duration getCorrectedTime() {
@@ -246,8 +232,24 @@ public class Entry {
 			this.finishedRace = false;
 		}
 	}
+	
+	@JsonIgnore
+	public DirectRace getDirectRace() {
+		Optional<SignedUp> optional = signedUpTo.stream().filter(s -> s.getRace() instanceof DirectRace).findFirst();
+		if (optional.isPresent()) {
+			SignedUp directRaceSignUp = optional.get();
+			return (DirectRace) directRaceSignUp.getRace();	
+		}
+		return null;
+	}
 
+	public boolean addSignedUp(SignedUp signedUp) {
+		return signedUpTo.add(signedUp);
+	}
+	
 	public void updateProgressIndicators() {
+		// get direct race
+		DirectRace race = getDirectRace();
 		if (race.completedLastLap(this)) {
 			this.setFinishedRace(true); // will unset onLastLap
 		}
@@ -269,7 +271,7 @@ public class Entry {
 		}
 		boolean result = laps.add(lap); 
 		if (result) {
-			this.race.updatePositions(this);
+			this.signedUpTo.forEach(s -> s.getRace().updatePositions(s));
 			updateProgressIndicators();
 		}
 		return result;
@@ -278,7 +280,7 @@ public class Entry {
 	public boolean removeLap(Lap lap) {
 		boolean result = laps.remove(lap); 
 		if (result) {
-			this.race.updatePositions(this);
+			this.signedUpTo.forEach(s -> s.getRace().updatePositions(s));
 			updateProgressIndicators();
 		}
 		return result;
@@ -292,7 +294,7 @@ public class Entry {
 		// swapping out old and new laps was causing a referential integrity error after controller method returned :-(
 		// appeared to be caused by system trying to delete the original referenced lap before updating the reference in the database to the new lap; original lap is not deleted as it is still recorded as a mapped to the entry
 		laps.last().setTime(lap.getTime());
-		this.race.updatePositions(this);
+		this.signedUpTo.forEach(s -> s.getRace().updatePositions(s));
 	}
 
 	@Override
@@ -302,19 +304,24 @@ public class Entry {
 			if (crew != null) {
 				crewName = crew.getName();
 			}
-			return "Entry [id=" + id + ", version=" + version + ", helm=" + helm.getName() + ", crew=" + crewName + ", dinghy=" + dinghy.getDinghyClass().getName() + " " + dinghy.getSailNumber()
-			+ ", race=" + race.getName() + ", correctedTime=" + (correctedTime == null ? "0" : correctedTime.toString()) + ", lapsSailed=" + getLapsSailed() + ", position=" + position + "]";
+			return "Entry [id=" + id + ", version=" + version + ", helm=" + helm.getName() + ", crew=" + crewName + ", dinghy=" + dinghy.getDinghyClass().getName() + " " + 
+			dinghy.getSailNumber() + ", laps=" + laps + ", scoringAbbreviation=" + scoringAbbreviation
+					+ ", correctedTime=" + correctedTime + ", onLastLap=" + onLastLap
+					+ ", finishedRace=" + finishedRace + "]";
 		}
 		else {
-			return "Entry [id=" + id + ", version=" + version + ", helm=" + helm.getName() + ", dinghy=" + dinghy.getDinghyClass().getName() + " " + dinghy.getSailNumber()
-			+ ", race=" + race.getName() + ", correctedTime=" + (correctedTime == null ? "0" : correctedTime.toString())  + ", lapsSailed=" + getLapsSailed() + ", position=" + position + "]";	
+			return "Entry [id=" + id + ", version=" + version + ", helm=" + helm.getName() + ", dinghy=" + dinghy.getDinghyClass().getName() + " " + 
+					dinghy.getSailNumber() + ", laps=" + laps + ", scoringAbbreviation=" + scoringAbbreviation
+							+ ", correctedTime=" + correctedTime + ", onLastLap=" + onLastLap
+							+ ", finishedRace=" + finishedRace + "]";
 		}
-		
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(crew, dinghy, helm, id, race, version);
+		return Objects.hash(correctedTime, crew, dinghy, finishedRace, helm, id, laps, onLastLap,
+				scoringAbbreviation, version);
+		// including signedUpTo creates a circular reference as entry is part of hash code calculation for SignedUp
 	}
 
 	@Override
@@ -326,8 +333,11 @@ public class Entry {
 		if (getClass() != obj.getClass())
 			return false;
 		Entry other = (Entry) obj;
-		return Objects.equals(crew, other.crew) && Objects.equals(dinghy, other.dinghy)
-				&& Objects.equals(helm, other.helm) && Objects.equals(id, other.id) && Objects.equals(race, other.race)
-				&& Objects.equals(version, other.version);
+		return Objects.equals(correctedTime, other.correctedTime) && Objects.equals(crew, other.crew)
+				&& Objects.equals(dinghy, other.dinghy) && finishedRace == other.finishedRace
+				&& Objects.equals(helm, other.helm) && Objects.equals(id, other.id) && Objects.equals(laps, other.laps)
+				&& onLastLap == other.onLastLap
+				&& Objects.equals(scoringAbbreviation, other.scoringAbbreviation)
+				&& Objects.equals(signedUpTo, other.signedUpTo) && Objects.equals(version, other.version);
 	}
 }

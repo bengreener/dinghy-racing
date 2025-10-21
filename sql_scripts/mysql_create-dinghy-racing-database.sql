@@ -38,6 +38,11 @@ CREATE TABLE race_seq (
 ) engine=InnoDB;
 INSERT INTO race_seq VALUES ( 1 );
 
+CREATE TABLE signed_up_seq (
+	next_val BIGINT
+) engine=InnoDB;
+INSERT INTO signed_up_seq VALUES ( 1 );
+
 CREATE TABLE competitor (
 	id BIGINT NOT NULL, 
 	name VARCHAR(255) NOT NULL, 
@@ -69,8 +74,6 @@ CREATE TABLE fleet_dinghy_classes (
 	fleet_id BIGINT NOT NULL,
 	dinghy_classes_id BIGINT NOT NULL,
 	CONSTRAINT PK_fleet_dinghy_classes_fleet_id_dinghy_classes_id PRIMARY KEY (fleet_id, dinghy_classes_id),
-	CONSTRAINT FK_fleet_fleet_id FOREIGN KEY (fleet_id) REFERENCES fleet (id),
-	CONSTRAINT FK_fleet_dinghy_classes_id FOREIGN KEY (dinghy_classes_id) REFERENCES dinghy_class (id),
 	CONSTRAINT UK_fleet_dinghy_classes_fleet_id_dinghy_classes_id UNIQUE (fleet_id, dinghy_classes_id)
 ) engine=InnoDB;
 
@@ -80,53 +83,49 @@ CREATE TABLE dinghy (
 	dinghy_class_id BIGINT NOT NULL, 
 	version BIGINT, 
 	CONSTRAINT PK_dinghy_id PRIMARY KEY (id),
-	CONSTRAINT UK_dinghy_dinghy_class_id_sail_number UNIQUE (dinghy_class_id, sail_number),
-	CONSTRAINT FK_dinghy_dinghy_class_id FOREIGN KEY (dinghy_class_id) REFERENCES dinghy_class (id)
+	CONSTRAINT UK_dinghy_dinghy_class_id_sail_number UNIQUE (dinghy_class_id, sail_number)
 ) engine=InnoDB;
 
 CREATE TABLE race (
 	id BIGINT NOT NULL, 
-	fleet_id BIGINT, 
-	name VARCHAR(255) NOT NULL,
-	last_lead_entry_id BIGINT,
-	last_lead_entry_laps_completed INTEGER,
-	version BIGINT,
-	CONSTRAINT PK_race_id PRIMARY KEY (id),
-	CONSTRAINT FK_race_fleet_id FOREIGN KEY (fleet_id) REFERENCES fleet (id)
+	fleet_id BIGINT NOT NULL, 
+	name VARCHAR(255) NOT NULL, 
+	last_lead_entry_id BIGINT UNIQUE, 
+	last_lead_entry_laps_completed INTEGER, 
+	version BIGINT, 
+	CONSTRAINT PK_race_id PRIMARY KEY (id)
 ) engine=InnoDB;
 
 CREATE TABLE direct_race (
 	id BIGINT NOT NULL, 
-	duration BIGINT NOT NULL, 
+	duration NUMERIC(21,0) NOT NULL, 
 	planned_laps INTEGER NOT NULL, 
-	planned_start_time DATETIME(6) NOT NULL, 
-	`type` VARCHAR(50) NOT NULL,
-	start_type VARCHAR(50) NOT NULL,
-	CONSTRAINT FK_direct_race_id FOREIGN KEY (id) REFERENCES race (id)
-	
+	planned_start_time TIMESTAMP(6) NOT NULL, 
+	type ENUM ('FLEET','PURSUIT') NOT NULL, 
+	start_type ENUM ('CSCCLUBSTART','RRS26') NOT NULL, 
+	CONSTRAINT PK_direct_race_id PRIMARY KEY (id)
 ) engine=InnoDB;
 
 CREATE TABLE entry (
 	id BIGINT NOT NULL, 
-	helm_id BIGINT NOT NULL, 
-    crew_id BIGINT NULL, 
-	dinghy_id BIGINT NOT NULL, 
-	race_id BIGINT NOT NULL, 
-	scoring_abbreviation CHAR(3) NULL, 
-	position SMALLINT NULL,
-	corrected_time BIGINT,
-	on_last_lap BOOLEAN,
-	finished_race BOOLEAN,
+	helm_id BIGINT NOT NULL UNIQUE, 
+	crew_id BIGINT UNIQUE, 
+	dinghy_id BIGINT NOT NULL UNIQUE, 
+	scoring_abbreviation VARCHAR(3), 
+	corrected_time NUMERIC(21,0), 
+	on_last_lap BOOLEAN NOT NULL, 
+	finished_race BOOLEAN NOT NULL, 
 	version BIGINT, 
-	CONSTRAINT PK_entry_id PRIMARY KEY (id),
-	CONSTRAINT UK_entry_helm_id_dinghy_id_race_id UNIQUE (helm_id, dinghy_id, race_id),
-	CONSTRAINT UK_entry_helm_id_race_id UNIQUE (helm_id, race_id),
-	CONSTRAINT UK_entry_crew_id_race_id UNIQUE (crew_id, race_id),
-	CONSTRAINT UK_entry_dinghy_id_race_id UNIQUE (dinghy_id, race_id),
-	CONSTRAINT FK_entry_helm_id FOREIGN KEY (helm_id) REFERENCES competitor (id),
-	CONSTRAINT FK_entry_crew_id FOREIGN KEY (crew_id) REFERENCES competitor (id),
-	CONSTRAINT FK_entry_dinghy_id FOREIGN KEY (dinghy_id) REFERENCES dinghy (id),
-	CONSTRAINT FK_entry_race_id FOREIGN KEY (race_id) REFERENCES race (id)
+	CONSTRAINT PK_entry_id PRIMARY KEY (id)
+) engine=InnoDB;
+
+CREATE TABLE signed_up (
+	id BIGINT NOT NULL,  
+	race_id BIGINT, 
+	entry_id BIGINT,
+	position INTEGER, 
+	version BIGINT, 
+	CONSTRAINT PK_signed_up_id PRIMARY KEY (id)
 ) engine=InnoDB;
 
 CREATE TABLE lap (
@@ -141,7 +140,19 @@ CREATE TABLE entry_laps (
 	entry_id BIGINT NOT NULL, 
 	laps_id BIGINT NOT NULL, 
 	CONSTRAINT PK_entry_laps_entry_id_laps_id PRIMARY KEY (entry_id, laps_id),
-	CONSTRAINT UK_entry_laps_laps_id UNIQUE (laps_id),
-	CONSTRAINT FK_entry_laps_laps_id FOREIGN KEY (laps_id) REFERENCES lap (id),
-	CONSTRAINT FK_entry_laps_entry_id FOREIGN KEY (entry_id) REFERENCES entry (id)
+	CONSTRAINT UK_entry_laps_laps_id UNIQUE (laps_id)
 ) engine=InnoDB;
+
+ALTER TABLE race ADD CONSTRAINT FK_race_fleet_id FOREIGN KEY (fleet_id) REFERENCES fleet (id);
+ALTER TABLE race ADD CONSTRAINT FK_race_last_lead_entry_id FOREIGN KEY (last_lead_entry_id) REFERENCES entry (id);
+ALTER TABLE direct_race ADD CONSTRAINT FK_direct_race_race_id FOREIGN KEY (id) REFERENCES race (id);
+ALTER TABLE entry ADD CONSTRAINT FK_entry_helm_id FOREIGN KEY (helm_id) REFERENCES competitor (id);
+ALTER TABLE entry ADD CONSTRAINT FK_entry_crew_id FOREIGN KEY (crew_id) REFERENCES competitor (id);
+ALTER TABLE entry ADD CONSTRAINT FK_entry_dinghy_id FOREIGN KEY (dinghy_id) REFERENCES dinghy (id);
+ALTER TABLE signed_up ADD CONSTRAINT FK_signed_up_race_id FOREIGN KEY (race_id) REFERENCES race (id);
+ALTER TABLE signed_up ADD CONSTRAINT FK_signed_up_entry_id FOREIGN KEY (entry_id) REFERENCES entry (id);
+ALTER TABLE fleet_dinghy_classes ADD CONSTRAINT FK_fleet_dinghy_classes_fleet_id FOREIGN KEY (fleet_id) REFERENCES fleet (id);
+ALTER TABLE fleet_dinghy_classes ADD CONSTRAINT FK_fleet_dinghy_classes_dinghy_classes_id FOREIGN KEY (dinghy_classes_id) REFERENCES dinghy_class (id);
+ALTER TABLE dinghy ADD CONSTRAINT FK_dinghy_dinghy_class_id FOREIGN KEY (dinghy_class_id) REFERENCES dinghy_class (id);
+ALTER TABLE entry_laps ADD CONSTRAINT FK_entry_laps_laps_id FOREIGN KEY (laps_id) REFERENCES lap (id);
+ALTER TABLE entry_laps ADD CONSTRAINT FK_entry_laps_entry_id FOREIGN KEY (entry_id) REFERENCES entry (id);

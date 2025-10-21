@@ -2,25 +2,24 @@ package com.bginfosys.dinghyracing.model;
 
 import java.util.Objects;
 
-import com.bginfosys.dinghyracing.persistence.SignedUpId;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.MapsId;
+import jakarta.persistence.Version;
 
 @Entity
 public class SignedUp {
 
-	@EmbeddedId
-	SignedUpId id;
+	protected @Id @GeneratedValue Long id;
+	protected @Version @JsonIgnore Long version;
 	
 	@ManyToOne
-	@MapsId("raceId")
 	Race race;
 	
 	@ManyToOne
-	@MapsId("entryId")
 	Entry entry;
 	
 	private Integer position;
@@ -31,11 +30,21 @@ public class SignedUp {
 		this.race = race;
 		this.entry = entry;
 	}
-	
-	public SignedUp(Race race, Entry entry, Integer position) {
+
+	public Race getRace() {
+		return race;
+	}
+
+	public void setRace(Race race) {
 		this.race = race;
+	}
+
+	public Entry getEntry() {
+		return entry;
+	}
+
+	public void setEntry(Entry entry) {
 		this.entry = entry;
-		this.position = position;
 	}
 
 	public Integer getPosition() {
@@ -48,12 +57,13 @@ public class SignedUp {
 
 	@Override
 	public String toString() {
-		return "SignedUp [id=" + id + ", race=" + race + ", entry=" + entry + ", position=" + position + "]";
+		return "SignedUp [id=" + id + ", version=" + version + ", race=" + race + ", entry=" + entry + ", position="
+				+ position + "]";
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(entry, id, position, race);
+		return Objects.hash(entry, id, position, race, version);
 	}
 
 	@Override
@@ -66,6 +76,7 @@ public class SignedUp {
 			return false;
 		SignedUp other = (SignedUp) obj;
 		return Objects.equals(entry, other.entry) && Objects.equals(id, other.id)
-				&& Objects.equals(position, other.position) && Objects.equals(race, other.race);
-	}
+				&& Objects.equals(position, other.position) && Objects.equals(race, other.race)
+				&& Objects.equals(version, other.version);
+	}	
 }

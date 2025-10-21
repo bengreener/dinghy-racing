@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-   
+
 package com.bginfosys.dinghyracing.persistence;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,13 +21,12 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 @DataJpaTest
-public class RaceRepositoryTests {
+public class SignedUpRepositoryTests {
 	
 	@Autowired
 	TestEntityManager entityManager;
 	
 	@Autowired
-	RaceRepository raceRepository;
-
+	SignedUpRepository signedUpRepository;
 	
 }

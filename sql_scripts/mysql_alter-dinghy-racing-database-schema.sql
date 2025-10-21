@@ -117,17 +117,39 @@ UPDATE entry SET finished_race = FALSE;
 -- v2025.8.2 to v2025.9.2
 CREATE TABLE direct_race (
 	id BIGINT NOT NULL, 
-	duration BIGINT NOT NULL, 
+	duration NUMERIC(21,0) NOT NULL, 
 	planned_laps INTEGER NOT NULL, 
-	planned_start_time DATETIME(6) NOT NULL, 
-	`type` VARCHAR(50) NOT NULL,
-	start_type VARCHAR(50) NOT NULL,
-	CONSTRAINT FK_direct_race_id FOREIGN KEY (id) REFERENCES race (id)
-	
+	planned_start_time TIMESTAMP(6) NOT NULL, 
+	type ENUM ('FLEET','PURSUIT') NOT NULL, 
+	start_type ENUM ('CSCCLUBSTART','RRS26') NOT NULL, 
+	CONSTRAINT PK_direct_race_id PRIMARY KEY (id)
 ) engine=InnoDB;
+
+CREATE TABLE signed_up_seq (
+	next_val BIGINT
+) engine=InnoDB;
+INSERT INTO signed_up_seq VALUES ( 1 );
+
+CREATE TABLE signed_up (
+	id BIGINT NOT NULL,  
+	race_id BIGINT, 
+	entry_id BIGINT,
+	position INTEGER, 
+	version BIGINT, 
+	CONSTRAINT PK_signed_up_id PRIMARY KEY (id)
+) engine=InnoDB;
+
+ALTER TABLE race ADD CONSTRAINT FK_race_last_lead_entry_id FOREIGN KEY (last_lead_entry_id) REFERENCES entry (id);
+ALTER TABLE direct_race ADD CONSTRAINT FK_direct_race_race_id FOREIGN KEY (id) REFERENCES race (id);
+ALTER TABLE signed_up ADD CONSTRAINT FK_signed_up_race_id FOREIGN KEY (race_id) REFERENCES race (id);
+ALTER TABLE signed_up ADD CONSTRAINT FK_signed_up_entry_id FOREIGN KEY (entry_id) REFERENCES entry (id);
 
 INSERT INTO direct_race (id, duration, planned_laps, planned_start_time, `type`, start_type)
 SELECT id, duration, planned_laps, planned_start_time, `type`, start_type from race;
+
+INSERT INTO signed_up (id, race_id, entry_id, position, version) SELECT id, race_id, id, position, 0 FROM entry; 
+
+UPDATE signed_up_seq SET next_val = (SELECT MAX(id) + 50 FROM signed_up);
 
 ALTER TABLE race
 	DROP COLUMN duration,
@@ -137,3 +159,19 @@ ALTER TABLE race
 	DROP COLUMN type,
 	DROP CONSTRAINT UK_race_name_planned_start_time;
 
+ALTER TABLE entry
+	DROP CONSTRAINT FK_entry_race_id,
+	DROP CONSTRAINT FK_entry_dinghy_id,
+	DROP CONSTRAINT FK_entry_crew_id,
+	DROP CONSTRAINT FK_entry_helm_id,
+	DROP CONSTRAINT UK_entry_helm_id_dinghy_id_race_id,
+    DROP CONSTRAINT UK_entry_helm_id_race_id,
+    DROP CONSTRAINT UK_entry_dinghy_id_race_id,
+    DROP CONSTRAINT UK_entry_crew_id_race_id,
+	DROP COLUMN race_id,
+	DROP COLUMN position;
+
+ALTER TABLE entry 
+	ADD CONSTRAINT FK_entry_helm_id FOREIGN KEY (helm_id) REFERENCES competitor (id),
+	ADD CONSTRAINT FK_entry_crew_id FOREIGN KEY (crew_id) REFERENCES competitor (id),
+	ADD CONSTRAINT FK_entry_dinghy_id FOREIGN KEY (dinghy_id) REFERENCES dinghy (id);

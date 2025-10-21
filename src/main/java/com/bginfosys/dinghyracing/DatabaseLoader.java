@@ -25,6 +25,7 @@ import com.bginfosys.dinghyracing.model.Dinghy;
 import com.bginfosys.dinghyracing.model.DinghyClass;
 import com.bginfosys.dinghyracing.model.DirectRace;
 import com.bginfosys.dinghyracing.model.RaceType;
+import com.bginfosys.dinghyracing.model.SignedUp;
 import com.bginfosys.dinghyracing.model.StartType;
 import com.bginfosys.dinghyracing.model.Entry;
 import com.bginfosys.dinghyracing.model.Fleet;
@@ -34,6 +35,7 @@ import com.bginfosys.dinghyracing.persistence.DinghyRepository;
 import com.bginfosys.dinghyracing.persistence.EntryRepository;
 import com.bginfosys.dinghyracing.persistence.FleetRepository;
 import com.bginfosys.dinghyracing.persistence.RaceRepository;
+import com.bginfosys.dinghyracing.persistence.SignedUpRepository;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -50,14 +52,18 @@ public class DatabaseLoader implements CommandLineRunner {
 	private final DinghyRepository dinghyRepository;
 	private final EntryRepository entryRepository;
 	private final FleetRepository fleetRepository;
+	private final SignedUpRepository signedUpRepository;
 
-	public DatabaseLoader(RaceRepository raceRepository, CompetitorRepository competitorRepository, DinghyClassRepository dinghyClassRepository, DinghyRepository dinghyRepository, EntryRepository entryRepository, FleetRepository fleetRepository) {
+	public DatabaseLoader(RaceRepository raceRepository, CompetitorRepository competitorRepository,
+			DinghyClassRepository dinghyClassRepository, DinghyRepository dinghyRepository,
+			EntryRepository entryRepository, FleetRepository fleetRepository, SignedUpRepository signedUpRepository) {
 		this.raceRepository = raceRepository;
 		this.competitorRepository = competitorRepository;
 		this.dinghyClassRepository = dinghyClassRepository;
 		this.dinghyRepository = dinghyRepository;
 		this.entryRepository = entryRepository;
 		this.fleetRepository = fleetRepository;
+		this.signedUpRepository = signedUpRepository;
 	}
 	
 	@Override
@@ -122,22 +128,22 @@ public class DatabaseLoader implements CommandLineRunner {
 		competitorRepository.save(crew2);
 		competitorRepository.save(crew3);
 		
-		Entry e1 = new Entry(helm1, d1234, rScorpionA);
+		Entry e1 = new Entry(helm1, d1234);
 		e1.setCrew(crew1);
-		Entry e2 = new Entry(helm2, d6745, rScorpionA);
+		Entry e2 = new Entry(helm2, d6745);
 		e2.setCrew(crew2);
-		Entry e3 = new Entry(helm3, d826, rCometA);
+		Entry e3 = new Entry(helm3, d826);
 		e3.setCrew(crew3);
 		
 		entryRepository.save(e1);
 		entryRepository.save(e2);
 		entryRepository.save(e3);
 		
-		rScorpionA.signUp(e1);
-		rScorpionA.signUp(e2);
-		this.raceRepository.save(rScorpionA);
-		
-		rCometA.signUp(e3);
-		this.raceRepository.save(rCometA);
+		SignedUp signUp1 = new SignedUp(rScorpionA, e1);
+		SignedUp signUp2 = new SignedUp(rScorpionA, e2);
+		SignedUp signUp3 = new SignedUp(rCometA, e3);
+		signedUpRepository.save(signUp1);
+		signedUpRepository.save(signUp2);
+		signedUpRepository.save(signUp3);
 	}
 }

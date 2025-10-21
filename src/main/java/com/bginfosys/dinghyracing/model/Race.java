@@ -39,9 +39,9 @@ import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Objects;
+import java.util.Optional;
 
 import jakarta.validation.constraints.NotNull;
 
@@ -49,7 +49,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-public class Race implements Serializable {
+public abstract class Race implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 
@@ -68,8 +68,8 @@ public class Race implements Serializable {
 	
 	@Column(unique=true)
 	@OneToMany(mappedBy = "race", cascade = CascadeType.ALL, orphanRemoval = true)
-	@OrderBy("id ASC")
-	protected Set<Entry> signedUp = new HashSet<Entry>(64);
+	@OrderBy("entry_id ASC")
+	protected Set<SignedUp> signedUp = new HashSet<SignedUp>(64);
 	
 	// tried making this @Transient but value not retained. Appears to be unsafe to assume Spring will use the same instance of the entity
 	// tried setting JsonIgnore but link was still output in Json
@@ -112,46 +112,40 @@ public class Race implements Serializable {
 
 	// Get the dinghy classes for dinghies signed up to the race
 	public Set<DinghyClass> getDinghyClasses() {
-		return signedUp.stream().map(entry -> entry.getDinghy().getDinghyClass()).distinct().collect(Collectors.toSet());
+		return signedUp.stream().map(signedUp -> signedUp.getEntry().getDinghy().getDinghyClass()).distinct().collect(Collectors.toSet());
 	}
 	
 	public void setFleet(Fleet fleet) {
 		this.fleet = fleet;
 	}
 
-	public Set<Entry> getSignedUp() {
+	public Set<SignedUp> getSignedUp() {
 		if (signedUp == null) {
-			signedUp = new HashSet<Entry>(64);
+			signedUp = new HashSet<SignedUp>(64);
 		}
 		return signedUp;
 	}
 	
-	public void setSignedUp(Set<Entry> signedUp) {
+	public void setSignedUp(Set<SignedUp> signedUp) {
 		this.signedUp = signedUp;
 	}
 
 	public Entry getLastLeadEntry() {
 		return lastLeadEntry;
 	}
-
-	public void signUp(Entry entry) {
-		if (signedUp == null) {
-			signedUp = new HashSet<Entry>(64);
-		}
-		signedUp.add(entry);
-	}
 	
 	public Integer leadEntrylapsCompleted() {
-		return signedUp != null ? signedUp.stream().mapToInt(entry -> entry.getLaps().size()).max().orElse(0) : 0;
+		return signedUp != null ? signedUp.stream().mapToInt(signedUp -> signedUp.getEntry().getLaps().size()).max().orElse(0) : 0;
 	}
 	
 	public Entry getLeadEntry() {
 		if (signedUp != null && signedUp.size() > 0 ) {
 			// get entries that have completed the same number of laps as lead boat
 			Integer leadLapCount = this.leadEntrylapsCompleted();
-			Stream<Entry> entriesOnLeadLap = signedUp.stream().filter(entry -> entry.getLaps().size() == leadLapCount);
+			Stream<SignedUp> entriesOnLeadLap = signedUp.stream().filter(signedUp -> signedUp.getEntry().getLaps().size() == leadLapCount);
 			// return entry on lead lap with lowest sum of lap times
-			return entriesOnLeadLap.min(Comparator.comparing(Entry::getSumOfLapTimes)).orElse(null);	
+			Optional<Entry> optional = entriesOnLeadLap.min((SignedUp signedUp1, SignedUp signedUp2) -> signedUp1.getEntry().getSumOfLapTimes().compareTo(signedUp2.getEntry().getSumOfLapTimes())).map(SignedUp::getEntry);
+			return optional.orElse(null);
 		}
 		return null;
 	}
@@ -163,16 +157,12 @@ public class Race implements Serializable {
 	public boolean completedLastLap(Entry entry) {
 		return false;
 	}
-
-	public void updatePositions(Entry entry) {
-		// TODO Auto-generated method stub
-		
-	}
+	
+	public abstract void updatePositions(SignedUp signedUp);
 	
 	@Override
 	public String toString() {
-		return "Race [id=" + id + ", version=" + version + ", name=" + name 
-				+ ", fleet=" + fleet.getName() + "]";
+		return "Race [id=" + id + ", version=" + version + ", name=" + name + ", fleet=" + fleet + "]";
 	}
 
 	@Override

@@ -22,8 +22,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +37,7 @@ import com.bginfosys.dinghyracing.model.Dinghy;
 import com.bginfosys.dinghyracing.model.DinghyClass;
 import com.bginfosys.dinghyracing.model.Entry;
 import com.bginfosys.dinghyracing.model.RaceType;
+import com.bginfosys.dinghyracing.model.SignedUp;
 import com.bginfosys.dinghyracing.model.StartType;
 
 import jakarta.validation.ConstraintViolationException;
@@ -147,7 +146,7 @@ public class DirectRaceRepositoryTests {
 	
 	@Test
 	void given_raceAlreadySaved_when_raceUpdated_updatedVersionIsSaved() {
-		Competitor competitor = new Competitor();
+		Competitor competitor = new Competitor("Jill");
 		entityManager.persist(competitor);
 		
 		DinghyClass dinghyClass = new DinghyClass("Test Dinghyclass", 1, 1000);
@@ -161,15 +160,10 @@ public class DirectRaceRepositoryTests {
 				
 		DirectRace race1 = new DirectRace("Test Race", LocalDateTime.of(2023, 5, 13, 12, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
 		entityManager.persist(race1);
-		// remove entity from session (detach entity). Not doing so can result in a false positive dependent on the logic used to check for an existing entity in repository save method
-		entityManager.detach(race1);
+		entityManager.flush();
 		
-		Entry entry = new Entry(competitor, dinghy, race1);
-		entityManager.persist(entry);
+		race1.signUp(competitor, dinghy);
 		
-		Set<Entry> signedUp = new HashSet<Entry>();
-		signedUp.add(entry);
-		race1.setSignedUp(signedUp);
 		DirectRace race2 = raceRepository.save(race1);
 		
 		assertThat(race1.getId() == race2.getId()
