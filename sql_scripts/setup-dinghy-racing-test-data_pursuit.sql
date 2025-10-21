@@ -4,9 +4,10 @@ USE dinghy_racing;
 -- clear existing data
 DELETE FROM entry_laps;
 DELETE FROM lap;
-DELETE FROM entry;
+DELETE FROM signed_up;
 DELETE FROM direct_race;
 DELETE FROM race;
+DELETE FROM entry;
 DELETE FROM fleet_dinghy_classes;
 DELETE FROM fleet;
 DELETE FROM dinghy;
@@ -42,7 +43,7 @@ INSERT INTO race (id, name, fleet_id, version)
 INSERT INTO direct_race (id, duration, planned_laps, planned_start_time, `type`, start_type) 
 	VALUES (1, 2700000000000, 5, "2025-04-03 9:10:00", "PURSUIT", "RRS26");
 
-INSERT INTO entry (id, helm_id, dinghy_id crew_id, on_last_lap, finished_race, version) VALUES (1, 1, 1, null, FALSE, FALSE, 0);
+INSERT INTO entry (id, helm_id, dinghy_id, crew_id, on_last_lap, finished_race, version) VALUES (1, 1, 1, null, FALSE, FALSE, 0);
 INSERT INTO entry (id, helm_id, dinghy_id, crew_id, on_last_lap, finished_race, version) VALUES (2, 2, 2, null, FALSE, FALSE, 0);
 INSERT INTO entry (id, helm_id, dinghy_id, crew_id, on_last_lap, finished_race, version) VALUES (3, 3, 3, null, FALSE, FALSE, 0);
 INSERT INTO entry (id, helm_id, dinghy_id, crew_id, on_last_lap, finished_race, version) VALUES (4, 4, 4, null, FALSE, FALSE, 0);
