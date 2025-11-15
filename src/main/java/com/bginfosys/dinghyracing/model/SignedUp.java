@@ -31,6 +31,10 @@ public class SignedUp {
 		this.entry = entry;
 	}
 
+	public Long getId() {
+		return id;
+	}
+
 	public Race getRace() {
 		return race;
 	}

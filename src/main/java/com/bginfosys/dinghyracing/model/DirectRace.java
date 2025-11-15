@@ -234,7 +234,7 @@ public class DirectRace extends Race {
 	}
 	
 	// Signup dinghy and helm for race
-	public void signUp(Competitor helm, Dinghy dinghy) {
+	public SignedUp signUp(Competitor helm, Dinghy dinghy) {
 		// signing_up_dinghy_class_allowed_by_race
 		if (!(this.fleet.getDinghyClasses().size() == 0 || this.fleet.getDinghyClasses().contains(dinghy.getDinghyClass())  )) {
 			throw new DinghyClassMismatchException();
@@ -251,10 +251,11 @@ public class DirectRace extends Race {
 		SignedUp signedUp = new SignedUp(this, entry);
 		entry.addSignedUp(signedUp);
 		this.signedUp.add(signedUp);
+		return signedUp;
 	}
 	
 	// Signup dinghy, helm, and crew for race
-	public void signUp(Competitor helm, Competitor crew, Dinghy dinghy) {
+	public SignedUp signUp(Competitor helm, Competitor crew, Dinghy dinghy) {
 		// signing_up_dinghy_class_allowed_by_race
 		if (!(this.fleet.getDinghyClasses().size() == 0 || this.fleet.getDinghyClasses().contains(dinghy.getDinghyClass())  )) {
 			throw new DinghyClassMismatchException();
@@ -275,6 +276,7 @@ public class DirectRace extends Race {
 		SignedUp signedUp = new SignedUp(this, entry);
 		entry.addSignedUp(signedUp);
 		this.signedUp.add(signedUp);
+		return signedUp;
 	}
 
 //	public void signUp(SignedUp signUp) {

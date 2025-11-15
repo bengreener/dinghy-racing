@@ -24,7 +24,7 @@ import com.bginfosys.dinghyracing.model.Competitor;
  * Crew is a derived concept in the model; it does not map to a persisted entity.
  * Crew is based on the unique combination of helm and mate that have sailed a dinghy.
  * Each dinghy can have multiple crew combinations and each crew combination can have sailed multiple dinghies.
- * Created in web.model.proxy package as will return adata structure modelled around web API not underlying model API.
+ * Created in web.model.proxy package as will return a data structure modelled around web API not underlying model API.
  */
 public class Crew {
 	

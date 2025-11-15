@@ -34,11 +34,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.bginfosys.dinghyracing.model.Competitor;
+import com.bginfosys.dinghyracing.model.Dinghy;
 import com.bginfosys.dinghyracing.model.DirectRace;
 import com.bginfosys.dinghyracing.model.SignedUp;
 import com.bginfosys.dinghyracing.persistence.DirectRaceRepository;
+import com.bginfosys.dinghyracing.persistence.EntryRepository;
+import com.bginfosys.dinghyracing.web.dto.SignUpDTO;
 
 import jakarta.transaction.Transactional;
 
@@ -46,6 +51,8 @@ import jakarta.transaction.Transactional;
 public class DirectRaceController implements ApplicationEventPublisherAware {
 	
 	private final DirectRaceRepository raceRepository;
+	
+	private final EntryRepository entryRepository;
 	
 	private final PersistentEntities persistentEntities;
 
@@ -56,16 +63,17 @@ public class DirectRaceController implements ApplicationEventPublisherAware {
 	private ApplicationEventPublisher publisher;
 	
 	DirectRaceController(DirectRaceRepository raceRepository, PersistentEntities persistentEntities, RepositoryInvokerFactory repositoryInvokerFactory,
-			@Qualifier("mvcConversionService") ConversionService conversionService) {
+			@Qualifier("mvcConversionService") ConversionService conversionService, EntryRepository entryRepository) {
 		this.raceRepository = raceRepository;
 		this.persistentEntities = persistentEntities;
 		this.repositoryInvokerFactory = repositoryInvokerFactory;
 		this.conversionService = conversionService;
+		this.entryRepository = entryRepository;
 	}
 
 	@Override
 	public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
-		this.publisher = applicationEventPublisher;		
+		this.publisher = applicationEventPublisher;
 	}
 	
 	@Transactional
@@ -76,15 +84,45 @@ public class DirectRaceController implements ApplicationEventPublisherAware {
 		
 		TypeDescriptor signedUpType = TypeDescriptor.valueOf(SignedUp.class);
 		
-		SignedUp signedUp = (SignedUp) getSignedUpFromUri(UriTemplate.of(signedUpURI).expand(), signedUpType);
+		SignedUp signedUp = (SignedUp) getEntityFromUri(UriTemplate.of(signedUpURI).expand(), signedUpType);
 		race.updateEntryPositions(signedUp, newPosition);
 		// relying on framework to handle actual entity save and assuming this is done
 		publisher.publishEvent(new AfterSaveEvent(signedUp));
 		
 		return new ResponseEntity<DirectRace>(HttpStatus.NO_CONTENT);
 	}
+	
+	@Transactional
+	@PatchMapping(path = "/directRaces/{raceId}/signUp", consumes = "application/json")
+	public ResponseEntity<DirectRace> signUp(@PathVariable("raceId") Long raceId, @RequestBody SignUpDTO signUpDTO) {
+		// get race
+		Optional<DirectRace> optRace = raceRepository.findById(raceId);
+		DirectRace race = optRace.get();
+		
+		TypeDescriptor type;
+		// get dinghy
+		 type = TypeDescriptor.valueOf(Dinghy.class);
+		 Dinghy dinghy = (Dinghy) getEntityFromUri(signUpDTO.getDinghy(), type);
+		// get helm
+		 type = TypeDescriptor.valueOf(Competitor.class);
+		 Competitor helm = (Competitor) getEntityFromUri(signUpDTO.getHelm(), type);
+		// get crew (if present)
+		 Competitor crew;
+		 SignedUp signedUp;
+		if (signUpDTO.getCrew() != null) {
+			crew = (Competitor) getEntityFromUri(signUpDTO.getCrew(), type);
+			signedUp = race.signUp(helm, crew, dinghy);
+		}
+		else {
+			signedUp = race.signUp(helm, dinghy);
+		}
+		if (signedUp.getEntry().getId() == null) {
+			entryRepository.save(signedUp.getEntry()); // also saves new SignedUp
+		}
+		return new ResponseEntity<DirectRace>(HttpStatus.NO_CONTENT);
+	}
 
-	private Object getSignedUpFromUri(URI uri, TypeDescriptor targetType) {
+	private Object getEntityFromUri(URI uri, TypeDescriptor targetType) {
 		TypeDescriptor sourceType = TypeDescriptor.valueOf(URI.class);
 
 		UriToEntityConverter uriToEntityConverter = new UriToEntityConverter(persistentEntities, repositoryInvokerFactory, () -> conversionService);
