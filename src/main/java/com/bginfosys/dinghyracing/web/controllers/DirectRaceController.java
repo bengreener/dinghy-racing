@@ -27,6 +27,7 @@ import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.data.mapping.context.PersistentEntities;
 import org.springframework.data.repository.support.RepositoryInvokerFactory;
 import org.springframework.data.rest.core.UriToEntityConverter;
+import org.springframework.data.rest.core.event.AfterCreateEvent;
 import org.springframework.data.rest.core.event.AfterSaveEvent;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
 import org.springframework.hateoas.UriTemplate;
@@ -40,6 +41,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.bginfosys.dinghyracing.model.Competitor;
 import com.bginfosys.dinghyracing.model.Dinghy;
 import com.bginfosys.dinghyracing.model.DirectRace;
+import com.bginfosys.dinghyracing.model.Entry;
 import com.bginfosys.dinghyracing.model.SignedUp;
 import com.bginfosys.dinghyracing.persistence.DirectRaceRepository;
 import com.bginfosys.dinghyracing.persistence.EntryRepository;
@@ -78,16 +80,16 @@ public class DirectRaceController implements ApplicationEventPublisherAware {
 	
 	@Transactional
 	@PatchMapping(path = "/directRaces/{raceId}/updateEntryPosition")
-	public ResponseEntity<DirectRace> updateEntryPosition(@PathVariable("raceId") Long raceId, @RequestParam(name = "signedUp") String signedUpURI, @RequestParam(name = "position") Integer newPosition) {
+	public ResponseEntity<DirectRace> updateEntryPosition(@PathVariable("raceId") Long raceId, @RequestParam(name = "entry") String entryURI, @RequestParam(name = "position") Integer newPosition) {
 		Optional<DirectRace> optRace = raceRepository.findById(raceId);
 		DirectRace race = optRace.get();
 		
-		TypeDescriptor signedUpType = TypeDescriptor.valueOf(SignedUp.class);
+		TypeDescriptor entryType = TypeDescriptor.valueOf(Entry.class);
 		
-		SignedUp signedUp = (SignedUp) getEntityFromUri(UriTemplate.of(signedUpURI).expand(), signedUpType);
-		race.updateEntryPositions(signedUp, newPosition);
+		Entry entry = (Entry) getEntityFromUri(UriTemplate.of(entryURI).expand(), entryType);
+		race.updateEntryPositions(entry, newPosition);
 		// relying on framework to handle actual entity save and assuming this is done
-		publisher.publishEvent(new AfterSaveEvent(signedUp));
+		publisher.publishEvent(new AfterSaveEvent(entry));
 		
 		return new ResponseEntity<DirectRace>(HttpStatus.NO_CONTENT);
 	}
@@ -118,6 +120,7 @@ public class DirectRaceController implements ApplicationEventPublisherAware {
 		}
 		if (signedUp.getEntry().getId() == null) {
 			entryRepository.save(signedUp.getEntry()); // also saves new SignedUp
+			publisher.publishEvent(new AfterCreateEvent(signedUp.getEntry()));
 		}
 		return new ResponseEntity<DirectRace>(HttpStatus.NO_CONTENT);
 	}
