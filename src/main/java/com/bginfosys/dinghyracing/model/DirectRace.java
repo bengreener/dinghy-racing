@@ -20,9 +20,9 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import com.bginfosys.dinghyracing.exceptions.CompetitorAlreadySignedUpException;
@@ -304,6 +304,16 @@ public class DirectRace extends Race {
 				entry.setCorrectedTime(entry.getSumOfLapTimes());
 			}
 		}
+	}
+	
+	/** 
+	 * Update the position of an entry and any other entries that have their position altered as a result.
+	 */
+	public void updateEntryPositions(Entry entry, Integer newPosition) {
+		//get signedUp for entry
+		Optional<SignedUp> optSignedUp = this.signedUp.stream().filter(signUp -> signUp.getEntry().equals(entry)).findFirst();
+		SignedUp signedUp = optSignedUp.get();
+		updateEntryPositions(signedUp, newPosition);
 	}
 	
 	/** 
