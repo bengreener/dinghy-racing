@@ -16,7 +16,7 @@ import com.bginfosys.dinghyracing.model.Competitor;
 @RepositoryEventHandler(Competitor.class)
 public class CompetitorEventHandler {
 
-	Logger logger = LoggerFactory.getLogger(RaceEventHandler.class);
+	Logger logger = LoggerFactory.getLogger(CompetitorEventHandler.class);
 	
 	private final SimpMessagingTemplate websocket;
 	

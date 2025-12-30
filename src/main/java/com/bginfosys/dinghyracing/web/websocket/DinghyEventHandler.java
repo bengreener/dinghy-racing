@@ -16,7 +16,7 @@ import com.bginfosys.dinghyracing.model.Dinghy;
 @RepositoryEventHandler(Dinghy.class)
 public class DinghyEventHandler {
 
-	Logger logger = LoggerFactory.getLogger(RaceEventHandler.class);
+	Logger logger = LoggerFactory.getLogger(DinghyEventHandler.class);
 	
 	private final SimpMessagingTemplate websocket;
 	

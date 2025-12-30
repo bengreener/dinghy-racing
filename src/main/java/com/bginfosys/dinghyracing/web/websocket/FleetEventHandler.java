@@ -22,7 +22,7 @@ import com.bginfosys.dinghyracing.model.Fleet;
 @RepositoryEventHandler
 public class FleetEventHandler {
 	
-	Logger logger = LoggerFactory.getLogger(EntryEventHandler.class);
+	Logger logger = LoggerFactory.getLogger(FleetEventHandler.class);
 
 	private final SimpMessagingTemplate websocket;
 	
