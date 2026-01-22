@@ -33,7 +33,9 @@ import org.springframework.data.rest.webmvc.support.RepositoryEntityLinks;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Links;
+import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.UriTemplate;
+import org.springframework.hateoas.mediatype.hal.HalModelBuilder;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -114,8 +116,14 @@ public class CrewController {
 				crews.add(new Crew(helmEntityModel, mateEntityModel));
 			}
 			
-			CollectionModel<Crew> resource = CollectionModel.of(crews).withFallbackType(Crew.class);
-			resource.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(CrewController.class).findCrewsByDinghy(dinghyUri)).withSelfRel());
+//			CollectionModel<Crew> resource = CollectionModel.of(crews).withFallbackType(Crew.class);
+//			resource.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(CrewController.class).findCrewsByDinghy(dinghyUri)).withSelfRel());
+			var resource = HalModelBuilder
+					.emptyHalModel()
+					.embed(crews, Crew.class)
+					.link(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(CrewController.class).findCrewsByDinghy(dinghyUri)).withSelfRel())
+					.build();
+			
 			
 			responseEntity = ResponseEntity.ok()
 				.header("Content-Type", "application/hal+json")
