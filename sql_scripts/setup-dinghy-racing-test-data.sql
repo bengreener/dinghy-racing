@@ -26,10 +26,10 @@ INSERT INTO dinghy_class (id, name, crew_size, portsmouth_number, external_name,
 INSERT INTO dinghy_class (id, name, crew_size, portsmouth_number, external_name, version) VALUES (2, "Graduate", 2, 1110, "GRADUATE", 0);
 INSERT INTO dinghy_class (id, name, crew_size, portsmouth_number, external_name, version) VALUES (3, "Comet", 1, 1210, null, 0);
 
-INSERT INTO fleet (id, name) VALUES (1, "Scorpion");
-INSERT INTO fleet (id, name) VALUES (2, "Graduate");
-INSERT INTO fleet (id, name) VALUES (3, "Comet");
-INSERT INTO fleet (id, name) VALUES (4, "Handicap");
+INSERT INTO fleet (id, name, version) VALUES (1, "Scorpion", 0);
+INSERT INTO fleet (id, name, version) VALUES (2, "Graduate", 0);
+INSERT INTO fleet (id, name, version) VALUES (3, "Comet", 0);
+INSERT INTO fleet (id, name, version) VALUES (4, "Handicap", 0);
 
 INSERT INTO fleet_dinghy_classes (fleet_id, dinghy_classes_id) VALUES (1, 1);
 INSERT INTO fleet_dinghy_classes (fleet_id, dinghy_classes_id) VALUES (2, 2);
