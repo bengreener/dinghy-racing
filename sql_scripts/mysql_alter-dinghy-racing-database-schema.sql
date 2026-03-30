@@ -169,7 +169,10 @@ ALTER TABLE entry
     DROP CONSTRAINT UK_entry_dinghy_id_race_id,
     DROP CONSTRAINT UK_entry_crew_id_race_id,
 	DROP COLUMN race_id,
-	DROP COLUMN position;
+	DROP COLUMN position,
+	DROP INDEX helm_id,
+	DROP INDEX dinghy_id,
+	DROP INDEX crew_id;
 
 ALTER TABLE entry 
 	ADD CONSTRAINT FK_entry_helm_id FOREIGN KEY (helm_id) REFERENCES competitor (id),

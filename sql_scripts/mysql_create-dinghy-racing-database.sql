@@ -108,9 +108,9 @@ CREATE TABLE direct_race (
 
 CREATE TABLE entry (
 	id BIGINT NOT NULL, 
-	helm_id BIGINT NOT NULL UNIQUE, 
-	crew_id BIGINT UNIQUE, 
-	dinghy_id BIGINT NOT NULL UNIQUE, 
+	helm_id BIGINT NOT NULL, 
+	crew_id BIGINT, 
+	dinghy_id BIGINT NOT NULL, 
 	scoring_abbreviation VARCHAR(3), 
 	corrected_time NUMERIC(21,0), 
 	on_last_lap BOOLEAN NOT NULL, 
