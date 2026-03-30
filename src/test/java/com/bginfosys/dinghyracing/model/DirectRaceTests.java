@@ -373,29 +373,6 @@ class DirectRaceTests {
 		DirectRace race = new DirectRace();
 		assertNull(race.getLeadEntry());		
 	}
-
-	@Test
-	void given_raceHasEntries_when_dinghyClassesRequested_then_returnsSetOfDinghyClassesForBoatsInEntries() {
-		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
-		Competitor competitor1 = new Competitor("Competitor One");
-		Competitor competitor2 = new Competitor("Competitor Two");
-		Competitor competitor3 = new Competitor("Competitor Three");
-		DinghyClass dc2 = new DinghyClass("Dinghy Class Two", 1, 1000);
-		DinghyClass dinghyClass = new DinghyClass("Comet", 1, 1000);
-		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
-		Dinghy dinghy2 = new Dinghy("4567", dinghyClass);
-		Dinghy dinghy3 = new Dinghy("999", dc2);
-		
-		race.signUp(competitor1, dinghy1);
-		race.signUp(competitor2, dinghy2);
-		race.signUp(competitor3, dinghy3);
-		
-		Set<DinghyClass> dinghyClasses = race.getDinghyClasses();
-		assertEquals(dinghyClasses.size(), 2);
-		assertThat(dinghyClasses, hasItem(dinghyClass));
-		assertThat(dinghyClasses, hasItem(dc2));
-	}
 	
 	@Test
 	void given_noLapsHaveBeenCompleted_when_requestLapsForecast_then_returnsNumberOfPlannedLaps() {

@@ -16,10 +16,14 @@
    
 package com.bginfosys.dinghyracing.persistence;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.bginfosys.dinghyracing.model.DinghyClass;
+import com.bginfosys.dinghyracing.model.Race;
 
 public interface DinghyClassRepository extends JpaRepository<DinghyClass, Long> {
 
@@ -33,7 +37,10 @@ public interface DinghyClassRepository extends JpaRepository<DinghyClass, Long> 
 	@Override
 	void delete(@Param("dinghyClass") DinghyClass dinghyClass);
 	
-	DinghyClass findByName(@Param("name") String Name);
+	DinghyClass findByName(@Param("name") String name);
 	
 	DinghyClass findTopByOrderByPortsmouthNumberDesc();
+	
+	@Query("SELECT dc FROM SignedUp su JOIN su.race r JOIN su.entry e JOIN e.dinghy d JOIN d.dinghyClass dc where r = :race")
+	Page<DinghyClass> findByDinghySignedUpToRace(@Param("race") Race race, Pageable pageable);
 }

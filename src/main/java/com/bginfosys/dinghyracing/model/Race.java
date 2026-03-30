@@ -33,7 +33,6 @@ import jakarta.persistence.OrderBy;
 import jakarta.persistence.Transient;
 
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.slf4j.Logger;
@@ -108,11 +107,6 @@ public abstract class Race implements Serializable {
 
 	public Fleet getFleet() {
 		return fleet;
-	}
-
-	// Get the dinghy classes for dinghies signed up to the race
-	public Set<DinghyClass> getDinghyClasses() {
-		return signedUp.stream().map(signedUp -> signedUp.getEntry().getDinghy().getDinghyClass()).distinct().collect(Collectors.toSet());
 	}
 	
 	public void setFleet(Fleet fleet) {
