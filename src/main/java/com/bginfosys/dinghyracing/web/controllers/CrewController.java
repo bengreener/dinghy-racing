@@ -87,6 +87,7 @@ public class CrewController {
 		TypeDescriptor dinghyType = TypeDescriptor.valueOf(Dinghy.class);
 		Dinghy dinghy = (Dinghy) getEntityFromUri(UriTemplate.of(dinghyUri).expand(), dinghyType);
 		
+		Set<Crew> crews = new HashSet<Crew>();
 		if (dinghy != null ) {
 			// query entries table for unique crew combinations for entries with the dinghy
 			List<Long[]> results = this.jdbcTemplate.query("SELECT DISTINCT helm_id, crew_id FROM entry WHERE dinghy_id = ?", 
@@ -94,8 +95,6 @@ public class CrewController {
 						Long[] result = {resultSet.getLong("helm_id"), resultSet.getLong("crew_id")};
 						return result;
 					}, dinghy.getId());
-			
-			Set<Crew> crews = new HashSet<Crew>();
 			for (Long[] result : results) {
 				Competitor helm = competitorRepository.findById(result[0]).orElse(null);
 				Competitor mate = competitorRepository.findById(result[1]).orElse(null);
@@ -114,25 +113,17 @@ public class CrewController {
 					mateEntityModel.add(entityLinks.linkToItemResource(type, result[1]));
 				}
 				crews.add(new Crew(helmEntityModel, mateEntityModel));
-			}
-			
-//			CollectionModel<Crew> resource = CollectionModel.of(crews).withFallbackType(Crew.class);
-//			resource.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(CrewController.class).findCrewsByDinghy(dinghyUri)).withSelfRel());
-			var resource = HalModelBuilder
-					.emptyHalModel()
-					.embed(crews, Crew.class)
-					.link(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(CrewController.class).findCrewsByDinghy(dinghyUri)).withSelfRel())
-					.build();
-			
-			
-			responseEntity = ResponseEntity.ok()
-				.header("Content-Type", "application/hal+json")
-				.body(resource);	
+			}	
 		}
-		else {
-			responseEntity = new ResponseEntity<Object>(HttpStatus.NOT_FOUND);
-		}		
+		var resource = HalModelBuilder
+			.emptyHalModel()
+			.embed(crews, Crew.class)
+			.link(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(CrewController.class).findCrewsByDinghy(dinghyUri)).withSelfRel())
+			.build();
 		
+		responseEntity = ResponseEntity.ok()
+			.header("Content-Type", "application/hal+json")
+			.body(resource);
 		return responseEntity;
 	}
 	
