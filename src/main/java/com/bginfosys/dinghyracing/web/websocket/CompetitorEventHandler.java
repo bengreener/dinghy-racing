@@ -5,6 +5,7 @@ import static com.bginfosys.dinghyracing.web.websocket.WebSocketConfiguration.ME
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.rest.core.annotation.HandleAfterCreate;
+import org.springframework.data.rest.core.annotation.HandleAfterSave;
 import org.springframework.data.rest.core.annotation.RepositoryEventHandler;
 import org.springframework.hateoas.server.EntityLinks;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -34,11 +35,20 @@ public class CompetitorEventHandler {
 		}
 		this.websocket.convertAndSend(MESSAGE_PREFIX + "/createCompetitor", getURI(competitor));
 	}
+
+	@HandleAfterSave
+	public void updateCompetitor(Competitor competitor) {
+		if (logger.isDebugEnabled()) {
+			logger.debug("Update competitor: " + competitor.toString());
+		}
+		this.websocket.convertAndSend(
+				MESSAGE_PREFIX + "/updateCompetitor", getURI(competitor));
+	}
 	
 	/**
 	 * Take an {@link Competitor} and get the URI using Spring Data REST's {@link EntityLinks}.
 	 *
-	 * @param race
+	 * @param competitor
 	 */
 	private String getURI(Competitor competitor) {
 		return this.entityLinks.linkToItemResource(competitor.getClass(), competitor.getId()).toUri().toString();
