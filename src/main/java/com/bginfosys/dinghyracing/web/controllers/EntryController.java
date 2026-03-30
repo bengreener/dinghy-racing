@@ -80,8 +80,15 @@ public class EntryController implements ApplicationEventPublisherAware {
 	public ResponseEntity<Object> addLap(@PathVariable("entryId") Long entryId, @RequestBody LapDTO lapDTO) {
 		Optional<Entry> optEntry = entryRepository.findById(entryId);
 		Entry entry = optEntry.get();
+		Lap lap;
 		
-		Lap lap = new Lap(lapDTO.getNumber(), lapDTO.getTime());
+		if (lapDTO.getNumber() != null) {
+			lap = new Lap(lapDTO.getNumber(), lapDTO.getTime());
+		}
+		else {
+			lap = new Lap(entry.getLapsSailed() + 1, lapDTO.getTime());
+		}
+		
 		publisher.publishEvent(new BeforeCreateEvent(lap));
 		Lap savedLap = lapRepository.save(lap);
 		publisher.publishEvent(new AfterCreateEvent(savedLap));
@@ -105,47 +112,72 @@ public class EntryController implements ApplicationEventPublisherAware {
 				.body(resource);
 		}
 		else {
-			responseEntity = ResponseEntity.status(HttpStatus.CONFLICT)
-				.header("Content-Type", "application/hal+json")
-				.body(null);
+			responseEntity = new ResponseEntity<Object>(HttpStatus.CONFLICT);
 		}
 		return responseEntity;
 	}
 	
 	@Transactional
 	@PatchMapping(path = "/entries/{entryId}/removeLap", consumes = "application/json")
-	public ResponseEntity<Entry> removeLap(@PathVariable("entryId") Long entryId, @RequestBody LapDTO lapDTO) {
+	public ResponseEntity<Object> removeLap(@PathVariable("entryId") Long entryId, @RequestBody LapDTO lapDTO) {
 		Optional<Entry> optEntry = entryRepository.findById(entryId);
 		
 		if (optEntry.isPresent()) {
+			ResponseEntity<Object> responseEntity;
 			Entry entry = optEntry.get();
 			Lap lap = new Lap(lapDTO.getNumber(), lapDTO.getTime());
 			if (entry.removeLap(lap)) {
 				publisher.publishEvent(new BeforeLinkSaveEvent(entry, entry.getLaps()));
 				Entry savedEntry = entryRepository.save(entry);
 				publisher.publishEvent(new AfterLinkSaveEvent(savedEntry, savedEntry.getLaps()));
-				return new ResponseEntity<Entry>(HttpStatus.NO_CONTENT);
+				
+				Class<?> type = savedEntry.getClass();
+				Links links = linkCollector.getLinksFor(savedEntry);
+				EntityModel<Entry> resource = EntityModel.of(savedEntry);
+				resource.add(links);
+				resource.add(entityLinks.linkToItemResource(type, entryId));
+				
+				responseEntity = ResponseEntity.ok()
+					.header("Content-Type", "application/hal+json")
+					.body(resource);
+				return responseEntity;
 			} 
 			else {
-				return new ResponseEntity<Entry>(HttpStatus.BAD_REQUEST);
+				return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
 			}
 		}
 		else {
-			return new ResponseEntity<Entry>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<Object>(HttpStatus.NOT_FOUND);
 		}
 	}
 	
 	@Transactional
 	@PatchMapping(path = "/entries/{entryId}/updateLap", consumes = "application/json")
-	public ResponseEntity<Entry> updateLap(@PathVariable("entryId") Long entryId, @RequestBody LapDTO lapDTO) {
+	public ResponseEntity<Object> updateLap(@PathVariable("entryId") Long entryId, @RequestBody LapDTO lapDTO) {
 		Entry entry = entryRepository.findById(entryId).orElseThrow();
-		Lap newLap = new Lap(lapDTO.getNumber(), lapDTO.getTime());
+		Lap lap;
+		if (lapDTO.getNumber() != null) {
+			lap = new Lap(lapDTO.getNumber(), lapDTO.getTime());
+		}
+		else {
+			lap = new Lap(entry.getLapsSailed(), lapDTO.getTime());
+		}
 		
-		entry.updateLap(newLap);
+		entry.updateLap(lap);
 		publisher.publishEvent(new BeforeLinkSaveEvent(entry, entry.getLaps()));
 		Entry savedEntry = entryRepository.save(entry);
 		publisher.publishEvent(new AfterLinkSaveEvent(savedEntry, savedEntry.getLaps()));
-		entryRepository.findById(entryId).orElseThrow();
-		return new ResponseEntity<Entry>(HttpStatus.NO_CONTENT);
+		
+		ResponseEntity<Object> responseEntity;
+		Class<?> type = savedEntry.getClass();
+		Links links = linkCollector.getLinksFor(savedEntry);
+		EntityModel<Entry> resource = EntityModel.of(savedEntry);
+		resource.add(links);
+		resource.add(entityLinks.linkToItemResource(type, entryId));
+		
+		responseEntity = ResponseEntity.ok()
+			.header("Content-Type", "application/hal+json")
+			.body(resource);
+		return responseEntity;
 	}
 }

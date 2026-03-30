@@ -29,9 +29,14 @@ import org.springframework.data.repository.support.RepositoryInvokerFactory;
 import org.springframework.data.rest.core.UriToEntityConverter;
 import org.springframework.data.rest.core.event.AfterCreateEvent;
 import org.springframework.data.rest.core.event.AfterSaveEvent;
+import org.springframework.data.rest.core.event.BeforeCreateEvent;
+import org.springframework.data.rest.core.event.BeforeSaveEvent;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
+import org.springframework.data.rest.webmvc.mapping.LinkCollector;
+import org.springframework.data.rest.webmvc.support.RepositoryEntityLinks;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Links;
 import org.springframework.hateoas.UriTemplate;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -56,21 +61,28 @@ public class DirectRaceController implements ApplicationEventPublisherAware {
 	
 	private final EntryRepository entryRepository;
 	
+	private final RepositoryEntityLinks entityLinks;
+	
 	private final PersistentEntities persistentEntities;
 
 	private final RepositoryInvokerFactory repositoryInvokerFactory;
 	
 	private final ConversionService conversionService;
 
+	private final LinkCollector linkCollector;
+	
 	private ApplicationEventPublisher publisher;
 	
 	DirectRaceController(DirectRaceRepository raceRepository, PersistentEntities persistentEntities, RepositoryInvokerFactory repositoryInvokerFactory,
-			@Qualifier("mvcConversionService") ConversionService conversionService, EntryRepository entryRepository) {
+			@Qualifier("mvcConversionService") ConversionService conversionService, EntryRepository entryRepository, RepositoryEntityLinks entityLinks, 
+			LinkCollector linkCollector) {
 		this.raceRepository = raceRepository;
 		this.persistentEntities = persistentEntities;
 		this.repositoryInvokerFactory = repositoryInvokerFactory;
 		this.conversionService = conversionService;
 		this.entryRepository = entryRepository;
+		this.entityLinks = entityLinks;
+		this.linkCollector = linkCollector;
 	}
 
 	@Override
@@ -80,49 +92,67 @@ public class DirectRaceController implements ApplicationEventPublisherAware {
 	
 	@Transactional
 	@PatchMapping(path = "/directRaces/{raceId}/updateEntryPosition")
-	public ResponseEntity<DirectRace> updateEntryPosition(@PathVariable("raceId") Long raceId, @RequestParam(name = "entry") String entryURI, @RequestParam(name = "position") Integer newPosition) {
+	public ResponseEntity<Object> updateEntryPosition(@PathVariable("raceId") Long raceId, @RequestParam(name = "entry") String entryURI, @RequestParam(name = "position") Integer newPosition) {
 		Optional<DirectRace> optRace = raceRepository.findById(raceId);
 		DirectRace race = optRace.get();
 		
 		TypeDescriptor entryType = TypeDescriptor.valueOf(Entry.class);
 		
 		Entry entry = (Entry) getEntityFromUri(UriTemplate.of(entryURI).expand(), entryType);
+		publisher.publishEvent(new BeforeSaveEvent(entry));
 		race.updateEntryPositions(entry, newPosition);
 		// relying on framework to handle actual entity save and assuming this is done
 		publisher.publishEvent(new AfterSaveEvent(entry));
 		
-		return new ResponseEntity<DirectRace>(HttpStatus.NO_CONTENT);
+		ResponseEntity<Object> responseEntity;
+		Class<?> type = race.getClass();
+		Links links = linkCollector.getLinksFor(race);
+		EntityModel<DirectRace> resource = EntityModel.of(race);resource.add(links);
+		resource.add(entityLinks.linkToItemResource(type, raceId));
+		responseEntity = ResponseEntity.ok()
+			.header("Content-Type", "application/hal+json")
+			.body(resource);
+		return responseEntity;
 	}
 	
 	@Transactional
 	@PatchMapping(path = "/directRaces/{raceId}/signUp", consumes = "application/json")
-	public ResponseEntity<DirectRace> signUp(@PathVariable("raceId") Long raceId, @RequestBody SignUpDTO signUpDTO) {
+	public ResponseEntity<Object> signUp(@PathVariable("raceId") Long raceId, @RequestBody SignUpDTO signUpDTO) {
 		// get race
 		Optional<DirectRace> optRace = raceRepository.findById(raceId);
 		DirectRace race = optRace.get();
-		
-		TypeDescriptor type;
+
 		// get dinghy
-		 type = TypeDescriptor.valueOf(Dinghy.class);
-		 Dinghy dinghy = (Dinghy) getEntityFromUri(signUpDTO.getDinghy(), type);
+		TypeDescriptor dinghyType = TypeDescriptor.valueOf(Dinghy.class);
+		 Dinghy dinghy = (Dinghy) getEntityFromUri(signUpDTO.getDinghy(), dinghyType);
 		// get helm
-		 type = TypeDescriptor.valueOf(Competitor.class);
-		 Competitor helm = (Competitor) getEntityFromUri(signUpDTO.getHelm(), type);
+		 TypeDescriptor competitorType = TypeDescriptor.valueOf(Competitor.class);
+		 Competitor helm = (Competitor) getEntityFromUri(signUpDTO.getHelm(), competitorType);
 		// get crew (if present)
 		 Competitor crew;
 		 SignedUp signedUp;
 		if (signUpDTO.getCrew() != null) {
-			crew = (Competitor) getEntityFromUri(signUpDTO.getCrew(), type);
+			crew = (Competitor) getEntityFromUri(signUpDTO.getCrew(), competitorType);
 			signedUp = race.signUp(helm, crew, dinghy);
 		}
 		else {
 			signedUp = race.signUp(helm, dinghy);
 		}
 		if (signedUp.getEntry().getId() == null) {
+			publisher.publishEvent(new BeforeCreateEvent(signedUp.getEntry()));
 			entryRepository.save(signedUp.getEntry()); // also saves new SignedUp
 			publisher.publishEvent(new AfterCreateEvent(signedUp.getEntry()));
 		}
-		return new ResponseEntity<DirectRace>(HttpStatus.NO_CONTENT);
+		
+		ResponseEntity<Object> responseEntity;
+		Class<?> raceType = race.getClass();
+		Links links = linkCollector.getLinksFor(race);
+		EntityModel<DirectRace> resource = EntityModel.of(race);resource.add(links);
+		resource.add(entityLinks.linkToItemResource(raceType, raceId));
+		responseEntity = ResponseEntity.ok()
+			.header("Content-Type", "application/hal+json")
+			.body(resource);
+		return responseEntity;
 	}
 
 	private Object getEntityFromUri(URI uri, TypeDescriptor targetType) {

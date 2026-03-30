@@ -26,6 +26,10 @@ public class LapDTO {
 
 	public LapDTO() {}
 	
+	public LapDTO(Duration time) {
+		this.time = time;
+	}
+	
 	public LapDTO(Integer number, Duration time) {
 		this.number = number;
 		this.time = time;
