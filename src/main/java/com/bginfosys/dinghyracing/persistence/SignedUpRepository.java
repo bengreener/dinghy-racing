@@ -17,9 +17,14 @@
 package com.bginfosys.dinghyracing.persistence;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.query.Param;
 
+import com.bginfosys.dinghyracing.model.Entry;
+import com.bginfosys.dinghyracing.model.Race;
 import com.bginfosys.dinghyracing.model.SignedUp;
 
 public interface SignedUpRepository extends JpaRepository<SignedUp, Long> {
+	
+	SignedUp findByRaceAndEntry(@Param("race") Race race, @Param("entry") Entry entry);
 
 }

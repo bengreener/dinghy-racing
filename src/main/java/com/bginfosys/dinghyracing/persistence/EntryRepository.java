@@ -21,11 +21,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.query.Param;
 
+import com.bginfosys.dinghyracing.model.Dinghy;
 import com.bginfosys.dinghyracing.model.Entry;
 import com.bginfosys.dinghyracing.model.Race;
 
 public interface EntryRepository extends JpaRepository<Entry, Long> {
 	
 	Page<Entry> findBySignedUpToRace(@Param("race") Race race, Pageable pageable);
+	
+	Entry findBySignedUpToRaceAndDinghy(@Param("race") Race race, @Param("dinghy") Dinghy dinghy);
 	
 }
