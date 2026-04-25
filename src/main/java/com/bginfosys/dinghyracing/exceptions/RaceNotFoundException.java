@@ -16,8 +16,7 @@
    
 package com.bginfosys.dinghyracing.exceptions;
 
-//public class RaceNotFoundException extends RuntimeException {
-public class RaceNotFoundException extends Exception {
+public class RaceNotFoundException extends RuntimeException {
 	
 	private static final long serialVersionUID = 1L;
 
