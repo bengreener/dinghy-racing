@@ -166,7 +166,7 @@ public class DirectRace extends Race {
 				updateEntryPositions(signedUp, entriesInPosition.lastIndexOf(signedUp) + 1);
 				updateCorrectedTime(signedUp.getEntry());
 			}
-		}		
+		}
 	}
 	
 	/*
@@ -278,13 +278,6 @@ public class DirectRace extends Race {
 		this.signedUp.add(signedUp);
 		return signedUp;
 	}
-
-//	public void signUp(SignedUp signUp) {
-//		if (signedUp == null) {
-//			signedUp = new HashSet<SignedUp>(64);
-//		}
-//		signedUp.add(signUp);
-//	}
 
 	private List<SignedUp> sortByCorrectedTime(List<SignedUp> signedUp) {
 		return signedUp.stream().sorted(new FleetSignedUpEntriesComparator()).toList();	

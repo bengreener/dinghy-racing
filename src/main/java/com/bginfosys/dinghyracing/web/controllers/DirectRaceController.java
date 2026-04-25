@@ -96,8 +96,7 @@ public class DirectRaceController implements ApplicationEventPublisherAware {
 		Optional<DirectRace> optRace = raceRepository.findById(raceId);
 		DirectRace race = optRace.get();
 		
-		TypeDescriptor entryType = TypeDescriptor.valueOf(Entry.class);
-		
+		TypeDescriptor entryType = TypeDescriptor.valueOf(Entry.class);		
 		Entry entry = (Entry) getEntityFromUri(UriTemplate.of(entryURI).expand(), entryType);
 		publisher.publishEvent(new BeforeSaveEvent(entry));
 		race.updateEntryPositions(entry, newPosition);
@@ -147,7 +146,8 @@ public class DirectRaceController implements ApplicationEventPublisherAware {
 		ResponseEntity<Object> responseEntity;
 		Class<?> raceType = race.getClass();
 		Links links = linkCollector.getLinksFor(race);
-		EntityModel<DirectRace> resource = EntityModel.of(race);resource.add(links);
+		EntityModel<DirectRace> resource = EntityModel.of(race);
+		resource.add(links);
 		resource.add(entityLinks.linkToItemResource(raceType, raceId));
 		responseEntity = ResponseEntity.ok()
 			.header("Content-Type", "application/hal+json")

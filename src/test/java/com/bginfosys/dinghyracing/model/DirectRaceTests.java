@@ -16,7 +16,6 @@
 
 package com.bginfosys.dinghyracing.model;
 
-import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -228,7 +227,7 @@ class DirectRaceTests {
 	}
 	
 	@Test
-	void givenHelmAlreadySignedUpFroRace_when_dinghyAndHelmAndCrewProvided_then_dinghyAlreadySignedUpException() {
+	void givenHelmAlreadySignedUpForRace_when_dinghyAndHelmAndCrewProvided_then_dinghyAlreadySignedUpException() {
 		Competitor helm1 = new Competitor("Bob");
 		Competitor crew1 = new Competitor("Jim");
 		Competitor helm2 = new Competitor("Mary");
