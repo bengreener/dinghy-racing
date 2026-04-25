@@ -1,4 +1,4 @@
--- v2025.9.2
+-- v2026.?.1
 CREATE DATABASE IF NOT EXISTS `dinghy_racing` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
 
 USE dinghy_racing;
@@ -143,6 +143,17 @@ CREATE TABLE entry_laps (
 	CONSTRAINT UK_entry_laps_laps_id UNIQUE (laps_id)
 ) engine=InnoDB;
 
+CREATE TABLE embedded_race (
+	id BIGINT NOT NULL, 
+    CONSTRAINT PK_embedded_race_id PRIMARY KEY (id)
+) engine=InnoDB;
+
+CREATE TABLE embedded_race_hosts (
+	embedded_race_id BIGINT NOT NULL,
+    hosts_id BIGINT NOT NULL,
+    CONSTRAINT PK_embedded_race_hosts_embedded_race_id_hosts_id PRIMARY KEY (embedded_race_id, hosts_id)
+) engine=InnoDB;
+
 ALTER TABLE race ADD CONSTRAINT FK_race_fleet_id FOREIGN KEY (fleet_id) REFERENCES fleet (id);
 ALTER TABLE race ADD CONSTRAINT FK_race_last_lead_entry_id FOREIGN KEY (last_lead_entry_id) REFERENCES entry (id);
 ALTER TABLE direct_race ADD CONSTRAINT FK_direct_race_race_id FOREIGN KEY (id) REFERENCES race (id);
@@ -156,3 +167,4 @@ ALTER TABLE fleet_dinghy_classes ADD CONSTRAINT FK_fleet_dinghy_classes_dinghy_c
 ALTER TABLE dinghy ADD CONSTRAINT FK_dinghy_dinghy_class_id FOREIGN KEY (dinghy_class_id) REFERENCES dinghy_class (id);
 ALTER TABLE entry_laps ADD CONSTRAINT FK_entry_laps_laps_id FOREIGN KEY (laps_id) REFERENCES lap (id);
 ALTER TABLE entry_laps ADD CONSTRAINT FK_entry_laps_entry_id FOREIGN KEY (entry_id) REFERENCES entry (id);
+ALTER TABLE embedded_race_hosts ADD CONSTRAINT FK_embedded_race_hosts_hosts_id FOREIGN KEY (hosts_id) REFERENCES direct_race (id);

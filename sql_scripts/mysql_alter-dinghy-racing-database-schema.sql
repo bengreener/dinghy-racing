@@ -178,3 +178,18 @@ ALTER TABLE entry
 	ADD CONSTRAINT FK_entry_helm_id FOREIGN KEY (helm_id) REFERENCES competitor (id),
 	ADD CONSTRAINT FK_entry_crew_id FOREIGN KEY (crew_id) REFERENCES competitor (id),
 	ADD CONSTRAINT FK_entry_dinghy_id FOREIGN KEY (dinghy_id) REFERENCES dinghy (id);
+    
+-- v2025.8.2 to v2026.?.1
+CREATE TABLE embedded_race (
+	id BIGINT NOT NULL,
+    CONSTRAINT PK_embedded_race_id PRIMARY KEY (id)
+) engine=InnoDB;
+
+CREATE TABLE embedded_race_hosts (
+	embedded_race_id BIGINT NOT NULL,
+    direct_race_id BIGINT NOT NULL,
+    CONSTRAINT PK_embedded_race_hosts_embedded_race_id_direct_race_id PRIMARY KEY (embedded_race_id, direct_race_id)
+) engine=InnoDB;
+
+
+	

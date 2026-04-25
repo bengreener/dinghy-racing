@@ -5,7 +5,9 @@ USE dinghy_racing;
 DELETE FROM entry_laps;
 DELETE FROM lap;
 DELETE FROM signed_up;
+DELETE FROM embedded_race_hosts;
 DELETE FROM direct_race;
+DELETE FROM embedded_race;
 DELETE FROM race;
 DELETE FROM entry;
 DELETE FROM fleet_dinghy_classes;
@@ -49,15 +51,25 @@ INSERT INTO race (id, name, fleet_id, version)
 	VALUES (3, "Comet A", 3, 0);
 INSERT INTO race (id, name, fleet_id, version) 
 	VALUES (4, "Handicap A", 4, 0);
+INSERT INTO race (id, name, fleet_id, version) 
+	VALUES (5, "Veterans A", 4, 0);
+INSERT INTO race (id, name, fleet_id, version) 
+	VALUES (6, "Ladies A", 4, 0);
 	
 INSERT INTO direct_race (id, duration, planned_laps, planned_start_time, `type`, start_type) 
-	VALUES (1, 2700000000000, 5, "2024-12-09 14:10:00", "FLEET", "CSCCLUBSTART");
+	VALUES (1, 2700000000000, 5, "2026-4-24 14:10:00", "FLEET", "CSCCLUBSTART");
 INSERT INTO direct_race (id, duration, planned_laps, planned_start_time, `type`, start_type) 
-	VALUES (2, 2700000000000, 4, "2024-12-09 14:30:00", "FLEET", "CSCCLUBSTART");
+	VALUES (2, 2700000000000, 4, "2026-4-24 14:30:00", "FLEET", "CSCCLUBSTART");
 INSERT INTO direct_race (id, duration, planned_laps, planned_start_time, `type`, start_type) 
-	VALUES (3, 2700000000000, 4, "2024-12-09 14:30:00", "FLEET", "CSCCLUBSTART");
+	VALUES (3, 2700000000000, 4, "2026-4-24 14:30:00", "FLEET", "CSCCLUBSTART");
 INSERT INTO direct_race (id, duration, planned_laps, planned_start_time, `type`, start_type) 
-	VALUES (4, 2700000000000, 4, "2024-12-09 14:10:00", "FLEET", "CSCCLUBSTART");
+	VALUES (4, 2700000000000, 4, "2026-4-24 14:10:00", "FLEET", "CSCCLUBSTART");
+
+INSERT INTO embedded_race (id) VALUES (5);
+INSERT INTO embedded_race (id) VALUES (6);
+
+INSERT INTO embedded_race_hosts (embedded_race_id, hosts_id) VALUES (5, 4);
+INSERT INTO embedded_race_hosts (embedded_race_id, hosts_id) VALUES (6, 4);
 
 INSERT INTO entry (id, helm_id, dinghy_id, crew_id, on_Last_lap, finished_race, version) VALUES (1, 1, 1, 4, FALSE, FALSE, 0);
 INSERT INTO entry (id, helm_id, dinghy_id, crew_id, on_Last_lap, finished_race, version) VALUES (2, 2, 3, 6, FALSE, FALSE, 0);
@@ -72,6 +84,7 @@ INSERT INTO signed_up (id, race_id, entry_id, version) VALUES (4, 3, 4, 0);
 INSERT INTO signed_up (id, race_id, entry_id, version) VALUES (3, 2, 3, 0);
 INSERT INTO signed_up (id, race_id, entry_id, version) VALUES (5, 4, 5, 0);
 INSERT INTO signed_up (id, race_id, entry_id, version) VALUES (6, 4, 6, 0);
+INSERT INTO signed_up (id, race_id, entry_id, version) VALUES (7, 5, 5, 0);
 
 UPDATE competitor_seq SET next_val = (SELECT MAX(id) + 50 FROM competitor);
 UPDATE dinghy_seq SET next_val = (SELECT MAX(id) + 50 FROM dinghy);
