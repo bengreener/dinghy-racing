@@ -16,7 +16,12 @@
 
 package com.bginfosys.dinghyracing.model;
 
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import com.bginfosys.dinghyracing.exceptions.CompetitorAlreadySignedUpException;
 import com.bginfosys.dinghyracing.exceptions.DinghyAlreadySignedUpException;
@@ -55,7 +60,72 @@ public class EmbeddedRace extends Race {
 		return hostRace.getType();
 	}
 
-	// Signup entry for race
+	/*
+	 * Adjusts a list of entries positioned by corrected time to correct the position of any entry that gained a corrected time advantage by sailing less laps
+	 * List of entries is expected to be sorted by corrected time, fastest to slowest, and to have had positions assigned on the basis of corrected time.
+	 */
+	private List<SignedUp> adjustForAdvantage(List<SignedUp> signedUp, Integer index) {
+		// No need to adjust last entry
+		if (index > signedUp.size() - 1) {
+			return signedUp;
+		}
+		SignedUp signUp = signedUp.get(index);
+		// check if gained advantage
+		List<SignedUp> disadvantagedEntries = signedUp.stream()
+			.filter(s -> signUp.getPosition() < s.getPosition()  
+					&& signUp.getCorrectedTime().compareTo(s.getCorrectedTime()) <= 0
+				&& signUp.getEntry().getLapsSailed() < s.getEntry().getLapsSailed() 
+				&& signUp.getEntry().getDinghy().getDinghyClass().getPortsmouthNumber() <= s.getEntry().getDinghy().getDinghyClass().getPortsmouthNumber())
+			.sorted((e1, e2) -> e1.getPosition().compareTo(e2.getPosition())).toList();
+		if (disadvantagedEntries.size() > 0) {
+			// Split entries			
+			List<SignedUp> start = new ArrayList<SignedUp>(signedUp.subList(0, index));// entries before current entry
+			Integer indexLastDisadvantagedEntry = disadvantagedEntries.get(disadvantagedEntries.size() - 1).getPosition() - 1;
+			List<SignedUp> middle = new ArrayList<SignedUp>(signedUp.subList(signUp.getPosition(), indexLastDisadvantagedEntry + 1)); // entries after current entry to last entry that was disadvantaged from sailing more laps. (SubList is exclusive of last index position)
+			List<SignedUp> end = new ArrayList<SignedUp>(signedUp.subList(indexLastDisadvantagedEntry + 1, signedUp.size())); // entries after the last disadvantaged entry
+			// join entry to end and sort by corrected time
+			end.add(signUp);
+			end = sortByCorrectedTime(end);
+			
+			List<SignedUp> adjusted = setPositions(Stream.concat(Stream.concat(start.stream(), middle.stream()), end.stream()).toList());
+			return adjustForAdvantage(adjusted, index); // check for new entry at index
+		}
+		return adjustForAdvantage(signedUp, index + 1); // check for next entry
+	}
+	
+	/*
+	 * Entries that have adjacent positions may be tied for place and if so should both have the lowest position of all entries in the tie.
+	 * Need to check that adjacent entries are not subject to a corrected time advantage from sailing fewer laps.
+	 */
+	private void adjustForTies(List<SignedUp> signedUp, Integer index) {
+		if (index < signedUp.size() - 1) {
+			List<SignedUp> ties = new ArrayList<SignedUp>();
+			ties.add(signedUp.get(index));
+			while (index < signedUp.size() - 1 // need at least 2 entries 
+//					&& signedUp.get(index).getEntry().getCorrectedTime().equals(signedUp.get(index + 1).getEntry().getCorrectedTime())
+					&& signedUp.get(index).getCorrectedTime().equals(signedUp.get(index + 1).getCorrectedTime())
+					&& !(signedUp.get(index).getEntry().getDinghy().getDinghyClass().getPortsmouthNumber() >= signedUp.get(index + 1).getEntry().getDinghy().getDinghyClass().getPortsmouthNumber() 
+								&& (signedUp.get(index).getEntry().getLaps().size() > signedUp.get(index + 1).getEntry().getLaps().size())) // next entry gained a corrected time advantage from sailing less laps so not a tie
+			) {
+				ties.add(signedUp.get(index + 1));
+				++index;
+			}
+			if (ties.size() > 1) {
+				ties.sort(Comparator.comparing(SignedUp::getPosition));
+				ties.forEach(s -> s.setPosition(ties.get(0).getPosition()));
+			}
+			adjustForTies(signedUp, index + 1);
+		}		
+		return;
+	}
+	
+	// sets the position of each signedUp entry based on its index in entries
+	private List<SignedUp> setPositions(List<SignedUp> signedUp) {
+		signedUp.forEach(s -> s.setPosition(signedUp.lastIndexOf(s) + 1));
+		return signedUp;
+	}
+	
+	// Sign up entry for race
 	public SignedUp signUp(Entry entry) {
 		// entry must be signedUp to a host race
 		SignedUp hostSignedUp = entry.getSignedUpTo().stream().filter(e -> e.getRace() instanceof DirectRace).findFirst().get();
@@ -84,10 +154,134 @@ public class EmbeddedRace extends Race {
 		this.signedUp.add(signedUp);
 		return signedUp;
 	}
+	
+	private List<SignedUp> sortByCorrectedTime(List<SignedUp> signedUp) {
+		return signedUp.stream().sorted(new FleetSignedUpEntriesComparator()).toList();	
+	}
+	
+	public void updateCorrectedTime(SignedUp signedUp) {
+		Entry entry = signedUp.getEntry();
+		// if a lap is removed may result in entry having no laps. Treat this case specifically to avoid a divide by 0 error in corrected time calculation
+		if (entry.getLaps().size() < 1) {
+			signedUp.setCorrectedTime(Duration.ofSeconds((long)Double.POSITIVE_INFINITY));
+		}
+		else {
+			DirectRace race = (DirectRace) entry.getDirectRace();
+			if (race.getType() == RaceType.FLEET) {
+				signedUp.setCorrectedTime(entry.getSumOfLapTimes().multipliedBy(this.getLeadEntry().getLapsSailed() * 1000).dividedBy(entry.getDinghy().getDinghyClass().getPortsmouthNumber() * entry.getLapsSailed()));
+			}
+			else {
+				signedUp.setCorrectedTime(entry.getSumOfLapTimes());
+			}
+		}
+	}
 
-	@Override
+	/**
+	 * Calculate and set the positions of entries in the race based on the number of laps completed and the time taken to complete those laps
+	 */
 	public void updatePositions(SignedUp signedUp) {
-		// TODO Auto-generated method stub
+		if (signedUp.getEntry().getScoringAbbreviation() != null && signedUp.getEntry().getScoringAbbreviation() != "") {
+			updateEntryPositions(signedUp, this.signedUp.size());
+		}
+		else {
+			RaceType raceType = signedUp.getEntry().getDirectRace().getType();
+			if (raceType == RaceType.FLEET) {
+				// if this is the lead entry need to calculate corrected time for all entries in the race
+				Entry leadEntry = getLeadEntry();
+				if (signedUp.getEntry() == leadEntry || signedUp.getEntry() == lastLeadEntry) {
+					lastLeadEntry = leadEntry; // set lastLeadEntry for reference
+					lastLeadEntryLapsCompleted = lastLeadEntry.getLapsSailed();
+					this.signedUp.forEach(s -> updateCorrectedTime(s));
+				}
+				else {
+					updateCorrectedTime(signedUp);
+				}
+				List<SignedUp> entriesInPosition = setPositions(this.signedUp.stream().sorted(new FleetSignedUpEntriesComparator()).toList());
+				entriesInPosition = adjustForAdvantage(entriesInPosition, 0);
+				adjustForTies(entriesInPosition, 0);
+			}
+			else if (raceType == RaceType.PURSUIT) {
+				List<SignedUp> entriesInPosition = this.signedUp.stream().sorted(new PursuitSignedUpEntriesComparator()).toList();
+				updateEntryPositions(signedUp, entriesInPosition.lastIndexOf(signedUp) + 1);
+				updateCorrectedTime(signedUp);
+			}
+		}
+	}
+	
+	/** 
+	 * Update the position of an entry and any other entries that have their position altered as a result.
+	 */
+	public void updateEntryPositions(SignedUp signedUp, Integer newPosition) {
+		// if new position is outside number of boats in race then ignore
+		if (newPosition > this.signedUp.size()) {
+			return;
+		};
+		Integer oldPosition = signedUp.getPosition();
+		signedUp.setPosition(newPosition);
+		// TODO would this be clearer as a stream operation with filters?
+		// if new position is higher than old position move down position of entries between new and old positions. Entry cannot have a position lower than number of the number of entries in the race.
+		if (oldPosition == null || newPosition < oldPosition) {
+			this.signedUp.forEach(signUp2 -> {
+				if (!signedUp.getEntry().equals(signUp2.getEntry()) && signUp2.getPosition() != null && signUp2.getPosition() >= newPosition 
+						&& (oldPosition == null || signUp2.getPosition() < oldPosition) && signUp2.getPosition() != this.signedUp.size()) {
+					signUp2.setPosition(signUp2.getPosition() + 1);
+				}
+			});
+		}
+		// if new position is lower than old position move up position of entries between new and old positions
+		else if (newPosition > oldPosition) {
+			this.signedUp.forEach(signUp2 -> {
+				if (!signedUp.getEntry().equals(signUp2.getEntry()) && signUp2.getPosition() != null && signUp2.getPosition() <= newPosition && signUp2.getPosition() > oldPosition) {
+					signUp2.setPosition(signUp2.getPosition() - 1);
+				}
+			});
+		}
+	}
+	
+public class PursuitSignedUpEntriesComparator implements Comparator<SignedUp> {
 		
+		@Override
+		public int compare(SignedUp signedUp1, SignedUp signedUp2) {
+			// from lead entry to last place entry (-1 faster, 0 same, 1 slower)
+			// sort entries with scoring abbreviations to the bottom
+			if ((signedUp1.getEntry().getScoringAbbreviation() == null || signedUp1.getEntry().getScoringAbbreviation() == "") 
+					&& (signedUp2.getEntry().getScoringAbbreviation() != null && signedUp2.getEntry().getScoringAbbreviation() != "")) {
+				return -1;
+			}
+			if ((signedUp2.getEntry().getScoringAbbreviation() == null || signedUp2.getEntry().getScoringAbbreviation() == "") 
+					&& (signedUp1.getEntry().getScoringAbbreviation() != null && signedUp1.getEntry().getScoringAbbreviation() != "")) {
+				return 1;
+			}
+			// more laps beats less laps
+			if (signedUp1.getEntry().getLaps().size() > signedUp2.getEntry().getLaps().size()) {
+				return -1;
+			}
+			if (signedUp1.getEntry().getLaps().size() < signedUp2.getEntry().getLaps().size()) {
+				return 1;
+			}
+			// resolve lap ties on time to sail laps
+			return signedUp1.getEntry().getSumOfLapTimes().compareTo(signedUp2.getEntry().getSumOfLapTimes());
+		}
+	}
+	
+	public class FleetSignedUpEntriesComparator implements Comparator<SignedUp> {
+		
+		@Override
+		public int compare(SignedUp signedUp1, SignedUp signedUp2) {
+			// -1 faster, 0 same, 1 slower
+			// sort entries with scoring abbreviations to the bottom
+			// entry1 does not have scoring abbreviation && entry2 does have scoring abbreviation then entry1 faster
+			if ((signedUp1.getEntry().getScoringAbbreviation() == null || signedUp1.getEntry().getScoringAbbreviation() == "") 
+					&& (signedUp2.getEntry().getScoringAbbreviation() != null && signedUp2.getEntry().getScoringAbbreviation() != "")) {
+				return -1;
+			}
+			// entry1 has scoring abbreviation && entry2 does not have scoring abbreviation then entry2 faster
+			if ((signedUp1.getEntry().getScoringAbbreviation() != null && signedUp1.getEntry().getScoringAbbreviation() != "") 
+					&& (signedUp2.getEntry().getScoringAbbreviation() == null || signedUp2.getEntry().getScoringAbbreviation() == "")) {
+				return 1;
+			}
+			// check corrected time
+			return signedUp1.getCorrectedTime().compareTo(signedUp2.getCorrectedTime());
+		}
 	}
 }

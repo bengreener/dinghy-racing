@@ -72,7 +72,7 @@ public abstract class Race implements Serializable {
 	
 	// tried making this @Transient but value not retained. Appears to be unsafe to assume Spring will use the same instance of the entity
 	// tried setting JsonIgnore but link was still output in Json
-	@OneToOne
+	@ManyToOne
 	protected Entry lastLeadEntry; // used to check if positions need to be recalculated because leadEntry has changed; for example if a lap is removed from the last lead entry
 	
 	// track laps completed by lead entry in database so race id (and ETag) are updated when the lead entry completes a lap without the lead entry changing

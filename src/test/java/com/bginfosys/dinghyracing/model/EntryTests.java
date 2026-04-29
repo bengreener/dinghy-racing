@@ -630,7 +630,7 @@ public class EntryTests {
 		
 		signedUp1.getEntry().updateLap(new Lap(2, Duration.ofMinutes(15)));
 		
-		assertEquals(Duration.ofMinutes(27), signedUp1.getEntry().getCorrectedTime());
+		assertEquals(Duration.ofMinutes(27), signedUp1.getCorrectedTime());
 	}
 	
 	@Test

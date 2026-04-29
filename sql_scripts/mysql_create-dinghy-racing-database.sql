@@ -90,7 +90,7 @@ CREATE TABLE race (
 	id BIGINT NOT NULL, 
 	fleet_id BIGINT NOT NULL, 
 	name VARCHAR(255) NOT NULL, 
-	last_lead_entry_id BIGINT UNIQUE, 
+	last_lead_entry_id BIGINT, 
 	last_lead_entry_laps_completed INTEGER, 
 	version BIGINT, 
 	CONSTRAINT PK_race_id PRIMARY KEY (id)
@@ -112,7 +112,6 @@ CREATE TABLE entry (
 	crew_id BIGINT, 
 	dinghy_id BIGINT NOT NULL, 
 	scoring_abbreviation VARCHAR(3), 
-	corrected_time NUMERIC(21,0), 
 	on_last_lap BOOLEAN NOT NULL, 
 	finished_race BOOLEAN NOT NULL, 
 	version BIGINT, 
@@ -123,6 +122,7 @@ CREATE TABLE signed_up (
 	id BIGINT NOT NULL,  
 	race_id BIGINT, 
 	entry_id BIGINT,
+	corrected_time NUMERIC(21,0), 
 	position INTEGER, 
 	version BIGINT, 
 	CONSTRAINT PK_signed_up_id PRIMARY KEY (id)

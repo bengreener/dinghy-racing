@@ -152,10 +152,10 @@ public class DirectRace extends Race {
 				if (signedUp.getEntry() == leadEntry || signedUp.getEntry() == lastLeadEntry) {
 					lastLeadEntry = leadEntry; // set lastLeadEntry for reference
 					lastLeadEntryLapsCompleted = lastLeadEntry.getLapsSailed();
-					this.signedUp.forEach(s -> updateCorrectedTime(s.getEntry()));
+					this.signedUp.forEach(s -> updateCorrectedTime(s));
 				}
 				else {
-					updateCorrectedTime(signedUp.getEntry());
+					updateCorrectedTime(signedUp);
 				}
 				List<SignedUp> entriesInPosition = setPositions(this.signedUp.stream().sorted(new FleetSignedUpEntriesComparator()).toList());
 				entriesInPosition = adjustForAdvantage(entriesInPosition, 0);
@@ -164,7 +164,7 @@ public class DirectRace extends Race {
 			else if (this.type == RaceType.PURSUIT) {
 				List<SignedUp> entriesInPosition = this.signedUp.stream().sorted(new PursuitSignedUpEntriesComparator()).toList();
 				updateEntryPositions(signedUp, entriesInPosition.lastIndexOf(signedUp) + 1);
-				updateCorrectedTime(signedUp.getEntry());
+				updateCorrectedTime(signedUp);
 			}
 		}
 	}
@@ -182,7 +182,7 @@ public class DirectRace extends Race {
 		// check if gained advantage
 		List<SignedUp> disadvantagedEntries = signedUp.stream()
 			.filter(s -> signUp.getPosition() < s.getPosition() 
-				&& signUp.getEntry().getCorrectedTime().compareTo(s.getEntry().getCorrectedTime()) <= 0 
+					&& signUp.getCorrectedTime().compareTo(s.getCorrectedTime()) <= 0
 				&& signUp.getEntry().getLapsSailed() < s.getEntry().getLapsSailed() 
 				&& signUp.getEntry().getDinghy().getDinghyClass().getPortsmouthNumber() <= s.getEntry().getDinghy().getDinghyClass().getPortsmouthNumber())
 			.sorted((e1, e2) -> e1.getPosition().compareTo(e2.getPosition())).toList();
@@ -210,8 +210,8 @@ public class DirectRace extends Race {
 		if (index < signedUp.size() - 1) {
 			List<SignedUp> ties = new ArrayList<SignedUp>();
 			ties.add(signedUp.get(index));
-			while (index < signedUp.size() - 1 // need at least 2 entries 
-					&& signedUp.get(index).getEntry().getCorrectedTime().equals(signedUp.get(index + 1).getEntry().getCorrectedTime())
+			while (index < signedUp.size() - 1 // need at least 2 entries
+					&& signedUp.get(index).getCorrectedTime().equals(signedUp.get(index + 1).getCorrectedTime())
 					&& !(signedUp.get(index).getEntry().getDinghy().getDinghyClass().getPortsmouthNumber() >= signedUp.get(index + 1).getEntry().getDinghy().getDinghyClass().getPortsmouthNumber() 
 								&& (signedUp.get(index).getEntry().getLaps().size() > signedUp.get(index + 1).getEntry().getLaps().size())) // next entry gained a corrected time advantage from sailing less laps so not a tie
 			) {
@@ -233,7 +233,7 @@ public class DirectRace extends Race {
 		return signedUp;
 	}
 	
-	// Signup dinghy and helm for race
+	// Sign up dinghy and helm for race
 	public SignedUp signUp(Competitor helm, Dinghy dinghy) {
 		// signing_up_dinghy_class_allowed_by_race
 		if (!(this.fleet.getDinghyClasses().size() == 0 || this.fleet.getDinghyClasses().contains(dinghy.getDinghyClass())  )) {
@@ -254,7 +254,7 @@ public class DirectRace extends Race {
 		return signedUp;
 	}
 	
-	// Signup dinghy, helm, and crew for race
+	// Sign up dinghy, helm, and crew for race
 	public SignedUp signUp(Competitor helm, Competitor crew, Dinghy dinghy) {
 		// signing_up_dinghy_class_allowed_by_race
 		if (!(this.fleet.getDinghyClasses().size() == 0 || this.fleet.getDinghyClasses().contains(dinghy.getDinghyClass())  )) {
@@ -283,18 +283,19 @@ public class DirectRace extends Race {
 		return signedUp.stream().sorted(new FleetSignedUpEntriesComparator()).toList();	
 	}
 	
-	public void updateCorrectedTime(Entry entry) {
+	public void updateCorrectedTime(SignedUp signedUp) {
+		Entry entry = signedUp.getEntry();
 		// if a lap is removed may result in entry having no laps. Treat this case specifically to avoid a divide by 0 error in corrected time calculation
 		if (entry.getLaps().size() < 1) {
-			entry.setCorrectedTime(Duration.ofSeconds((long)Double.POSITIVE_INFINITY));
+			signedUp.setCorrectedTime(Duration.ofSeconds((long)Double.POSITIVE_INFINITY));
 		}
 		else {
 			DirectRace race = (DirectRace) entry.getDirectRace();
 			if (race.type == RaceType.FLEET) {
-				entry.setCorrectedTime(entry.getSumOfLapTimes().multipliedBy(this.getLeadEntry().getLapsSailed() * 1000).dividedBy(entry.getDinghy().getDinghyClass().getPortsmouthNumber() * entry.getLapsSailed()));
+				signedUp.setCorrectedTime(entry.getSumOfLapTimes().multipliedBy(this.getLeadEntry().getLapsSailed() * 1000).dividedBy(entry.getDinghy().getDinghyClass().getPortsmouthNumber() * entry.getLapsSailed()));
 			}
 			else {
-				entry.setCorrectedTime(entry.getSumOfLapTimes());
+				signedUp.setCorrectedTime(entry.getSumOfLapTimes());
 			}
 		}
 	}
@@ -411,7 +412,7 @@ public class DirectRace extends Race {
 				return 1;
 			}
 			// check corrected time
-			return signedUp1.getEntry().getCorrectedTime().compareTo(signedUp2.getEntry().getCorrectedTime());
+			return signedUp1.getCorrectedTime().compareTo(signedUp2.getCorrectedTime());
 		}
 	}
 }

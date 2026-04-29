@@ -73,9 +73,7 @@ public class Entry {
 	
 	@Size(min = 3, max = 3)
 	private String scoringAbbreviation;
-	
-	private Duration correctedTime;
-	
+		
 	private boolean onLastLap; // record value so it is stored in database and version/ ETag is updated if it changes; helps keep clients up to date
 	
 	private boolean finishedRace; // record value so it is stored in database and version/ ETag is updated if it changes; helps keep clients up to date
@@ -178,24 +176,6 @@ public class Entry {
 	public void setScoringAbbreviation(String scoringAbbreviation) {
 		this.scoringAbbreviation = scoringAbbreviation;
 		this.signedUpTo.forEach(s -> s.getRace().updatePositions(s));
-	}
-
-	public Duration getCorrectedTime() {
-		// if null return a duration of infinity to avoid null issues when performing operations on duration
-		if (correctedTime == null) {
-			return Duration.ofSeconds((long)Double.POSITIVE_INFINITY);
-		}
-		return correctedTime;
-	}
-
-	public void setCorrectedTime(Duration correctedTime) {
-		// if value is equal to infinity then a lap has not been completed and no corrected time can be calculated
-		if (correctedTime.getSeconds() == (long)Double.POSITIVE_INFINITY) {
-			this.correctedTime = null;
-		}
-		else {
-			this.correctedTime = correctedTime;
-		}
 	}
 	
 	/**
@@ -306,20 +286,18 @@ public class Entry {
 			}
 			return "Entry [id=" + id + ", version=" + version + ", helm=" + helm.getName() + ", crew=" + crewName + ", dinghy=" + dinghy.getDinghyClass().getName() + " " + 
 			dinghy.getSailNumber() + ", laps=" + laps + ", scoringAbbreviation=" + scoringAbbreviation
-					+ ", correctedTime=" + correctedTime + ", onLastLap=" + onLastLap
-					+ ", finishedRace=" + finishedRace + "]";
+					+ ", onLastLap=" + onLastLap + ", finishedRace=" + finishedRace + "]";
 		}
 		else {
 			return "Entry [id=" + id + ", version=" + version + ", helm=" + helm.getName() + ", dinghy=" + dinghy.getDinghyClass().getName() + " " + 
 					dinghy.getSailNumber() + ", laps=" + laps + ", scoringAbbreviation=" + scoringAbbreviation
-							+ ", correctedTime=" + correctedTime + ", onLastLap=" + onLastLap
-							+ ", finishedRace=" + finishedRace + "]";
+							+ ", onLastLap=" + onLastLap + ", finishedRace=" + finishedRace + "]";
 		}
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(correctedTime, crew, dinghy, finishedRace, helm, id, laps, onLastLap,
+		return Objects.hash(crew, dinghy, finishedRace, helm, id, laps, onLastLap,
 				scoringAbbreviation, version);
 		// including signedUpTo creates a circular reference as entry is part of hash code calculation for SignedUp
 	}
@@ -333,7 +311,7 @@ public class Entry {
 		if (getClass() != obj.getClass())
 			return false;
 		Entry other = (Entry) obj;
-		return Objects.equals(correctedTime, other.correctedTime) && Objects.equals(crew, other.crew)
+		return Objects.equals(crew, other.crew)
 				&& Objects.equals(dinghy, other.dinghy) && finishedRace == other.finishedRace
 				&& Objects.equals(helm, other.helm) && Objects.equals(id, other.id) && Objects.equals(laps, other.laps)
 				&& onLastLap == other.onLastLap

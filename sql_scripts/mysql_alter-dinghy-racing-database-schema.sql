@@ -169,17 +169,14 @@ ALTER TABLE entry
     DROP CONSTRAINT UK_entry_dinghy_id_race_id,
     DROP CONSTRAINT UK_entry_crew_id_race_id,
 	DROP COLUMN race_id,
-	DROP COLUMN position,
-	DROP INDEX helm_id,
-	DROP INDEX dinghy_id,
-	DROP INDEX crew_id;
+	DROP COLUMN position;
 
 ALTER TABLE entry 
 	ADD CONSTRAINT FK_entry_helm_id FOREIGN KEY (helm_id) REFERENCES competitor (id),
 	ADD CONSTRAINT FK_entry_crew_id FOREIGN KEY (crew_id) REFERENCES competitor (id),
 	ADD CONSTRAINT FK_entry_dinghy_id FOREIGN KEY (dinghy_id) REFERENCES dinghy (id);
     
--- v2025.8.2 to v2026.?.1
+-- v2025.9.2 to v2026.?.1
 CREATE TABLE embedded_race (
 	id BIGINT NOT NULL,
     CONSTRAINT PK_embedded_race_id PRIMARY KEY (id)
@@ -187,9 +184,26 @@ CREATE TABLE embedded_race (
 
 CREATE TABLE embedded_race_hosts (
 	embedded_race_id BIGINT NOT NULL,
-    direct_race_id BIGINT NOT NULL,
-    CONSTRAINT PK_embedded_race_hosts_embedded_race_id_direct_race_id PRIMARY KEY (embedded_race_id, direct_race_id)
+    hosts_id BIGINT NOT NULL,
+    CONSTRAINT PK_embedded_race_hosts_embedded_race_id_hosts_id PRIMARY KEY (embedded_race_id, hosts_id)
 ) engine=InnoDB;
+
+ALTER TABLE embedded_race_hosts ADD CONSTRAINT FK_embedded_race_hosts_hosts_id FOREIGN KEY (hosts_id) REFERENCES direct_race (id);
+
+-- if data exits in entry table it will need to be copied to signed_up before it is deleted from entry
+ALTER TABLE signed_up ADD COLUMN corrected_time NUMERIC(21,0);
+
+ALTER TABLE entry DROP COLUMN corrected_time;
+
+-- (create script for version v2025.9.1 set unique on race.last_lead_entry)
+-- ALTER TABLE race
+-- 	DROP CONSTRAINT FK_race_last_lead_entry_id,
+-- 	DROP CONSTRAINT last_lead_entry_id;
+    
+-- ALTER TABLE race
+-- 	ADD CONSTRAINT FK_race_last_lead_entry_id FOREIGN KEY (last_lead_entry_id) REFERENCES entry (id);    
+    
+
 
 
 	

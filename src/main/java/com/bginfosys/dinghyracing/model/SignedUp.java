@@ -1,5 +1,6 @@
 package com.bginfosys.dinghyracing.model;
 
+import java.time.Duration;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -21,6 +22,8 @@ public class SignedUp {
 	
 	@ManyToOne
 	Entry entry;
+	
+	private Duration correctedTime;
 	
 	private Integer position;
 	
@@ -51,6 +54,24 @@ public class SignedUp {
 		this.entry = entry;
 	}
 
+	public Duration getCorrectedTime() {
+		// if null return a duration of infinity to avoid null issues when performing operations on duration
+		if (correctedTime == null) {
+			return Duration.ofSeconds((long)Double.POSITIVE_INFINITY);
+		}
+		return correctedTime;
+	}
+
+	public void setCorrectedTime(Duration correctedTime) {
+		// if value is equal to infinity then a lap has not been completed and no corrected time can be calculated
+		if (correctedTime.getSeconds() == (long)Double.POSITIVE_INFINITY) {
+			this.correctedTime = null;
+		}
+		else {
+			this.correctedTime = correctedTime;
+		}
+	}
+
 	public Integer getPosition() {
 		return position;
 	}
@@ -61,13 +82,13 @@ public class SignedUp {
 
 	@Override
 	public String toString() {
-		return "SignedUp [id=" + id + ", version=" + version + ", race=" + race + ", entry=" + entry + ", position="
-				+ position + "]";
+		return "SignedUp [id=" + id + ", version=" + version + ", race=" + race + ", entry=" + entry + ", correctedTime=" + correctedTime
+				+ ", position=" + position + "]";
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(entry, id, position, race, version);
+		return Objects.hash(entry, id, correctedTime, position, race, version);
 	}
 
 	@Override
@@ -80,6 +101,7 @@ public class SignedUp {
 			return false;
 		SignedUp other = (SignedUp) obj;
 		return Objects.equals(entry, other.entry) && Objects.equals(id, other.id)
+				&& Objects.equals(correctedTime,  other.correctedTime)
 				&& Objects.equals(position, other.position) && Objects.equals(race, other.race)
 				&& Objects.equals(version, other.version);
 	}	
