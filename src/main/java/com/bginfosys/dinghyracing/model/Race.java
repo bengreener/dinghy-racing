@@ -28,7 +28,6 @@ import jakarta.persistence.InheritanceType;
 import jakarta.persistence.Version;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Transient;
 
@@ -48,7 +47,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class Race implements Serializable {
+public class Race implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 
@@ -152,7 +151,9 @@ public abstract class Race implements Serializable {
 		return false;
 	}
 	
-	public abstract void updatePositions(SignedUp signedUp);
+	public void updatePositions(SignedUp signedUp) {
+		
+	};
 	
 	@Override
 	public String toString() {
