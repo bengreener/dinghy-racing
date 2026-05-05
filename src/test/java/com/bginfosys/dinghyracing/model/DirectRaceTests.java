@@ -91,7 +91,7 @@ class DirectRaceTests {
 	}
 	
 	// operation tests
-	// signup tests
+	// sign up tests
 	/*
 	 * Signs supplied dinghy and helm up for race
 	 */
@@ -651,7 +651,7 @@ class DirectRaceTests {
 	}
 		
 	@Test
-	void given_race_is_pursuit_when_noPositionsCalculated_when_positionOfEntryUpdated_then_updatesOnlyPositionsOfEntry() {
+	void given_race_is_pursuit_when_noPositionsCalculated_when_positionOfEntryUpdated_then_updatesOnlyPositionOfEntry() {
 		DinghyClass dinghyClass = new DinghyClass("Test", 1, 1000);
 		Fleet fleet = new Fleet("Test Fleet");
 		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART);

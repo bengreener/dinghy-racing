@@ -46,6 +46,11 @@ public class EmbeddedRace extends Race {
 		super();
 	};
 	
+	public EmbeddedRace(String name, Fleet fleet, Set<Race> hosts) {
+		super(name, fleet);
+		this.hosts= hosts;
+	}
+	
 	public Set<Race> getHosts() {
 		return hosts;
 	}
@@ -146,7 +151,7 @@ public class EmbeddedRace extends Race {
 			throw new DinghyAlreadySignedUpException(entry.getDinghy());
 		}
 		// signingup_mate_not_entered_in_race
-		if (this.signedUp.stream().anyMatch(signedUp -> signedUp.getEntry().getCrew() == entry.getCrew())) {
+		if (entry.getDinghy().getDinghyClass().getCrewSize() > 1 && this.signedUp.stream().anyMatch(signedUp -> signedUp.getEntry().getCrew() == entry.getCrew())) {
 			throw new CompetitorAlreadySignedUpException(entry.getCrew());
 		}
 		SignedUp signedUp = new SignedUp(this, entry);
