@@ -16,10 +16,10 @@
    
 package com.bginfosys.dinghyracing.exceptions;
 
-public class DinghyClassMismatchException extends RuntimeException {
+public class DinghyClassMismatchException extends DomainRuleException {
 
 	private static final long serialVersionUID = 1L;
-	
+		
 	public DinghyClassMismatchException() {
 		super("Dinghy class does not match required class.");
 	}

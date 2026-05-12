@@ -16,18 +16,26 @@
 
 package com.bginfosys.dinghyracing.exceptions;
 
-import com.bginfosys.dinghyracing.model.Dinghy;
-
-public class DinghyAlreadySignedUpException extends DomainRuleException {
-
+/**
+ * Abstract cLass to base errors arising from conflict with domain rules.
+ * Purpose is to enable feed back to user that a domain rule has resulted in the requested operation failing.
+ */
+public abstract class DomainRuleException extends RuntimeException {
+	
 	private static final long serialVersionUID = 1L;
-		
-	public DinghyAlreadySignedUpException() {
-		super("Dinghy has already signed up for race."); 
+	
+	public DomainRuleException(String message) {
+		super(message);
 	}
 	
-	public DinghyAlreadySignedUpException(Dinghy dinghy) {
-		super(String.format("%s has already signed up for race.", dinghy.toString())); 
+	public DomainRuleException(String message, Throwable cause) {
+		super(message, cause);
+	}
+	
+	// Prevent stack trace from being exposed to client
+	@Override
+	public synchronized Throwable fillInStackTrace() {
+		return this;
 	}
 
 }

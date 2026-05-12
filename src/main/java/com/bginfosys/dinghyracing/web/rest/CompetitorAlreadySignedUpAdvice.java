@@ -30,7 +30,7 @@ public class CompetitorAlreadySignedUpAdvice {
 	@ResponseBody
 	@ExceptionHandler(CompetitorAlreadySignedUpException.class)
 	@ResponseStatus(HttpStatus.CONFLICT)
-	String dinghyAlreadySignedUpHandler(CompetitorAlreadySignedUpException ex) {
-		return ex.getLocalizedMessage();
+	CompetitorAlreadySignedUpException dinghyAlreadySignedUpHandler(CompetitorAlreadySignedUpException ex) {
+		return ex;
 	}
 }

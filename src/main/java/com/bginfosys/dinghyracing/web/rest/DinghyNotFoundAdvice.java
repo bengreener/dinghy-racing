@@ -30,7 +30,7 @@ public class DinghyNotFoundAdvice {
 	@ResponseBody
 	@ExceptionHandler(DinghyNotFoundException.class)
 	@ResponseStatus(HttpStatus.NOT_FOUND)
-	String dinghyNotFoundHandler(DinghyNotFoundException ex) {
-		return ex.getMessage();
+	DinghyNotFoundException dinghyNotFoundHandler(DinghyNotFoundException ex) {
+		return ex;
 	}
 }

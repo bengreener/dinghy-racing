@@ -30,7 +30,7 @@ public class RaceNotFoundAdvice {
 	@ResponseBody
 	@ExceptionHandler(RaceNotFoundException.class)
 	@ResponseStatus(HttpStatus.NOT_FOUND)
-	String raceNotFoundHandler(RaceNotFoundException ex) {
-		return ex.getMessage();
+	RaceNotFoundException raceNotFoundHandler(RaceNotFoundException ex) {
+		return ex;
 	}
 }

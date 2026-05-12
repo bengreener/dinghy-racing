@@ -16,7 +16,7 @@
 
 package com.bginfosys.dinghyracing.exceptions;
 
-public class EntryNotInHostRaceException extends RuntimeException {
+public class EntryNotInHostRaceException extends DomainRuleException {
 
 	private static final long serialVersionUID = 1L;
 	

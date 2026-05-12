@@ -30,7 +30,7 @@ public class DinghyClassMismatchAdvice {
 	@ResponseBody
 	@ExceptionHandler(DinghyClassMismatchException.class)
 	@ResponseStatus(HttpStatus.CONFLICT)
-	String dinghyAlreadySignedUpHandler(DinghyClassMismatchException ex) {
-		return ex.getLocalizedMessage();
+	DinghyClassMismatchException dinghyAlreadySignedUpHandler(DinghyClassMismatchException ex) {
+		return ex;
 	}
 }

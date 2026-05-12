@@ -16,7 +16,7 @@
    
 package com.bginfosys.dinghyracing.exceptions;
 
-public class DinghyNotFoundException extends RuntimeException {
+public class DinghyNotFoundException extends DomainRuleException {
 	
 	private static final long serialVersionUID = 1L;
 	

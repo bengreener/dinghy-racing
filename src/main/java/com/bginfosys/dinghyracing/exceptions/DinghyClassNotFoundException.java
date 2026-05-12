@@ -16,7 +16,7 @@
    
 package com.bginfosys.dinghyracing.exceptions;
 
-public class DinghyClassNotFoundException extends RuntimeException {
+public class DinghyClassNotFoundException extends DomainRuleException {
 	
 	private static final long serialVersionUID = 742970901383742698L;
 
