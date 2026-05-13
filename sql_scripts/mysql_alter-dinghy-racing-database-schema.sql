@@ -144,8 +144,7 @@ ALTER TABLE direct_race ADD CONSTRAINT FK_direct_race_race_id FOREIGN KEY (id) R
 ALTER TABLE signed_up ADD CONSTRAINT FK_signed_up_race_id FOREIGN KEY (race_id) REFERENCES race (id);
 ALTER TABLE signed_up ADD CONSTRAINT FK_signed_up_entry_id FOREIGN KEY (entry_id) REFERENCES entry (id);
 
-INSERT INTO direct_race (id, duration, planned_laps, planned_start_time, `type`, start_type)
-SELECT id, duration, planned_laps, planned_start_time, `type`, start_type from race;
+INSERT INTO direct_race (id, duration, planned_laps, planned_start_time, `type`, start_type) SELECT id, duration, planned_laps, planned_start_time, `type`, start_type from race;
 
 INSERT INTO signed_up (id, race_id, entry_id, position, version) SELECT id, race_id, id, position, 0 FROM entry; 
 
@@ -195,15 +194,10 @@ ALTER TABLE signed_up ADD COLUMN corrected_time NUMERIC(21,0);
 
 ALTER TABLE entry DROP COLUMN corrected_time;
 
--- (create script for version v2025.9.1 set unique on race.last_lead_entry)
--- ALTER TABLE race
--- 	DROP CONSTRAINT FK_race_last_lead_entry_id,
--- 	DROP CONSTRAINT last_lead_entry_id;
+-- (!!! create script for version v2025.9.1 sets unique on race.last_lead_entry. Do not want this set.)
+	-- ALTER TABLE race
+	-- 	DROP CONSTRAINT FK_race_last_lead_entry_id,
+	-- 	DROP CONSTRAINT last_lead_entry_id;
     
--- ALTER TABLE race
--- 	ADD CONSTRAINT FK_race_last_lead_entry_id FOREIGN KEY (last_lead_entry_id) REFERENCES entry (id);    
-    
-
-
-
-	
+	-- ALTER TABLE race
+	-- 	ADD CONSTRAINT FK_race_last_lead_entry_id FOREIGN KEY (last_lead_entry_id) REFERENCES entry (id);    
