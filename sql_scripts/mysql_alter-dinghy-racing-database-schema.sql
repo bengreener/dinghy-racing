@@ -175,7 +175,7 @@ ALTER TABLE entry
 	ADD CONSTRAINT FK_entry_crew_id FOREIGN KEY (crew_id) REFERENCES competitor (id),
 	ADD CONSTRAINT FK_entry_dinghy_id FOREIGN KEY (dinghy_id) REFERENCES dinghy (id);
     
--- v2025.9.2 to v2026.?.1
+-- v2025.9.2 to v2026.5.1
 CREATE TABLE embedded_race (
 	id BIGINT NOT NULL,
     CONSTRAINT PK_embedded_race_id PRIMARY KEY (id)
@@ -186,6 +186,13 @@ CREATE TABLE embedded_race_hosts (
     hosts_id BIGINT NOT NULL,
     CONSTRAINT PK_embedded_race_hosts_embedded_race_id_hosts_id PRIMARY KEY (embedded_race_id, hosts_id)
 ) engine=InnoDB;
+
+-- !!! Previous ALTER TABLE scripts has created incorrectlt named FK constraints
+-- if databse was created using create database script these FK constarints should be correctly named
+ALTER TABLE fleet_dinghy_classes DROP CONSTRAINT FK_fleet_fleet_id;
+ALTER TABLE fleet_dinghy_classes DROP CONSTRAINT FK_dinghy_class_dinghy_classes_id;
+ALTER TABLE fleet_dinghy_classes ADD CONSTRAINT FK_fleet_dinghy_classes_fleet_id FOREIGN KEY (fleet_id) REFERENCES fleet (id);
+ALTER TABLE fleet_dinghy_classes ADD CONSTRAINT FK_fleet_dinghy_classes_dinghy_classes_id FOREIGN KEY (dinghy_classes_id) REFERENCES dinghy_class (id);
 
 ALTER TABLE embedded_race_hosts ADD CONSTRAINT FK_embedded_race_hosts_hosts_id FOREIGN KEY (hosts_id) REFERENCES direct_race (id);
 

@@ -1,11 +1,13 @@
--- v2025.9.2
+-- v2026.5.1
 USE dinghy_racing;
 
 -- clear existing data
 DELETE FROM entry_laps;
 DELETE FROM lap;
 DELETE FROM signed_up;
+DELETE FROM embedded_race_hosts;
 DELETE FROM direct_race;
+DELETE FROM embedded_race;
 DELETE FROM race;
 DELETE FROM entry;
 DELETE FROM fleet_dinghy_classes;
