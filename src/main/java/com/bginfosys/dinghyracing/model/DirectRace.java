@@ -25,6 +25,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import org.hibernate.annotations.ColumnDefault;
+
 import com.bginfosys.dinghyracing.exceptions.CompetitorAlreadySignedUpException;
 import com.bginfosys.dinghyracing.exceptions.DinghyAlreadySignedUpException;
 import com.bginfosys.dinghyracing.exceptions.DinghyClassMismatchException;
@@ -41,6 +43,9 @@ public class DirectRace extends Race {
 
 	@NotNull
 	private LocalDateTime plannedStartTime;
+	
+	@ColumnDefault("0")
+	private Duration startTimeOffset = Duration.ofSeconds(0);
 	
 	@NotNull
 	private Duration duration;
@@ -77,6 +82,18 @@ public class DirectRace extends Race {
 		this.plannedStartTime = plannedStartTime;
 	}
 	
+	public Duration getStartTimeOffset() {
+		return startTimeOffset;
+	}
+
+	public void setStartTimeOffset(Duration startTimeOffset) {
+		this.startTimeOffset = startTimeOffset;
+	}
+	
+//	public LocalDateTime getCurrentStartTime() {
+//		return plannedStartTime.plus(startTimeOffset);
+//	}
+
 	public Duration getDuration() {
 		return duration;
 	}
@@ -343,6 +360,7 @@ public class DirectRace extends Race {
 	@Override
 	public String toString() {
 		return "Race [id=" + id + ", version=" + version + ", name=" + name + ", plannedStartTime=" + plannedStartTime
+				+ ", startTimeOffset=" + startTimeOffset
 				+ ", fleet=" + fleet.getName() + ", duration=" + duration + ", plannedLaps=" + plannedLaps + ", type="
 				+ type + ", startType="
 				+ startType + "]";
@@ -350,7 +368,7 @@ public class DirectRace extends Race {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(duration, fleet, id, name, plannedLaps, plannedStartTime, startType, type, version);
+		return Objects.hash(duration, fleet, id, name, plannedLaps, startTimeOffset, plannedStartTime, startType, type, version);
 	}
 
 	@Override
@@ -365,7 +383,9 @@ public class DirectRace extends Race {
 		return Objects.equals(duration, other.duration) && Objects.equals(fleet, other.fleet)
 				&& Objects.equals(id, other.id) && Objects.equals(name, other.name)
 				&& Objects.equals(plannedLaps, other.plannedLaps)
-				&& Objects.equals(plannedStartTime, other.plannedStartTime) && startType == other.startType
+				&& Objects.equals(plannedStartTime, other.plannedStartTime)
+				&& Objects.equals(startTimeOffset, other.startTimeOffset)
+				&& startType == other.startType
 				&& type == other.type && Objects.equals(version, other.version);
 	}
 	

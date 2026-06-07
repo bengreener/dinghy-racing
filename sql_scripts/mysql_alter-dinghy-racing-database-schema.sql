@@ -208,3 +208,6 @@ ALTER TABLE entry DROP COLUMN corrected_time;
     
 	-- ALTER TABLE race
 	-- 	ADD CONSTRAINT FK_race_last_lead_entry_id FOREIGN KEY (last_lead_entry_id) REFERENCES entry (id);    
+
+-- v2026.5.1 to v2026.5.2
+ALTER TABLE direct_race ADD COLUMN start_time_offset NUMERIC(21,0) DEFAULT 0;
