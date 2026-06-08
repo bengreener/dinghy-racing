@@ -34,6 +34,7 @@ import com.bginfosys.dinghyracing.exceptions.DinghyClassMismatchException;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
@@ -72,6 +73,16 @@ public class DirectRace extends Race {
 		this.plannedLaps = plannedLaps;
 		this.type = type;
 		this.startType = startType;
+	}
+	
+	public DirectRace(String name, LocalDateTime plannedStartTime, Fleet fleet, Duration duration, Integer plannedLaps, RaceType type, StartType startType, Duration startTimeOffset) {
+		super(name, fleet);
+		this.plannedStartTime = plannedStartTime;
+		this.duration = duration;
+		this.plannedLaps = plannedLaps;
+		this.type = type;
+		this.startType = startType;
+		this.startTimeOffset = startTimeOffset;
 	}
 	
 	public LocalDateTime getPlannedStartTime() {
