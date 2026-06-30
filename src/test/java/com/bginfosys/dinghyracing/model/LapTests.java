@@ -16,12 +16,20 @@
    
 package com.bginfosys.dinghyracing.model;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Duration;
+import java.util.Set;
 
 import org.junit.jupiter.api.Test;
+
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
 
 public class LapTests {
 
@@ -67,5 +75,20 @@ public class LapTests {
 		lap.setTime(Duration.ofMinutes(14));
 		
 		assertEquals(lap.getTime(), Duration.ofMinutes(14));
+	}
+	
+	@Test
+	void when_settingTimeToZero_then_validationError() {
+		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+		Validator validator = factory.getValidator();
+		
+		Lap lap = new Lap(1, Duration.ofMinutes(0));
+		
+		Set<ConstraintViolation<Lap>> violations = validator.validate(lap);
+		
+		assertFalse(violations.isEmpty());
+		assertThat(violations).hasSize(1);
+		assertThat(violations).extracting(ConstraintViolation::getMessage)
+		  .containsExactlyInAnyOrder("Lap time must be greater than zero");
 	}
 }

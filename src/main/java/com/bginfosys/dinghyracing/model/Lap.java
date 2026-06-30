@@ -43,7 +43,6 @@ public class Lap implements Comparable<Lap> {
 	@NotNull
 	private Integer number;
 	
-//	@NotNull
 	@DurationPositive
 	private Duration time;
 
