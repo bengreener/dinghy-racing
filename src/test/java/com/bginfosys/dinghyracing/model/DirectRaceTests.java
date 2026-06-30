@@ -16,9 +16,11 @@
 
 package com.bginfosys.dinghyracing.model;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -34,9 +36,14 @@ import com.bginfosys.dinghyracing.exceptions.CompetitorAlreadySignedUpException;
 import com.bginfosys.dinghyracing.exceptions.DinghyAlreadySignedUpException;
 import com.bginfosys.dinghyracing.exceptions.DinghyClassMismatchException;
 
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
+
 class DirectRaceTests {
 	
-	// Constructor Tests
+// Constructor Tests
 	@Test
 	void raceCreated() {
 		DirectRace race = new DirectRace();
@@ -59,7 +66,7 @@ class DirectRaceTests {
 		assertEquals(race.getStartType(), StartType.RRS26);
 	}
 
-	// getter and setter tests
+// getter and setter tests
 	@Test
 	void setPlannedStartTime() {
 		Set<DinghyClass> dinghyClasses = new HashSet<DinghyClass>();
@@ -90,7 +97,52 @@ class DirectRaceTests {
 		assertTrue(race.getPlannedStartTime() instanceof LocalDateTime);
 	}
 	
-	// operation tests
+	@Test
+	void when_validatingStartTimeOffset_ZeroIsValid() {
+		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+		Validator validator = factory.getValidator();
+		
+		Set<DinghyClass> dinghyClasses = new HashSet<DinghyClass>();
+		Fleet fleet = new Fleet("Test Fleet", dinghyClasses);
+		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, Duration.ofMinutes(0));
+		
+		Set<ConstraintViolation<DirectRace>> violations = validator.validate(race);
+		
+		assertTrue(violations.isEmpty());
+	}
+	
+	@Test
+	void when_validatingStartTimeOffset_OneIsValid() {
+		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+		Validator validator = factory.getValidator();
+		
+		Set<DinghyClass> dinghyClasses = new HashSet<DinghyClass>();
+		Fleet fleet = new Fleet("Test Fleet", dinghyClasses);
+		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, Duration.ofMinutes(1));
+		
+		Set<ConstraintViolation<DirectRace>> violations = validator.validate(race);
+		
+		assertTrue(violations.isEmpty());
+	}
+	
+	@Test
+	void when_validatingStartTimeOffset_minusOneIsInvalid() {
+		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+		Validator validator = factory.getValidator();
+		
+		Set<DinghyClass> dinghyClasses = new HashSet<DinghyClass>();
+		Fleet fleet = new Fleet("Test Fleet", dinghyClasses);
+		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, Duration.ofMinutes(-1));
+		
+		Set<ConstraintViolation<DirectRace>> violations = validator.validate(race);
+		
+		assertFalse(violations.isEmpty());
+		assertThat(violations).hasSize(1);
+		assertThat(violations).extracting(ConstraintViolation::getMessage)
+		  .containsExactlyInAnyOrder("Duration must be greater than or equal to zero");
+	}
+	
+// operation tests
 	// sign up tests
 	/*
 	 * Signs supplied dinghy and helm up for race
@@ -703,7 +755,7 @@ class DirectRaceTests {
 		assertEquals(4, signedUp2.getPosition());
 	}
 
-	// Fleet Race Position Tests
+// Fleet Race Position Tests
 	// Lap advantage is when an entry gets a better corrected time than another boat with the same or slower handicap by sailing less laps; for example if the wind dies for a previously faster boat on the last lap
 
 	// Same Portsmouth Number

@@ -30,11 +30,11 @@ import org.hibernate.annotations.ColumnDefault;
 import com.bginfosys.dinghyracing.exceptions.CompetitorAlreadySignedUpException;
 import com.bginfosys.dinghyracing.exceptions.DinghyAlreadySignedUpException;
 import com.bginfosys.dinghyracing.exceptions.DinghyClassMismatchException;
+import com.bginfosys.dinghyracing.validation.constraints.DurationPositiveOrZero;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
@@ -46,6 +46,7 @@ public class DirectRace extends Race {
 	private LocalDateTime plannedStartTime;
 	
 	@ColumnDefault("0")
+	@DurationPositiveOrZero
 	private Duration startTimeOffset = Duration.ofSeconds(0);
 	
 	@NotNull
@@ -100,10 +101,6 @@ public class DirectRace extends Race {
 	public void setStartTimeOffset(Duration startTimeOffset) {
 		this.startTimeOffset = startTimeOffset;
 	}
-	
-//	public LocalDateTime getCurrentStartTime() {
-//		return plannedStartTime.plus(startTimeOffset);
-//	}
 
 	public Duration getDuration() {
 		return duration;

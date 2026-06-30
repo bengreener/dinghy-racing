@@ -13,25 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-   
-package com.bginfosys.dinghyracing.validation;
+
+package com.bginfosys.dinghyracing.validation.constraints;
 
 import java.time.Duration;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-import com.bginfosys.dinghyracing.validation.constraints.DurationPositive;
-
-public class DurationPositiveValidator implements ConstraintValidator<DurationPositive, Duration> {
-
+public class DurationPositiveOrZeroValidator implements ConstraintValidator<DurationPositiveOrZero, Duration> {
+	
 	@Override
-    public void initialize(DurationPositive constraintAnnotation) {
+    public void initialize(DurationPositiveOrZero constraintAnnotation) {
     }
 	
 	@Override
 	public boolean isValid(Duration duration, ConstraintValidatorContext context) {
-		return duration != null && !duration.isNegative() && !duration.isZero();
+		return duration != null && (!duration.isNegative() || duration.isZero());
 	}
-
 }
