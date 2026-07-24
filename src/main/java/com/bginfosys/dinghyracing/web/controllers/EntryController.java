@@ -16,7 +16,10 @@
    
 package com.bginfosys.dinghyracing.web.controllers;
 
+import java.time.Duration;
 import java.util.Optional;
+import java.util.SortedSet;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
@@ -114,6 +117,61 @@ public class EntryController implements ApplicationEventPublisherAware {
 		else {
 			responseEntity = new ResponseEntity<Object>(HttpStatus.CONFLICT);
 		}
+		return responseEntity;
+	}
+	
+	/**
+	 * Add laps to entry based on a final lap that provides the number of laps sailed and the time from the start of the race to complete that final lap. 
+	 * Will fail if the number of laps sailed is greater than the number of laps set for the race.
+	 * If number of laps is 0 any time provided will be ignored.
+	 * @param entryId
+	 * @param lapDTO
+	 * @return ResponseEntity<EntityModel<Entry>>
+	 */
+	@Transactional
+	@PatchMapping(path = "/entries/{entryId}/setLapTotal", consumes = "application/json")
+	public ResponseEntity<Object> setLapTotal(@PathVariable("entryId") Long entryId, @RequestBody LapDTO lapDTO) {
+		Optional<Entry> optEntry = entryRepository.findById(entryId);
+		Entry entry = optEntry.get();
+		SortedSet<Lap> laps = new ConcurrentSkipListSet<Lap>();
+		
+		if (lapDTO.getNumber() > 0) {
+			Duration averageLapTime = lapDTO.getTime().dividedBy(lapDTO.getNumber());
+			Duration residualTime = lapDTO.getTime().minus(averageLapTime.multipliedBy(lapDTO.getNumber())); // sum of laps must equal time provided for all laps
+			for (int i = 0; i < lapDTO.getNumber(); i++) {
+				Lap lap;
+				if (i < lapDTO.getNumber() - 1) {
+					lap = new Lap(i + 1, averageLapTime);
+				}
+				else {
+					lap = new Lap(i + 1, averageLapTime.plus(residualTime));
+				}
+				publisher.publishEvent(new BeforeCreateEvent(lap));
+				Lap savedLap = lapRepository.save(lap);
+				publisher.publishEvent(new AfterCreateEvent(savedLap));
+				laps.add(savedLap);
+			}	
+		}		
+		
+		// to avoid DataIntegrityViolationException on FK_entry_laps_laps_id need to clear existing laps and add new laps as separate operations
+		// only triggering before and after link save events once each to avoid excessive calls through client updates from WebSocket notifications.
+		publisher.publishEvent(new BeforeLinkSaveEvent(entry, entry.getLaps()));
+		entry.clearLaps();
+		entry = entryRepository.saveAndFlush(entry);
+		entry.setFinalLaps(laps);
+		entry = entryRepository.save(entry);
+		publisher.publishEvent(new AfterLinkSaveEvent(entry, entry.getLaps()));
+		
+		Class<?> type = entry.getClass();
+		Links links = linkCollector.getLinksFor(entry);
+		EntityModel<Entry> resource = EntityModel.of(entry);
+		resource.add(links);
+		resource.add(entityLinks.linkToItemResource(type, entryId));
+
+		ResponseEntity<Object> responseEntity;
+		responseEntity = ResponseEntity.ok()
+			.header("Content-Type", "application/hal+json")
+			.body(resource);
 		return responseEntity;
 	}
 	

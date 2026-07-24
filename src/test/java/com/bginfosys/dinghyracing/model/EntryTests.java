@@ -30,7 +30,7 @@ import java.util.concurrent.ConcurrentSkipListSet;
 
 import org.junit.jupiter.api.Test;
 
-import com.bginfosys.dinghyracing.exceptions.DinghyClassMismatchException;
+import com.bginfosys.dinghyracing.exceptions.EntryMaxLapsSailedException;
 
 public class EntryTests {
 	
@@ -331,7 +331,7 @@ public class EntryTests {
 		entry.updateLap(newLap5);
 		// swapping out old and new laps was causing a referential integrity error after EntryController method completed :-(
 //		assertEquals(newLap5, entry.getLaps().last());
-		assertEquals(newLap5.getTime(), entry.getLaps().last().getTime());	
+		assertEquals(newLap5.getTime(), entry.getLaps().last().getTime());
 	}
 	
 	@Test
@@ -727,4 +727,109 @@ public class EntryTests {
 		assertTrue(entry1.getOnLastLap());		
 		assertFalse(entry1.getFinishedRace());
 	}
+	
+	@Test
+	void givenEntryHasNoLaps_when_aSetOfFinalLapsIsSet_then_entryIsRecordedAsSailingLaps() {
+		Competitor competitor1 = new Competitor("Bob");
+		DinghyClass graduate = new DinghyClass("Graduate", 2 , 1110);
+		Dinghy dinghy1 = new Dinghy("1234", graduate);
+		Fleet fleet = new Fleet("Test Fleet");
+		DirectRace race = new DirectRace("Race1", LocalDateTime.now(), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		race.signUp(competitor1, dinghy1);
+		Entry entry = race.getSignedUp().stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor1)).findFirst().get().getEntry();
+		SortedSet<Lap> laps = new ConcurrentSkipListSet<Lap>();
+		laps.add(new Lap(1, Duration.ofMinutes(5)));
+		laps.add(new Lap(2, Duration.ofMinutes(5)));
+		laps.add(new Lap(3, Duration.ofMinutes(5)));
+		laps.add(new Lap(4, Duration.ofMinutes(5)));
+		laps.add(new Lap(5, Duration.ofMinutes(5)));
+		entry.setFinalLaps(laps);
+		
+		assertEquals(entry.getSumOfLapTimes(), Duration.ofMinutes(25));
+		assertEquals(entry.getLapsSailed(), 5);
+	}
+
+	@Test
+	void givenEntryHasNoLapsAndRaceHasThreePlannedLaps_when_aSetOfFinalLapsIsSetThatContainsFourLaps_then_throwsEntryMaxLapsSailedException() {
+		Competitor competitor1 = new Competitor("Bob");
+		DinghyClass graduate = new DinghyClass("Graduate", 2 , 1110);
+		Dinghy dinghy1 = new Dinghy("1234", graduate);
+		Fleet fleet = new Fleet("Test Fleet");
+		DirectRace race = new DirectRace("Race1", LocalDateTime.now(), fleet, Duration.ofMinutes(45), 3, RaceType.FLEET, StartType.CSCCLUBSTART);
+		race.signUp(competitor1, dinghy1);
+		Entry entry = race.getSignedUp().stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor1)).findFirst().get().getEntry();
+		SortedSet<Lap> laps = new ConcurrentSkipListSet<Lap>();
+		laps.add(new Lap(1, Duration.ofMinutes(5)));
+		laps.add(new Lap(2, Duration.ofMinutes(5)));
+		laps.add(new Lap(3, Duration.ofMinutes(5)));
+		laps.add(new Lap(4, Duration.ofMinutes(5)));
+		
+		assertThrows(EntryMaxLapsSailedException.class, () -> entry.setFinalLaps(laps));
+	}
+	
+	@Test
+	void givenEntryHasNoLaps_when_aSetOfFinalLapsIsSetAndNumberOfLapsIsEqualToRacePlannedLaps_then_entryIsRecordedAsFinished() {
+		Competitor competitor1 = new Competitor("Bob");
+		DinghyClass graduate = new DinghyClass("Graduate", 2 , 1110);
+		Dinghy dinghy1 = new Dinghy("1234", graduate);
+		Fleet fleet = new Fleet("Test Fleet");
+		DirectRace race = new DirectRace("Race1", LocalDateTime.now(), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		race.signUp(competitor1, dinghy1);
+		Entry entry = race.getSignedUp().stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor1)).findFirst().get().getEntry();
+		SortedSet<Lap> laps = new ConcurrentSkipListSet<Lap>();
+		laps.add(new Lap(1, Duration.ofMinutes(5)));
+		laps.add(new Lap(2, Duration.ofMinutes(5)));
+		laps.add(new Lap(3, Duration.ofMinutes(5)));
+		laps.add(new Lap(4, Duration.ofMinutes(5)));
+		laps.add(new Lap(5, Duration.ofMinutes(5)));
+		entry.setFinalLaps(laps);
+		
+		assertTrue(entry.getFinishedRace());
+	}
+	
+	@Test
+	void givenEntryHasSailedLaps_when_aSetOfFinalLapsIsSet_then_entryIsRecordedAsSailingLapsOnlyLapsInFinalSet() {
+		Competitor competitor1 = new Competitor("Bob");
+		DinghyClass graduate = new DinghyClass("Graduate", 2 , 1110);
+		Dinghy dinghy1 = new Dinghy("1234", graduate);
+		Fleet fleet = new Fleet("Test Fleet");
+		DirectRace race = new DirectRace("Race1", LocalDateTime.now(), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		race.signUp(competitor1, dinghy1);
+		Entry entry = race.getSignedUp().stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor1)).findFirst().get().getEntry();
+		SortedSet<Lap> laps1 = new ConcurrentSkipListSet<Lap>();
+		laps1.add(new Lap(1, Duration.ofMinutes(5)));
+		laps1.add(new Lap(2, Duration.ofMinutes(5)));
+		entry.setLaps(laps1);
+		
+		SortedSet<Lap> laps2 = new ConcurrentSkipListSet<Lap>();
+		laps2.add(new Lap(1, Duration.ofMinutes(1)));
+		laps2.add(new Lap(2, Duration.ofMinutes(2)));
+		laps2.add(new Lap(3, Duration.ofMinutes(3)));
+		entry.setFinalLaps(laps2);
+		
+		assertEquals(entry.getSumOfLapTimes(), Duration.ofMinutes(6));
+		assertEquals(entry.getLapsSailed(), 3);
+	}
+	
+	@Test
+	void givenEntryHasSailedLaps_when_aEmptySetOfFinalLapsIsSet_then_entryIsRecordedAsSailingNoLaps() {
+		Competitor competitor1 = new Competitor("Bob");
+		DinghyClass graduate = new DinghyClass("Graduate", 2 , 1110);
+		Dinghy dinghy1 = new Dinghy("1234", graduate);
+		Fleet fleet = new Fleet("Test Fleet");
+		DirectRace race = new DirectRace("Race1", LocalDateTime.now(), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		race.signUp(competitor1, dinghy1);
+		Entry entry = race.getSignedUp().stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor1)).findFirst().get().getEntry();
+		SortedSet<Lap> laps1 = new ConcurrentSkipListSet<Lap>();
+		laps1.add(new Lap(1, Duration.ofMinutes(5)));
+		laps1.add(new Lap(2, Duration.ofMinutes(5)));
+		entry.setLaps(laps1);
+		
+		SortedSet<Lap> laps2 = new ConcurrentSkipListSet<Lap>();
+		entry.setFinalLaps(laps2);
+		
+		assertEquals(entry.getSumOfLapTimes(), Duration.ofMinutes(0));
+		assertEquals(entry.getLapsSailed(), 0);
+	}
+	
 }

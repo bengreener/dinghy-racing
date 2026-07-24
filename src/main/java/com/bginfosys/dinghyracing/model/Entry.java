@@ -38,6 +38,7 @@ import jakarta.validation.constraints.Size;
 import org.hibernate.annotations.NaturalId;
 
 import com.bginfosys.dinghyracing.exceptions.DinghyClassMismatchException;
+import com.bginfosys.dinghyracing.exceptions.EntryMaxLapsSailedException;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
@@ -249,7 +250,7 @@ public class Entry {
 		if (getFinishedRace() || (scoringAbbreviation != null && scoringAbbreviation != "")) {
 			return false;
 		}
-		boolean result = laps.add(lap); 
+		boolean result = laps.add(lap);
 		if (result) {
 			this.signedUpTo.forEach(s -> s.getRace().updatePositions(s));
 			updateProgressIndicators();
@@ -264,6 +265,22 @@ public class Entry {
 			updateProgressIndicators();
 		}
 		return result;
+	}
+	
+	public void clearLaps() {
+		laps.clear();
+	}
+	
+	// Set laps for the race based on a totals laps that provides the number of laps sailed and total time to the end of the last lap
+	public void setFinalLaps(SortedSet<Lap> finalLaps) {
+		if (finalLaps.size() > this.getDirectRace().getPlannedLaps()) {
+			throw new EntryMaxLapsSailedException();
+		}
+		// to avoid 'A collection with orphan deletion was no longer referenced by the owning entity instance' remove existing laps from this.laps and add new laps
+		laps.clear();
+		laps.addAll(finalLaps);
+		this.signedUpTo.forEach(s -> s.getRace().updatePositions(s));
+		updateProgressIndicators();
 	}
 	
 	// only the last recorded lap can be updated
