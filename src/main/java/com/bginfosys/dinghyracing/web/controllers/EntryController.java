@@ -155,8 +155,8 @@ public class EntryController implements ApplicationEventPublisherAware {
 		
 		// to avoid DataIntegrityViolationException on FK_entry_laps_laps_id need to clear existing laps and add new laps as separate operations
 		// only triggering before and after link save events once each to avoid excessive calls through client updates from WebSocket notifications.
-		publisher.publishEvent(new BeforeLinkSaveEvent(entry, entry.getLaps()));
 		entry.clearLaps();
+		publisher.publishEvent(new BeforeLinkSaveEvent(entry, entry.getLaps()));
 		entry = entryRepository.saveAndFlush(entry);
 		entry.setFinalLaps(laps);
 		entry = entryRepository.save(entry);
