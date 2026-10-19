@@ -36,4 +36,9 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Project transient ###
 /create.sql
+results/
+
+
