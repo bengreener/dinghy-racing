@@ -155,6 +155,11 @@ public class Race implements Serializable {
 		
 	};
 	
+	public Boolean singleHandedOnly() {
+		//assume an open handicap allows two handed+ boats
+		return !(fleet.getDinghyClasses().size() == 0 || fleet.getDinghyClasses().stream().anyMatch(dc -> dc.getCrewSize() > 1));
+	}
+	
 	@Override
 	public String toString() {
 		return "Race [id=" + id + ", version=" + version + ", name=" + name + ", fleet=" + fleet + "]";

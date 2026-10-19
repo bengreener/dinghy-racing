@@ -38,7 +38,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
-public class DirectRace extends Race {
+public class DirectRace extends Race implements RaceResult {
 	
 	private static final long serialVersionUID = 1L;
 

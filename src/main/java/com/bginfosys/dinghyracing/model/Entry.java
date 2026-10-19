@@ -182,7 +182,7 @@ public class Entry {
 	/**
 	 * Return true if the boat has finished the race
 	 */
-	public boolean getFinishedRace() {
+	public Boolean getFinishedRace() {
 		return finishedRace;
 	}
 	
@@ -196,14 +196,14 @@ public class Entry {
 	/**
 	 * Get the number of laps sailed by this entry
 	 */
-	public int getLapsSailed() {
+	public Integer getLapsSailed() {
 		return laps.size();
 	}
 	
 	/**
 	 * Return true of the boat is on it's last lap of the race
 	 */
-	public boolean getOnLastLap() {
+	public Boolean getOnLastLap() {
 		return this.onLastLap;
 	}
 	
@@ -224,7 +224,7 @@ public class Entry {
 		return null;
 	}
 
-	public boolean addSignedUp(SignedUp signedUp) {
+	public Boolean addSignedUp(SignedUp signedUp) {
 		return signedUpTo.add(signedUp);
 	}
 	
@@ -246,11 +246,11 @@ public class Entry {
 	/**
 	 * If boat has not finished the race add a new lap
 	 */
-	public boolean addLap(Lap lap) {
+	public Boolean addLap(Lap lap) {
 		if (getFinishedRace() || (scoringAbbreviation != null && scoringAbbreviation != "")) {
 			return false;
 		}
-		boolean result = laps.add(lap);
+		Boolean result = laps.add(lap);
 		if (result) {
 			this.signedUpTo.forEach(s -> s.getRace().updatePositions(s));
 			updateProgressIndicators();
@@ -258,8 +258,8 @@ public class Entry {
 		return result;
 	}
 	
-	public boolean removeLap(Lap lap) {
-		boolean result = laps.remove(lap); 
+	public Boolean removeLap(Lap lap) {
+		Boolean result = laps.remove(lap); 
 		if (result) {
 			this.signedUpTo.forEach(s -> s.getRace().updatePositions(s));
 			updateProgressIndicators();

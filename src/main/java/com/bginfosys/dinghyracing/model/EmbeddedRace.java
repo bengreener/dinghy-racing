@@ -34,7 +34,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 
 @Entity
-public class EmbeddedRace extends Race {
+public class EmbeddedRace extends Race implements RaceResult {
 
 	private static final long serialVersionUID = 1L;
 		
@@ -243,7 +243,7 @@ public class EmbeddedRace extends Race {
 		}
 	}
 	
-public class PursuitSignedUpEntriesComparator implements Comparator<SignedUp> {
+	public class PursuitSignedUpEntriesComparator implements Comparator<SignedUp> {
 		
 		@Override
 		public int compare(SignedUp signedUp1, SignedUp signedUp2) {
