@@ -18,6 +18,7 @@ package com.bginfosys.dinghyracing.web.controllers;
 
 import java.time.Duration;
 import java.util.Optional;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.concurrent.ConcurrentSkipListSet;
 
@@ -45,6 +46,10 @@ import com.bginfosys.dinghyracing.persistence.EntryRepository;
 import com.bginfosys.dinghyracing.persistence.LapRepository;
 import com.bginfosys.dinghyracing.web.dto.LapDTO;
 
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Validator;
+
 @RepositoryRestController
 public class EntryController implements ApplicationEventPublisherAware {
 	
@@ -58,12 +63,15 @@ public class EntryController implements ApplicationEventPublisherAware {
 
 	private ApplicationEventPublisher publisher;
 	
+	private Validator validator;
+	
 	EntryController(EntryRepository entryRepository, LapRepository lapRepository, RepositoryEntityLinks entityLinks, 
-			LinkCollector linkCollector) {
+			LinkCollector linkCollector, Validator validator) {
 		this.entryRepository = entryRepository;
 		this.lapRepository = lapRepository;
 		this.entityLinks = entityLinks;
 		this.linkCollector = linkCollector;
+		this.validator = validator;
 	}
 
 	@Override
@@ -219,6 +227,11 @@ public class EntryController implements ApplicationEventPublisherAware {
 		}
 		else {
 			lap = new Lap(entry.getLapsSailed(), lapDTO.getTime());
+		}
+		// validate lap here to avoid masking constraint violations in a transaction rollback exception later
+		Set<ConstraintViolation<Lap>> violations = validator.validate(lap);
+		if (!violations.isEmpty()) {
+			throw new ConstraintViolationException(violations);
 		}
 		
 		entry.updateLap(lap);
