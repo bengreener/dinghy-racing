@@ -29,13 +29,10 @@ import jakarta.persistence.Version;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
-import jakarta.persistence.Transient;
 
 import java.util.Set;
 import java.util.stream.Stream;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -50,9 +47,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class Race implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
-
-	@Transient
-	Logger logger = LoggerFactory.getLogger(Race.class);
 	
 	protected @Id @GeneratedValue Long id;
 	protected @Version @JsonIgnore Long version;
@@ -142,6 +136,11 @@ public class Race implements Serializable {
 		}
 		return null;
 	}
+	
+	// This method should be overridden in any subtype it is here to allow Race to implement RaceResult and support cast for subtypes without using instanceof
+//	public RaceType getType() {
+//		return null;
+//	}
 	
 	public boolean onLastLap(Entry entry) {
 		return false;

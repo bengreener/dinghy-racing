@@ -1,47 +1,61 @@
--- v2026.5.2
+-- v2026.10.1
 CREATE DATABASE IF NOT EXISTS `dinghy_racing` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
 
 USE dinghy_racing;
 
 CREATE TABLE competitor_seq (
-	next_val BIGINT
+	next_val BIGINT NOT NULL,
+	PRIMARY KEY (next_val)
 ) engine=InnoDB;
-INSERT INTO competitor_seq VALUES ( 1 );
+INSERT INTO competitor_seq VALUES ( 50 );
 
 CREATE TABLE dinghy_seq (
-	next_val BIGINT
+	next_val BIGINT NOT NULL,
+	PRIMARY KEY (next_val)
 ) engine=InnoDB;
-INSERT INTO dinghy_seq VALUES ( 1 );
+INSERT INTO dinghy_seq VALUES ( 50 );
 
 CREATE TABLE dinghy_class_seq (
-	next_val BIGINT
+	next_val BIGINT NOT NULL,
+	PRIMARY KEY (next_val)
 ) engine=InnoDB;
-INSERT INTO dinghy_class_seq VALUES ( 1 );
+INSERT INTO dinghy_class_seq VALUES ( 50 );
 
 CREATE TABLE fleet_seq (
-	next_val BIGINT
+	next_val BIGINT NOT NULL,
+	PRIMARY KEY (next_val)
 ) engine=InnoDB;
-INSERT INTO fleet_seq VALUES ( 1 );
+INSERT INTO fleet_seq VALUES ( 50 );
 
 CREATE TABLE entry_seq (
-	next_val BIGINT
+	next_val BIGINT NOT NULL,
+	PRIMARY KEY (next_val)
 ) engine=InnoDB;
-INSERT INTO entry_seq VALUES ( 1 );
+INSERT INTO entry_seq VALUES ( 50 );
 
 CREATE TABLE lap_seq (
-	next_val BIGINT
+	next_val BIGINT NOT NULL,
+	PRIMARY KEY (next_val)
 ) engine=InnoDB;
-INSERT INTO lap_seq VALUES ( 1 );
+INSERT INTO lap_seq VALUES ( 50 );
 
 CREATE TABLE race_seq (
-	next_val BIGINT
+	next_val BIGINT NOT NULL,
+	PRIMARY KEY (next_val)
 ) engine=InnoDB;
-INSERT INTO race_seq VALUES ( 1 );
+INSERT INTO race_seq VALUES ( 50 );
 
 CREATE TABLE signed_up_seq (
-	next_val BIGINT
+	next_val BIGINT NOT NULL,
+	PRIMARY KEY (next_val)
 ) engine=InnoDB;
-INSERT INTO signed_up_seq VALUES ( 1 );
+INSERT INTO signed_up_seq VALUES ( 50 );
+
+CREATE TABLE dropbox_token_seq (
+	next_val BIGINT NOT NULL,
+  PRIMARY KEY (next_val)
+) engine=InnoDB;
+INSERT INTO dropbox_token_seq VALUES ( 50 );
 
 CREATE TABLE competitor (
 	id BIGINT NOT NULL, 
@@ -154,6 +168,14 @@ CREATE TABLE embedded_race_hosts (
     hosts_id BIGINT NOT NULL,
     CONSTRAINT PK_embedded_race_hosts_embedded_race_id_hosts_id PRIMARY KEY (embedded_race_id, hosts_id)
 ) engine=InnoDB;
+
+CREATE TABLE dropbox_token (
+  id BIGINT NOT NULL,
+  access_token VARCHAR(2048) DEFAULT NULL,
+  refresh_token VARCHAR(255) DEFAULT NULL,
+  expires_at BIGINT DEFAULT NULL,
+  PRIMARY KEY (id)
+) ENGINE=InnoDB;
 
 ALTER TABLE race ADD CONSTRAINT FK_race_fleet_id FOREIGN KEY (fleet_id) REFERENCES fleet (id);
 ALTER TABLE race ADD CONSTRAINT FK_race_last_lead_entry_id FOREIGN KEY (last_lead_entry_id) REFERENCES entry (id);

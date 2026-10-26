@@ -119,6 +119,7 @@ public class DirectRace extends Race implements RaceResult {
 		signedUp.forEach(signedUp -> signedUp.getEntry().updateProgressIndicators());
 	}
 
+	@Override
 	public RaceType getType() {
 		return type;
 	}

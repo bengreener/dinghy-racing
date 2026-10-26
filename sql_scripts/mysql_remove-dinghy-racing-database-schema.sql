@@ -1,4 +1,5 @@
--- v2026.5.1
+-- v2026.10.1
+USE dinghy_racing;
 
 ALTER TABLE signed_up DROP CONSTRAINT FK_signed_up_race_id;
 ALTER TABLE signed_up DROP CONSTRAINT FK_signed_up_entry_id;
@@ -25,6 +26,7 @@ DROP TABLE entry_seq;
 DROP TABLE race_seq;
 DROP TABLE fleet_seq;
 DROP TABLE signed_up_seq;
+DROP TABLE dropbox_token_seq;
 
 DROP TABLE embedded_race_hosts;
 DROP TABLE competitor;
@@ -39,3 +41,4 @@ DROP TABLE direct_race;
 DROP TABLE embedded_race;
 DROP TABLE fleet_dinghy_classes;
 DROP TABLE fleet;
+DROP TABLE dropbox_token;

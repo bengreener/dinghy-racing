@@ -16,24 +16,47 @@
 
 package com.bginfosys.dinghyracing.web.controllers;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.data.rest.webmvc.BasePathAwareController;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.bginfosys.dinghyracing.service.DropboxService;
+import com.bginfosys.dinghyracing.service.ExportService;
+import com.bginfosys.dinghyracing.web.dto.DropboxUrlDTO;
 
-@Controller
+@BasePathAwareController
+@ConditionalOnBean(com.bginfosys.dinghyracing.service.DropboxService.class)
 public class DropboxController {
-
+	
 	private final DropboxService dropboxService;
 	
-	public DropboxController(DropboxService dropboxService) {
+	private final ExportService exportService;
+	
+	public DropboxController(DropboxService dropboxService, ExportService exportService) {
 		this.dropboxService = dropboxService;
+		this.exportService = exportService;
 	}
 	
-	@PostMapping("dinghyracing/api/dropbox/transferResultsFilesToDropbox")
-	public ResponseEntity<Object> transferResultsFilesToDropbox() {
-		dropboxService.transferResultsFilesToDropbox();
+	@GetMapping("/dropbox/getAuthUrl")
+	public ResponseEntity<DropboxUrlDTO> getDroboxAuthUrl() {
+		DropboxUrlDTO dropboxUrlDTO = new DropboxUrlDTO(dropboxService.getAuthUrl());
+		return ResponseEntity.ok(dropboxUrlDTO);
+	}
+	
+	@PostMapping("/dropbox/getAuthTokens")
+	public ResponseEntity<Object> getDropboxAuthTokens(@RequestParam(value="code") String code) {
+		dropboxService.getOAuthTokensFromCode(code);
 		return ResponseEntity.ok().build();
 	}
+	
+	@PostMapping("/dropbox/transferResultsFilesToDropbox")
+	public ResponseEntity<Object> transferResultsFilesToDropbox() {
+		dropboxService.transferResultsFilesToDropbox();
+		exportService.deleteAllResultsFiles();
+		return ResponseEntity.ok().build();
+	}
+	
 }

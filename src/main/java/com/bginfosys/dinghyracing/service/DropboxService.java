@@ -16,61 +16,117 @@
 
 package com.bginfosys.dinghyracing.service;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 import java.util.stream.Stream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
+import com.bginfosys.dinghyracing.model.DropboxToken;
+import com.bginfosys.dinghyracing.persistence.DropboxTokenRepository;
+import com.dropbox.core.DbxAppInfo;
+import com.dropbox.core.DbxAuthFinish;
 import com.dropbox.core.DbxException;
 import com.dropbox.core.DbxRequestConfig;
+import com.dropbox.core.DbxWebAuth;
+import com.dropbox.core.TokenAccessType;
+import com.dropbox.core.BadRequestException;
+import com.dropbox.core.oauth.DbxCredential;
 import com.dropbox.core.v2.DbxClientV2;
-import com.dropbox.core.v2.files.UploadErrorException;
 
 @Service
+@ConditionalOnProperty(value= {"dropbox-appname", "dropbox-appkey", "dropbox-appsecret"})
 public class DropboxService {
 	
-	private final DbxRequestConfig config;
+	private Logger logger = LoggerFactory.getLogger(DropboxService.class);
+			
+	private final String appKey;
 	
-	private final DbxClientV2 client;
+	private final String appSecret;
 	
-	public DropboxService(String accessToken) {
-		super();
-		// Create Dropbox client
-        this.config = DbxRequestConfig.newBuilder("DinghyRacingResultsUploader").build();
-        this.client = new DbxClientV2(config, accessToken);
+	private final String appName;
+	
+	private final DropboxTokenRepository dropboxTokenRepository;
+	
+	public DropboxService(@Value("${dropbox-appkey}") String appKey, @Value("${dropbox-appsecret}") String appSecret,
+			@Value("${dropbox-appname}") String appName, DropboxTokenRepository dropboxTokenRepository) {
+		this.appKey = appKey;
+		this.appSecret = appSecret;
+		this.appName = appName;
+		this.dropboxTokenRepository = dropboxTokenRepository;
+	}
+	
+	public String getAuthUrl() {
+		DbxRequestConfig config = DbxRequestConfig.newBuilder(appName).build();
+		DbxAppInfo appInfo = new DbxAppInfo(appKey, appSecret);
+		DbxWebAuth auth = new DbxWebAuth(config, appInfo);
+		DbxWebAuth.Request authRequest = DbxWebAuth.newRequestBuilder()
+				.withNoRedirect().withTokenAccessType(TokenAccessType.OFFLINE).build();
+		return auth.authorize(authRequest);
+	}
+	
+	public void getOAuthTokensFromCode(String code) {
+		// Exceptions are handled by converting to RuntimeExceptions and using RestControllerAdvice to notify user
+		// Expecting token issues that require user intervention to resolve i.e. generating a new OAuth code
+		DbxRequestConfig config = DbxRequestConfig.newBuilder(appName).build();
+		DbxAppInfo appInfo = new DbxAppInfo(appKey, appSecret);
+		DbxWebAuth auth = new DbxWebAuth(config, appInfo);
+		try {
+			DbxAuthFinish authFinish = auth.finishFromCode(code);
+			dropboxTokenRepository.save(new DropboxToken(authFinish.getAccessToken(), authFinish.getRefreshToken(), authFinish.getExpiresAt()));	
+		}
+		catch (BadRequestException exception) {
+			logger.error("DropboxService.getOAuthTokensFromCode" + exception.getMessage());
+			throw new DropboxException(exception.getMessage(), exception);
+		}
+		catch (DbxException exception) {
+			logger.error("DropboxService.getOAuthTokensFromCode" + exception.getMessage());
+			throw new DropboxException(exception.getMessage(), exception);
+		}
 	}
 	
 	public void transferResultsFilesToDropbox() {
-		try (Stream<Path> paths = Files.list(Paths.get("results"))) {
-			paths.forEach(p -> {
-				try (InputStream inputStream = Files.newInputStream(p)) {
-					transferFileToDropbox(inputStream, p.getFileName().toString());
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}	
-			});
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		Optional<DropboxToken> optDropboxToken = dropboxTokenRepository.findFirstByOrderByIdDesc();
+		if (optDropboxToken.isPresent()) {
+			DropboxToken dropboxToken = optDropboxToken.get();
+			DbxRequestConfig config = DbxRequestConfig.newBuilder(appName).build();
+			DbxCredential credential = new DbxCredential(dropboxToken.getAccessToken(), dropboxToken.getExpiresAt(), dropboxToken.getRefreshToken(), appKey, appSecret);
+			DbxClientV2 client = new DbxClientV2(config, credential);
+			try (Stream<Path> paths = Files.list(Paths.get("results"))) {
+				paths.forEach(p -> {
+					try (InputStream inputStream = Files.newInputStream(p)) {
+						transferFileToDropbox(client, inputStream, p.getFileName().toString());
+					} catch (IOException exception) {
+						logger.error("DropboxService.transferResultsFilesToDropbox" + exception.getMessage());
+						throw new DropboxException(exception.getMessage(), exception);
+					}	
+				});
+			} catch (IOException exception) {
+				logger.error("DropboxService.transferResultsFilesToDropbox" + exception.getMessage());
+				throw new DropboxException(exception.getMessage(), exception);
+			}	
+		}
+		else {
+			logger.debug("DropboxService.transferResultsFilesToDropbox Dropbox token not found for results transfer to Dropbox.");
+			throw new DropboxException("Dropbox token not found for results transfer to Dropbox.");
 		}
 	}
 	
-	public void transferFileToDropbox(InputStream inputStream, String filename) throws IOException {
+	private void transferFileToDropbox(DbxClientV2 client, InputStream inputStream, String filename) {
 		try {
             client.files().uploadBuilder("/" + filename).uploadAndFinish(inputStream);
         }
-		catch (UploadErrorException ex) {
-			throw new IOException(ex);
-		}
-		catch (DbxException ex) {
-			throw new IOException(ex);
+		catch (Exception exception) {
+			logger.error("DropboxService.transferFilesToDropbox" + exception.getMessage());
+			throw new DropboxException(exception.getMessage(), exception);
 		}
 	}
 }

@@ -23,4 +23,8 @@ public class RaceNotFoundException extends DomainRuleException {
 	public RaceNotFoundException(Long id) {
 		super("Could not find race with id " + id);
 	}
+	
+	public RaceNotFoundException(String uri) {
+		super("Could not find race with uri " + uri);
+	}
 }

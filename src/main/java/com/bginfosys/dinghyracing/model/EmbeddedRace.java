@@ -59,6 +59,7 @@ public class EmbeddedRace extends Race implements RaceResult {
 		this.hosts = hosts;
 	}
 	
+	@Override
 	public RaceType getType() {
 		// get type of hosts (all hosts must be of the same type)
 		DirectRace hostRace = (DirectRace) hosts.toArray()[0];
