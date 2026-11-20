@@ -56,13 +56,13 @@ INSERT INTO race (id, name, fleet_id, version)
 INSERT INTO race (id, name, fleet_id, version) 
 	VALUES (6, "Ladies A", 4, 0);
 	
-INSERT INTO direct_race (id, duration, planned_laps, planned_start_time, `type`, start_type, grand_prix_finish) 
+INSERT INTO direct_race (id, duration, planned_laps, planned_start_time, `type`, start_type, chequered_flag_finish) 
 	VALUES (1, 2700000000000, 5, "2026-4-24 14:10:00", "FLEET", "CSCCLUBSTART", 0);
-INSERT INTO direct_race (id, duration, planned_laps, planned_start_time, `type`, start_type, grand_prix_finish) 
+INSERT INTO direct_race (id, duration, planned_laps, planned_start_time, `type`, start_type, chequered_flag_finish) 
 	VALUES (2, 2700000000000, 4, "2026-4-24 14:30:00", "FLEET", "CSCCLUBSTART", 0);
-INSERT INTO direct_race (id, duration, planned_laps, planned_start_time, `type`, start_type, grand_prix_finish) 
+INSERT INTO direct_race (id, duration, planned_laps, planned_start_time, `type`, start_type, chequered_flag_finish) 
 	VALUES (3, 2700000000000, 4, "2026-4-24 14:30:00", "FLEET", "CSCCLUBSTART", 0);
-INSERT INTO direct_race (id, duration, planned_laps, planned_start_time, `type`, start_type, grand_prix_finish) 
+INSERT INTO direct_race (id, duration, planned_laps, planned_start_time, `type`, start_type, chequered_flag_finish) 
 	VALUES (4, 2700000000000, 4, "2026-4-24 14:10:00", "FLEET", "CSCCLUBSTART", 0);
 
 INSERT INTO embedded_race (id) VALUES (5);

@@ -64,23 +64,23 @@ public class DirectRace extends Race implements RaceResult {
 	private StartType startType;
 	
 	@NotNull
-	private Boolean grandPrixFinish;
+	private Boolean chequeredFlagFinish;
 	
 	public DirectRace() {
 		super();
 	};
 	
-	public DirectRace(String name, LocalDateTime plannedStartTime, Fleet fleet, Duration duration, Integer plannedLaps, RaceType type, StartType startType, Boolean grandPrixFinish) {
+	public DirectRace(String name, LocalDateTime plannedStartTime, Fleet fleet, Duration duration, Integer plannedLaps, RaceType type, StartType startType, Boolean chequeredFlagFinish) {
 		super(name, fleet);
 		this.plannedStartTime = plannedStartTime;
 		this.duration = duration;
 		this.plannedLaps = plannedLaps;
 		this.type = type;
 		this.startType = startType;
-		this.grandPrixFinish = grandPrixFinish;
+		this.chequeredFlagFinish = chequeredFlagFinish;
 	}
 	
-	public DirectRace(String name, LocalDateTime plannedStartTime, Fleet fleet, Duration duration, Integer plannedLaps, RaceType type, StartType startType, Duration startTimeOffset, Boolean grandPrixFinish) {
+	public DirectRace(String name, LocalDateTime plannedStartTime, Fleet fleet, Duration duration, Integer plannedLaps, RaceType type, StartType startType, Duration startTimeOffset, Boolean chequeredFlagFinish) {
 		super(name, fleet);
 		this.plannedStartTime = plannedStartTime;
 		this.duration = duration;
@@ -88,7 +88,7 @@ public class DirectRace extends Race implements RaceResult {
 		this.type = type;
 		this.startType = startType;
 		this.startTimeOffset = startTimeOffset;
-		this.grandPrixFinish = grandPrixFinish;
+		this.chequeredFlagFinish = chequeredFlagFinish;
 	}
 	
 	public LocalDateTime getPlannedStartTime() {
@@ -140,12 +140,12 @@ public class DirectRace extends Race implements RaceResult {
 		this.startType = startType;
 	}
 	
-	public Boolean getGrandPrixFinish() {
-		return grandPrixFinish;
+	public Boolean getChequeredFlagFinish() {
+		return chequeredFlagFinish;
 	}
 
-	public void setGrandPrixFinish(Boolean grandPrixFinish) {
-		this.grandPrixFinish = grandPrixFinish;
+	public void setChequeredFlagFinish(Boolean chequeredFlagFinish) {
+		this.chequeredFlagFinish = chequeredFlagFinish;
 	}
 	
 	/**
@@ -381,7 +381,7 @@ public class DirectRace extends Race implements RaceResult {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(duration, fleet, id, name, plannedLaps, startTimeOffset, plannedStartTime, startType, type, version, grandPrixFinish);
+		return Objects.hash(duration, fleet, id, name, plannedLaps, startTimeOffset, plannedStartTime, startType, type, version, chequeredFlagFinish);
 	}
 
 	@Override
@@ -400,7 +400,7 @@ public class DirectRace extends Race implements RaceResult {
 				&& Objects.equals(startTimeOffset, other.startTimeOffset)
 				&& startType == other.startType
 				&& type == other.type && Objects.equals(version, other.version)
-				&& grandPrixFinish == other.grandPrixFinish;
+				&& chequeredFlagFinish == other.chequeredFlagFinish;
 	}
 	
 	public class PursuitSignedUpEntriesComparator implements Comparator<SignedUp> {

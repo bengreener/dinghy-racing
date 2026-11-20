@@ -49,7 +49,7 @@ public class RaceService {
 	@Transactional
 	public Race updateProgressIndicators(DirectRace race) {
 		Set<Entry> entriesSet = race.getSignedUp().stream().map(SignedUp::getEntry).filter(e -> e.getScoringAbbreviation() == "").collect(Collectors.toSet()); // hopefully more effecient to create this set and convert to stream as required than to keep filtering entries from Set<SignedUp> 
-		if(race.getGrandPrixFinish()) {
+		if(race.getChequeredFlagFinish()) {
 			// get the fastest entry that has sailed the course, if any
 			Optional<Entry> optFirstFinisher = entriesSet.stream().filter(e -> e.getLapsSailed() == race.getPlannedLaps()).sorted((e1, e2) -> e1.getSumOfLapTimes().compareTo(e2.getSumOfLapTimes())).findFirst();
 			if (optFirstFinisher.isPresent()) {
@@ -67,7 +67,7 @@ public class RaceService {
 				return race;
 			}
 		}
-		// not a grand prix finish or no winning entry so positions based on number of laps sailed and course length
+		// not a chequered flag finish finish or no winning entry so positions based on number of laps sailed and course length
 		entriesSet.forEach(e -> {
 			e.setFinishedRace(e.getLapsSailed() == race.getPlannedLaps());
 			e.setOnLastLap(e.getLapsSailed() == (race.getPlannedLaps() - 1));

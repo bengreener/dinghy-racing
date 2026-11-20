@@ -42,7 +42,7 @@ INSERT INTO dinghy (id, sail_number, dinghy_class_id, version) VALUES (4, "28345
 INSERT INTO race (id, name, fleet_id, version) 
 	VALUES (1, "Pursuit A", 1, 0);
 	
-INSERT INTO direct_race (id, duration, planned_laps, planned_start_time, `type`, start_type, grand_prix_finish) 
+INSERT INTO direct_race (id, duration, planned_laps, planned_start_time, `type`, start_type, chequered_flag_finish) 
 	VALUES (1, 2700000000000, 5, "2025-04-03 9:10:00", "PURSUIT", "RRS26", 0);
 
 INSERT INTO entry (id, helm_id, dinghy_id, crew_id, on_last_lap, finished_race, version) VALUES (1, 1, 1, null, FALSE, FALSE, 0);

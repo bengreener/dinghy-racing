@@ -118,7 +118,7 @@ CREATE TABLE direct_race (
 	start_time_offset NUMERIC(21,0) DEFAULT 0, 
 	type ENUM ('FLEET','PURSUIT') NOT NULL, 
 	start_type ENUM ('CSCCLUBSTART','RRS26') NOT NULL,
-	grand_prix_finish TINYINT NOT NULL,
+	chequered_flag_finish TINYINT NOT NULL,
 	CONSTRAINT PK_direct_race_id PRIMARY KEY (id)
 ) engine=InnoDB;
 

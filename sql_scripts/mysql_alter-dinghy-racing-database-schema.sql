@@ -228,5 +228,5 @@ CREATE TABLE dropbox_token (
   PRIMARY KEY (id)
 ) ENGINE=InnoDB;
 
-ALTER TABLE direct_race ADD COLUMN grand_prix_finish TINYINT NOT NULL;
+ALTER TABLE direct_race ADD COLUMN chequered_flag_finish TINYINT NOT NULL;
 
