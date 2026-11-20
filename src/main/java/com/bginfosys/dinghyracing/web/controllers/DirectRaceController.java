@@ -47,15 +47,19 @@ import com.bginfosys.dinghyracing.model.Competitor;
 import com.bginfosys.dinghyracing.model.Dinghy;
 import com.bginfosys.dinghyracing.model.DirectRace;
 import com.bginfosys.dinghyracing.model.Entry;
+import com.bginfosys.dinghyracing.model.Race;
 import com.bginfosys.dinghyracing.model.SignedUp;
 import com.bginfosys.dinghyracing.persistence.DirectRaceRepository;
 import com.bginfosys.dinghyracing.persistence.EntryRepository;
+import com.bginfosys.dinghyracing.service.RaceService;
 import com.bginfosys.dinghyracing.web.dto.SignUpDTO;
 
 import jakarta.transaction.Transactional;
 
 @RepositoryRestController
 public class DirectRaceController implements ApplicationEventPublisherAware {
+	
+	private final RaceService raceService;
 	
 	private final DirectRaceRepository raceRepository;
 	
@@ -73,9 +77,10 @@ public class DirectRaceController implements ApplicationEventPublisherAware {
 	
 	private ApplicationEventPublisher publisher;
 	
-	DirectRaceController(DirectRaceRepository raceRepository, PersistentEntities persistentEntities, RepositoryInvokerFactory repositoryInvokerFactory,
+	DirectRaceController(RaceService raceService, DirectRaceRepository raceRepository, PersistentEntities persistentEntities, RepositoryInvokerFactory repositoryInvokerFactory,
 			@Qualifier("mvcConversionService") ConversionService conversionService, EntryRepository entryRepository, RepositoryEntityLinks entityLinks, 
 			LinkCollector linkCollector) {
+		this.raceService = raceService;
 		this.raceRepository = raceRepository;
 		this.persistentEntities = persistentEntities;
 		this.repositoryInvokerFactory = repositoryInvokerFactory;
@@ -88,6 +93,22 @@ public class DirectRaceController implements ApplicationEventPublisherAware {
 	@Override
 	public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
 		this.publisher = applicationEventPublisher;
+	}
+	
+	@PatchMapping(path = "/directRaces/{raceId}/updateCourse")
+	public ResponseEntity<EntityModel<Race>> updateCourse(@PathVariable("raceId") Long raceId, @RequestParam(name = "plannedLaps") Integer plannedLaps) {
+		Race race = raceService.updateCourse(raceId, plannedLaps);
+		
+		ResponseEntity<EntityModel<Race>> responseEntity;
+		Class<?> clazz = race.getClass();
+		Links links = linkCollector.getLinksFor(race);
+		EntityModel<Race> resource = EntityModel.of(race);
+		resource.add(links);
+		resource.add(entityLinks.linkToItemResource(clazz, raceId));
+		responseEntity = ResponseEntity.ok()
+			.header("Content-Type", "application/hal+json")
+			.body(resource);
+		return responseEntity;
 	}
 	
 	@Transactional

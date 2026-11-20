@@ -63,20 +63,24 @@ public class DirectRace extends Race implements RaceResult {
 	@Enumerated(EnumType.STRING)
 	private StartType startType;
 	
+	@NotNull
+	private Boolean grandPrixFinish;
+	
 	public DirectRace() {
 		super();
 	};
 	
-	public DirectRace(String name, LocalDateTime plannedStartTime, Fleet fleet, Duration duration, Integer plannedLaps, RaceType type, StartType startType) {
+	public DirectRace(String name, LocalDateTime plannedStartTime, Fleet fleet, Duration duration, Integer plannedLaps, RaceType type, StartType startType, Boolean grandPrixFinish) {
 		super(name, fleet);
 		this.plannedStartTime = plannedStartTime;
 		this.duration = duration;
 		this.plannedLaps = plannedLaps;
 		this.type = type;
 		this.startType = startType;
+		this.grandPrixFinish = grandPrixFinish;
 	}
 	
-	public DirectRace(String name, LocalDateTime plannedStartTime, Fleet fleet, Duration duration, Integer plannedLaps, RaceType type, StartType startType, Duration startTimeOffset) {
+	public DirectRace(String name, LocalDateTime plannedStartTime, Fleet fleet, Duration duration, Integer plannedLaps, RaceType type, StartType startType, Duration startTimeOffset, Boolean grandPrixFinish) {
 		super(name, fleet);
 		this.plannedStartTime = plannedStartTime;
 		this.duration = duration;
@@ -84,6 +88,7 @@ public class DirectRace extends Race implements RaceResult {
 		this.type = type;
 		this.startType = startType;
 		this.startTimeOffset = startTimeOffset;
+		this.grandPrixFinish = grandPrixFinish;
 	}
 	
 	public LocalDateTime getPlannedStartTime() {
@@ -116,7 +121,6 @@ public class DirectRace extends Race implements RaceResult {
 
 	public void setPlannedLaps(Integer plannedLaps) {
 		this.plannedLaps = plannedLaps;
-		signedUp.forEach(signedUp -> signedUp.getEntry().updateProgressIndicators());
 	}
 
 	@Override
@@ -136,12 +140,12 @@ public class DirectRace extends Race implements RaceResult {
 		this.startType = startType;
 	}
 	
-	public boolean onLastLap(Entry entry) {
-		return entry.getLapsSailed() == plannedLaps - 1;
+	public Boolean getGrandPrixFinish() {
+		return grandPrixFinish;
 	}
-	
-	public boolean completedLastLap(Entry entry) {
-		return entry.getLapsSailed() == plannedLaps;
+
+	public void setGrandPrixFinish(Boolean grandPrixFinish) {
+		this.grandPrixFinish = grandPrixFinish;
 	}
 	
 	/**
@@ -152,31 +156,31 @@ public class DirectRace extends Race implements RaceResult {
 	 * @return a double representing the estimate of the number of laps that will be completed
 	 */
 	public Double getLapForecast() {
-		Entry leadEntry = this.getLeadEntry();
-		if (leadEntry == null || leadEntry.getLaps().size() == 0) {
+		Optional<Entry> optLeadEntry = this.getLeadEntry();
+		if (optLeadEntry.isEmpty() || optLeadEntry.get().getLaps().size() == 0) {
 			return (double) this.getPlannedLaps();
 		}
-		Duration remainingTime = this.getDuration().minus(leadEntry.getSumOfLapTimes());
+		Duration remainingTime = this.getDuration().minus(optLeadEntry.get().getSumOfLapTimes());
 		if (remainingTime.isNegative() || remainingTime.isZero()) {
-			return (double) leadEntry.getLaps().size();
+			return (double) optLeadEntry.get().getLaps().size();
 		}
-		Double lapsEstimate = (double) remainingTime.toSeconds() / (double)leadEntry.getLastLapTime().toSeconds();
-		return leadEntry.getLaps().size() + lapsEstimate;
+		Double lapsEstimate = (double) remainingTime.toSeconds() / (double)optLeadEntry.get().getLastLapTime().toSeconds();
+		return optLeadEntry.get().getLaps().size() + lapsEstimate;
 	}
 	
 	/**
 	 * Calculate and set the positions of entries in the race based on the number of laps completed and the time taken to complete those laps
 	 */
 	public void updatePositions(SignedUp signedUp) {
-		if (signedUp.getEntry().getScoringAbbreviation() != null && signedUp.getEntry().getScoringAbbreviation() != "") {
+		if (signedUp.getEntry().getScoringAbbreviation() != "") {
 			updateEntryPositions(signedUp, this.signedUp.size());
 		}
 		else {
 			if (this.type == RaceType.FLEET) {
 				// if this is the lead entry need to calculate corrected time for all entries in the race
-				Entry leadEntry = getLeadEntry();
-				if (signedUp.getEntry() == leadEntry || signedUp.getEntry() == lastLeadEntry) {
-					lastLeadEntry = leadEntry; // set lastLeadEntry for reference
+				Optional<Entry> optLeadEntry = getLeadEntry();
+				if (signedUp.getEntry() == optLeadEntry.get() || signedUp.getEntry() == lastLeadEntry) {
+					lastLeadEntry = optLeadEntry.get(); // set lastLeadEntry for reference
 					lastLeadEntryLapsCompleted = lastLeadEntry.getLapsSailed();
 					this.signedUp.forEach(s -> updateCorrectedTime(s));
 				}
@@ -318,7 +322,7 @@ public class DirectRace extends Race implements RaceResult {
 		else {
 			DirectRace race = (DirectRace) entry.getDirectRace();
 			if (race.type == RaceType.FLEET) {
-				signedUp.setCorrectedTime(entry.getSumOfLapTimes().multipliedBy(this.getLeadEntry().getLapsSailed() * 1000).dividedBy(entry.getDinghy().getDinghyClass().getPortsmouthNumber() * entry.getLapsSailed()));
+				signedUp.setCorrectedTime(entry.getSumOfLapTimes().multipliedBy(getLeadEntry().get().getLapsSailed() * 1000).dividedBy(entry.getDinghy().getDinghyClass().getPortsmouthNumber() * entry.getLapsSailed()));
 			}
 			else {
 				signedUp.setCorrectedTime(entry.getSumOfLapTimes());
@@ -377,7 +381,7 @@ public class DirectRace extends Race implements RaceResult {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(duration, fleet, id, name, plannedLaps, startTimeOffset, plannedStartTime, startType, type, version);
+		return Objects.hash(duration, fleet, id, name, plannedLaps, startTimeOffset, plannedStartTime, startType, type, version, grandPrixFinish);
 	}
 
 	@Override
@@ -395,7 +399,8 @@ public class DirectRace extends Race implements RaceResult {
 				&& Objects.equals(plannedStartTime, other.plannedStartTime)
 				&& Objects.equals(startTimeOffset, other.startTimeOffset)
 				&& startType == other.startType
-				&& type == other.type && Objects.equals(version, other.version);
+				&& type == other.type && Objects.equals(version, other.version)
+				&& grandPrixFinish == other.grandPrixFinish;
 	}
 	
 	public class PursuitSignedUpEntriesComparator implements Comparator<SignedUp> {

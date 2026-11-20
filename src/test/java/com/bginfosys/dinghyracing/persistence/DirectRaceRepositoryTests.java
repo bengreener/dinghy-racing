@@ -56,7 +56,7 @@ public class DirectRaceRepositoryTests {
 		Fleet fleet = new Fleet("Test Fleet");
 		entityManager.persist(fleet);
 		
-		DirectRace race1 = new DirectRace("Test Race", LocalDateTime.of(2023, 5, 13, 12, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace race1 = new DirectRace("Test Race", LocalDateTime.of(2023, 5, 13, 12, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		race1.setPlannedLaps(5);
 		DirectRace race2 = raceRepository.save(race1);
 		
@@ -158,7 +158,7 @@ public class DirectRaceRepositoryTests {
 		Dinghy dinghy = new Dinghy("1234", dinghyClass);
 		entityManager.persist(dinghy);
 				
-		DirectRace race1 = new DirectRace("Test Race", LocalDateTime.of(2023, 5, 13, 12, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace race1 = new DirectRace("Test Race", LocalDateTime.of(2023, 5, 13, 12, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		entityManager.persist(race1);
 		entityManager.flush();
 		
@@ -179,11 +179,11 @@ public class DirectRaceRepositoryTests {
 		Fleet fleet = new Fleet("Test Fleet");
 		entityManager.persist(fleet);
 		
-		DirectRace race1 = new DirectRace("Test Race1", LocalDateTime.of(2023, 5, 13, 11, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace race1 = new DirectRace("Test Race1", LocalDateTime.of(2023, 5, 13, 11, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		race1 = entityManager.persist(race1);
-		DirectRace race2 = new DirectRace("Test Race2", LocalDateTime.of(2023, 5, 13, 12, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace race2 = new DirectRace("Test Race2", LocalDateTime.of(2023, 5, 13, 12, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		race2 = entityManager.persist(race2);
-		DirectRace race3 = new DirectRace("Test Race3", LocalDateTime.of(2023, 5, 13, 13, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace race3 = new DirectRace("Test Race3", LocalDateTime.of(2023, 5, 13, 13, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		race3 = entityManager.persist(race3);
 		
 		Page<DirectRace> result = raceRepository.findByPlannedStartTimeGreaterThanEqual(LocalDateTime.of(2023, 5, 13, 12, 00), Pageable.ofSize(5));
@@ -196,11 +196,11 @@ public class DirectRaceRepositoryTests {
 		Fleet fleet = new Fleet("Test Fleet");
 		entityManager.persist(fleet);
 		
-		DirectRace race1 = new DirectRace("Test Race1", LocalDateTime.of(2023, 5, 13, 11, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace race1 = new DirectRace("Test Race1", LocalDateTime.of(2023, 5, 13, 11, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		entityManager.persist(race1);
-		DirectRace race2 = new DirectRace("Test Race2", LocalDateTime.of(2023, 5, 13, 12, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace race2 = new DirectRace("Test Race2", LocalDateTime.of(2023, 5, 13, 12, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		entityManager.persist(race2);
-		DirectRace race3 = new DirectRace("Test Race3", LocalDateTime.of(2023, 5, 13, 13, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace race3 = new DirectRace("Test Race3", LocalDateTime.of(2023, 5, 13, 13, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		entityManager.persist(race3);
 		entityManager.flush();
 		
@@ -214,7 +214,7 @@ public class DirectRaceRepositoryTests {
 		Fleet fleet = new Fleet("Test Fleet");
 		entityManager.persist(fleet);
 				
-		DirectRace race1 = new DirectRace("Test Race", LocalDateTime.of(2023, 10, 13, 12, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace race1 = new DirectRace("Test Race", LocalDateTime.of(2023, 10, 13, 12, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		entityManager.persistAndFlush(race1);
 		
 		DirectRace race2 = new DirectRace();
@@ -234,13 +234,13 @@ public class DirectRaceRepositoryTests {
 		Fleet fleet = new Fleet("Test Fleet");
 		entityManager.persist(fleet);
 		
-		DirectRace race1 = new DirectRace("Test Race1", LocalDateTime.of(2023, 5, 13, 11, 59), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace race1 = new DirectRace("Test Race1", LocalDateTime.of(2023, 5, 13, 11, 59), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		race1 = entityManager.persist(race1);
-		DirectRace race2 = new DirectRace("Test Race2", LocalDateTime.of(2023, 5, 13, 12, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace race2 = new DirectRace("Test Race2", LocalDateTime.of(2023, 5, 13, 12, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		race2 = entityManager.persist(race2);
-		DirectRace race3 = new DirectRace("Test Race3", LocalDateTime.of(2023, 5, 13, 13, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace race3 = new DirectRace("Test Race3", LocalDateTime.of(2023, 5, 13, 13, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		race3 = entityManager.persist(race3);
-		DirectRace race4 = new DirectRace("Test Race4", LocalDateTime.of(2023, 5, 13, 13, 01), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace race4 = new DirectRace("Test Race4", LocalDateTime.of(2023, 5, 13, 13, 01), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		race4 = entityManager.persist(race4);
 		
 		Page<DirectRace> result = raceRepository.findByPlannedStartTimeBetween(LocalDateTime.of(2023, 5, 13, 12, 00), 
@@ -255,17 +255,17 @@ public class DirectRaceRepositoryTests {
 		Fleet fleet = new Fleet("Test Fleet");
 		entityManager.persist(fleet);
 		
-		DirectRace race1 = new DirectRace("Test Race1", LocalDateTime.of(2023, 5, 13, 11, 59), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace race1 = new DirectRace("Test Race1", LocalDateTime.of(2023, 5, 13, 11, 59), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		race1 = entityManager.persist(race1);
-		DirectRace race2 = new DirectRace("Test Race2", LocalDateTime.of(2023, 5, 13, 12, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace race2 = new DirectRace("Test Race2", LocalDateTime.of(2023, 5, 13, 12, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		race2 = entityManager.persist(race2);
-		DirectRace race3 = new DirectRace("Test Race3", LocalDateTime.of(2023, 5, 13, 13, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace race3 = new DirectRace("Test Race3", LocalDateTime.of(2023, 5, 13, 13, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		race3 = entityManager.persist(race3);
-		DirectRace race4 = new DirectRace("Test Race4", LocalDateTime.of(2023, 5, 13, 13, 01), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace race4 = new DirectRace("Test Race4", LocalDateTime.of(2023, 5, 13, 13, 01), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		race4 = entityManager.persist(race4);
-		DirectRace race5 = new DirectRace("Test Race5", LocalDateTime.of(2023, 5, 13, 12, 00), fleet, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART);
+		DirectRace race5 = new DirectRace("Test Race5", LocalDateTime.of(2023, 5, 13, 12, 00), fleet, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART, false);
 		race5 = entityManager.persist(race5);
-		DirectRace race6 = new DirectRace("Test Race6", LocalDateTime.of(2023, 5, 13, 13, 00), fleet, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART);
+		DirectRace race6 = new DirectRace("Test Race6", LocalDateTime.of(2023, 5, 13, 13, 00), fleet, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART, false);
 		race6 = entityManager.persist(race6);
 		
 		Page<DirectRace> result = raceRepository.findByPlannedStartTimeBetweenAndTypeEquals(LocalDateTime.of(2023, 5, 13, 12, 00), 

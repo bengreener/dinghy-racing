@@ -1,4 +1,4 @@
--- v2026.10.1
+-- v2026.11.1
 CREATE DATABASE IF NOT EXISTS `dinghy_racing` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
 
 USE dinghy_racing;
@@ -117,7 +117,8 @@ CREATE TABLE direct_race (
 	planned_start_time TIMESTAMP(6) NOT NULL, 
 	start_time_offset NUMERIC(21,0) DEFAULT 0, 
 	type ENUM ('FLEET','PURSUIT') NOT NULL, 
-	start_type ENUM ('CSCCLUBSTART','RRS26') NOT NULL, 
+	start_type ENUM ('CSCCLUBSTART','RRS26') NOT NULL,
+	grand_prix_finish TINYINT NOT NULL,
 	CONSTRAINT PK_direct_race_id PRIMARY KEY (id)
 ) engine=InnoDB;
 

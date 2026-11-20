@@ -20,6 +20,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -174,7 +175,7 @@ public class EmbeddedRace extends Race implements RaceResult {
 		else {
 			DirectRace race = (DirectRace) entry.getDirectRace();
 			if (race.getType() == RaceType.FLEET) {
-				signedUp.setCorrectedTime(entry.getSumOfLapTimes().multipliedBy(this.getLeadEntry().getLapsSailed() * 1000).dividedBy(entry.getDinghy().getDinghyClass().getPortsmouthNumber() * entry.getLapsSailed()));
+				signedUp.setCorrectedTime(entry.getSumOfLapTimes().multipliedBy(getLeadEntry().get().getLapsSailed() * 1000).dividedBy(entry.getDinghy().getDinghyClass().getPortsmouthNumber() * entry.getLapsSailed()));
 			}
 			else {
 				signedUp.setCorrectedTime(entry.getSumOfLapTimes());
@@ -193,9 +194,9 @@ public class EmbeddedRace extends Race implements RaceResult {
 			RaceType raceType = signedUp.getEntry().getDirectRace().getType();
 			if (raceType == RaceType.FLEET) {
 				// if this is the lead entry need to calculate corrected time for all entries in the race
-				Entry leadEntry = getLeadEntry();
-				if (signedUp.getEntry() == leadEntry || signedUp.getEntry() == lastLeadEntry) {
-					lastLeadEntry = leadEntry; // set lastLeadEntry for reference
+				Optional<Entry> optleadEntry = getLeadEntry();
+				if (signedUp.getEntry() == optleadEntry.get() || signedUp.getEntry() == lastLeadEntry) {
+					lastLeadEntry = optleadEntry.get(); // set lastLeadEntry for reference
 					lastLeadEntryLapsCompleted = lastLeadEntry.getLapsSailed();
 					this.signedUp.forEach(s -> updateCorrectedTime(s));
 				}

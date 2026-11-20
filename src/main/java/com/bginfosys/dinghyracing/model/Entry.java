@@ -38,7 +38,9 @@ import jakarta.validation.constraints.Size;
 import org.hibernate.annotations.NaturalId;
 
 import com.bginfosys.dinghyracing.exceptions.DinghyClassMismatchException;
-import com.bginfosys.dinghyracing.exceptions.EntryMaxLapsSailedException;
+import com.bginfosys.dinghyracing.exceptions.EntryHasFinishedRaceException;
+import com.bginfosys.dinghyracing.exceptions.EntryHasScoringAbbreviationException;
+import com.bginfosys.dinghyracing.exceptions.EntryLapsSailedException;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
@@ -75,9 +77,9 @@ public class Entry {
 	@Size(min = 3, max = 3)
 	private String scoringAbbreviation;
 		
-	private boolean onLastLap; // record value so it is stored in database and version/ ETag is updated if it changes; helps keep clients up to date
+	private boolean onLastLap; // record value so it is stored in database and version/ ETag is updated if it changes; helps keep clients up to date. DO NOT use to determine race progress when adding and removing laps. 
 	
-	private boolean finishedRace; // record value so it is stored in database and version/ ETag is updated if it changes; helps keep clients up to date
+	private boolean finishedRace; // record value so it is stored in database and version/ ETag is updated if it changes; helps keep clients up to date. DO NOT use to determine race progress when adding and removing laps.
 	
 	public Entry() {}
 	
@@ -201,7 +203,7 @@ public class Entry {
 	}
 	
 	/**
-	 * Return true of the boat is on it's last lap of the race
+	 * Return true if the boat is on it's last lap of the race
 	 */
 	public Boolean getOnLastLap() {
 		return this.onLastLap;
@@ -228,59 +230,40 @@ public class Entry {
 		return signedUpTo.add(signedUp);
 	}
 	
-	public void updateProgressIndicators() {
-		// get direct race
-		DirectRace race = getDirectRace();
-		if (race.completedLastLap(this)) {
-			this.setFinishedRace(true); // will unset onLastLap
-		}
-		else if (race.onLastLap(this)) {
-			this.setOnLastLap(true); // will unset finishedRace
-		}
-		else {
-			this.finishedRace = false;
-			this.onLastLap = false;
-		}
-	}
-	
 	/**
 	 * If boat has not finished the race add a new lap
 	 */
-	public Boolean addLap(Lap lap) {
-		if (getFinishedRace() || (scoringAbbreviation != null && scoringAbbreviation != "")) {
-			return false;
+	public void addLap(Lap lap) {
+		if (getFinishedRace()) {
+			throw new EntryHasFinishedRaceException(this);
+		}
+		if (scoringAbbreviation != null && scoringAbbreviation != "") {
+			throw new EntryHasScoringAbbreviationException(this);
 		}
 		Boolean result = laps.add(lap);
-		if (result) {
-			this.signedUpTo.forEach(s -> s.getRace().updatePositions(s));
-			updateProgressIndicators();
+		if (!result) {
+			// a lap with this lap number is already recorded
+			throw new EntryLapsSailedException(this.toString() + "has already sailed lap " + lap.getNumber().toString());
 		}
-		return result;
 	}
 	
-	public Boolean removeLap(Lap lap) {
-		Boolean result = laps.remove(lap); 
-		if (result) {
-			this.signedUpTo.forEach(s -> s.getRace().updatePositions(s));
-			updateProgressIndicators();
-		}
-		return result;
+	public void removeLap(Lap lap) {
+		laps.remove(lap);
 	}
 	
 	public void clearLaps() {
 		laps.clear();
 	}
 	
-	// Set laps for the race based on a totals laps that provides the number of laps sailed and total time to the end of the last lap
+	// Set laps for this entry; overwriting any laps previously recorded
 	public void setFinalLaps(SortedSet<Lap> finalLaps) {
 		if (finalLaps.size() > this.getDirectRace().getPlannedLaps()) {
-			throw new EntryMaxLapsSailedException();
+			throw new EntryLapsSailedException();
 		}
 		// to avoid 'A collection with orphan deletion was no longer referenced by the owning entity instance' remove existing laps from this.laps and add new laps
 		laps.clear();
 		laps.addAll(finalLaps);
 		this.signedUpTo.forEach(s -> s.getRace().updatePositions(s));
-		updateProgressIndicators();
 	}
 	
 	// only the last recorded lap can be updated

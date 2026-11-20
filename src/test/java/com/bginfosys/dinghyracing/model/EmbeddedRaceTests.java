@@ -17,6 +17,7 @@
 package com.bginfosys.dinghyracing.model;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -68,7 +69,7 @@ public class EmbeddedRaceTests {
 	@Test
 	void givenEntrySignedUpToHostRace_then_SignsUpToEmbeddedRace() {
 		Fleet fleet = new Fleet("Fleet", new HashSet<DinghyClass>());
-		DirectRace directRace = new DirectRace("Direct Race", LocalDateTime.of(2026, 4, 12, 10, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.RRS26);
+		DirectRace directRace = new DirectRace("Direct Race", LocalDateTime.of(2026, 4, 12, 10, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.RRS26, false);
 		Set<Race> hosts = new HashSet<Race>();
 		hosts.add(directRace);
 		EmbeddedRace embeddedRace = new EmbeddedRace("Embedded Race", fleet, hosts);
@@ -85,8 +86,8 @@ public class EmbeddedRaceTests {
 	@Test
 	void givenEntryNotSignedUpToHostRace_then_throwsEntryNotInHostRaceException() {
 		Fleet fleet = new Fleet("Fleet", new HashSet<DinghyClass>());
-		DirectRace directRace1 = new DirectRace("Direct Race 1", LocalDateTime.of(2026, 4, 12, 10, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.RRS26);
-		DirectRace directRace2 = new DirectRace("Direct Race 2", LocalDateTime.of(2026, 4, 12, 10, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.RRS26);
+		DirectRace directRace1 = new DirectRace("Direct Race 1", LocalDateTime.of(2026, 4, 12, 10, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.RRS26, false);
+		DirectRace directRace2 = new DirectRace("Direct Race 2", LocalDateTime.of(2026, 4, 12, 10, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.RRS26, false);
 		Set<Race> hosts = new HashSet<Race>();
 		hosts.add(directRace1);
 		EmbeddedRace embeddedRace = new EmbeddedRace("Embedded Race", fleet, hosts);
@@ -119,7 +120,7 @@ public class EmbeddedRaceTests {
 		cometFleetDinghyClasses.add(cometClass);
 		Fleet cometFleet = new Fleet("Comet", cometFleetDinghyClasses);
 		
-		DirectRace directRace = new DirectRace("Comet Race", LocalDateTime.of(2025, 10, 17, 19, 30), cometFleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.RRS26);
+		DirectRace directRace = new DirectRace("Comet Race", LocalDateTime.of(2025, 10, 17, 19, 30), cometFleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.RRS26, false);
 		
 		Set<Race> hostRaces = new HashSet<Race>();
 		hostRaces.add(directRace);
@@ -142,8 +143,8 @@ public class EmbeddedRaceTests {
 		Dinghy cometDinghy1 = new Dinghy("1234", cometClass);
 		Dinghy cometDinghy2 = new Dinghy("6789", cometClass);
 		Fleet handicapFleet = new Fleet("Open Handicap");
-		DirectRace cometRace1 = new DirectRace("Race", LocalDateTime.of(2025, 10, 17, 17, 30), handicapFleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.RRS26);
-		DirectRace cometRace2 = new DirectRace("Race", LocalDateTime.of(2025, 10, 17, 19, 30), handicapFleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.RRS26);
+		DirectRace cometRace1 = new DirectRace("Race", LocalDateTime.of(2025, 10, 17, 17, 30), handicapFleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.RRS26, false);
+		DirectRace cometRace2 = new DirectRace("Race", LocalDateTime.of(2025, 10, 17, 19, 30), handicapFleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.RRS26, false);
 		
 		Set<Race> hostRaces = new HashSet<Race>();
 		hostRaces.add(cometRace1);
@@ -175,8 +176,8 @@ public class EmbeddedRaceTests {
 		cometFleetDinghyClasses.add(dinghyClass);
 		Fleet cometFleet = new Fleet("Comet", cometFleetDinghyClasses);
 		
-		DirectRace handicapRace = new DirectRace("Handicap Race", LocalDateTime.of(2025, 10, 17, 19, 30), handicapFleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.RRS26);
-		DirectRace cometRace = new DirectRace("Comet Race", LocalDateTime.of(2025, 10, 17, 19, 40), cometFleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.RRS26);
+		DirectRace handicapRace = new DirectRace("Handicap Race", LocalDateTime.of(2025, 10, 17, 19, 30), handicapFleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.RRS26, false);
+		DirectRace cometRace = new DirectRace("Comet Race", LocalDateTime.of(2025, 10, 17, 19, 40), cometFleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.RRS26, false);
 		
 		Set<Race> hostRaces = new HashSet<Race>();
 		hostRaces.add(handicapRace);
@@ -206,8 +207,8 @@ public class EmbeddedRaceTests {
 		Dinghy dinghy2 = new Dinghy("1234", dinghyClass);
 		
 		Fleet fleet = new Fleet("Open");
-		DirectRace race1 = new DirectRace("Race", LocalDateTime.of(2025, 10, 17, 17, 30), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.RRS26);
-		DirectRace race2 = new DirectRace("Race", LocalDateTime.of(2025, 10, 17, 19, 30), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.RRS26);
+		DirectRace race1 = new DirectRace("Race", LocalDateTime.of(2025, 10, 17, 17, 30), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.RRS26, false);
+		DirectRace race2 = new DirectRace("Race", LocalDateTime.of(2025, 10, 17, 19, 30), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.RRS26, false);
 		
 		Set<Race> hostRaces = new HashSet<Race>();
 		hostRaces.add(race1);
@@ -230,7 +231,7 @@ public class EmbeddedRaceTests {
 	@Test
 	void given_noLapsCompleted_when_requestNumberOfLapsCompletedByLeadEntry_then_returnsZero() {
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		Competitor competitor1 = new Competitor("Competitor One");
 		DinghyClass dinghyClass = new DinghyClass("Comet", 1, 1000);
 		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
@@ -248,7 +249,7 @@ public class EmbeddedRaceTests {
 	@Test
 	void given_TwoEntriesHaveCompletedTheSameNumberOfLaps_when_requestNumberOfLapsCompletedByLeadEntry_then_returnsNumberOFLaps() {
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("competitor Two");
 		DinghyClass dinghyClass = new DinghyClass("Comet", 1, 1000);
@@ -279,7 +280,7 @@ public class EmbeddedRaceTests {
 	@Test
 	void given_OneEntryHasCompletedMoreLaps_when_requestNumberOfLapsCompletedByLeadEntry_then_returnsNumberOfLaps() {
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("competitor Two");
 		DinghyClass dinghyClass = new DinghyClass("Comet", 1, 1000);
@@ -311,7 +312,7 @@ public class EmbeddedRaceTests {
 	@Test
 	void given_twoEntriesHaveCompletedTheSameNumberOfLaps_when_requestLeadEntryInRace_then_returnsEntryWithFastestTime() {
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("competitor Two");
 		DinghyClass dinghyClass = new DinghyClass("Comet", 1, 1000);
@@ -336,13 +337,13 @@ public class EmbeddedRaceTests {
 		entry1.addLap(new Lap(2, Duration.ofMinutes(14)));
 		entry2.addLap(new Lap(2, Duration.ofMinutes(15)));
 		
-		assertEquals(entry1, embeddedRace.getLeadEntry());		
+		assertEquals(entry1, embeddedRace.getLeadEntry().get());		
 	}
 	
 	@Test
 	void given_oneEntryHasCompletedMoreLaps_when_requestLeadEntryInRace_then_returnsEntryWithMostLaps() {
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("competitor Two");
 		DinghyClass dinghyClass = new DinghyClass("Comet", 1, 1000);
@@ -368,19 +369,19 @@ public class EmbeddedRaceTests {
 		entry2.addLap(new Lap(2, Duration.ofMinutes(15)));
 		entry2.addLap(new Lap(3, Duration.ofMinutes(15)));		
 		
-		assertEquals(entry2, embeddedRace.getLeadEntry());
+		assertEquals(entry2, embeddedRace.getLeadEntry().get());
 	}
 	
 	@Test
 	void given_NoBoatsHaveSignedUp_when_requestLeadEntryInRace_then_returnsNull() {
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		
 		Set<Race> hostRaces = new HashSet<Race>();
 		hostRaces.add(directRace);
 		EmbeddedRace embeddedRace = new EmbeddedRace("Embedded Race", fleet, hostRaces);
 		
-		assertNull(embeddedRace.getLeadEntry());
+		assertThat(embeddedRace.getLeadEntry()).isEmpty();
 	}
 
 	// Pursuit Race Position Tests
@@ -388,7 +389,7 @@ public class EmbeddedRaceTests {
 	void given_race_is_pursuit_when_oneEntryHasFinishedLap_then_correctly_calculatesPosition() {
 		DinghyClass dinghyClass = new DinghyClass("Test", 1, 1000);
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART);
+		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART, false);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
 		SignedUp signedUp = directRace.signUp(competitor1, dinghy1);
@@ -399,6 +400,7 @@ public class EmbeddedRaceTests {
 		
 		signedUp = embeddedRace.signUp(signedUp.getEntry());
 		signedUp.getEntry().addLap(new Lap(1, Duration.ofMinutes(14)));
+		embeddedRace.updatePositions(signedUp);
 		
 		assertEquals(1, signedUp.getPosition());
 	}
@@ -407,7 +409,7 @@ public class EmbeddedRaceTests {
 	void given_race_is_pursuit_when_twoEntriesHaveFinishedDifferentNumberOfLaps_then_correctly_calculatesPositions() {
 		DinghyClass dinghyClass = new DinghyClass("Test", 1, 1000);
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART);
+		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART, false);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("Competitor Two");
 		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
@@ -424,8 +426,11 @@ public class EmbeddedRaceTests {
 		SignedUp signedUp4 = embeddedRace.signUp(signedUp2.getEntry());
 		
 		signedUp1.getEntry().addLap(new Lap(1, Duration.ofSeconds(840)));
+		embeddedRace.updatePositions(signedUp3);
 		signedUp2.getEntry().addLap(new Lap(1, Duration.ofSeconds(540)));
+		embeddedRace.updatePositions(signedUp4);
 		signedUp2.getEntry().addLap(new Lap(2, Duration.ofSeconds(540)));
+		embeddedRace.updatePositions(signedUp3);
 
 		assertEquals(2, signedUp3.getPosition());
 		assertEquals(1, signedUp4.getPosition());
@@ -435,7 +440,7 @@ public class EmbeddedRaceTests {
 	void given_race_is_pursuit_when_twoEntriesHaveFinishedTheSameNumberOfLaps_then_correctly_calculatesPositions() {
 		DinghyClass dinghyClass = new DinghyClass("Test", 1, 1000);
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART);
+		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART, false);
 		
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("Competitor Two");
@@ -454,7 +459,9 @@ public class EmbeddedRaceTests {
 		SignedUp signedUp4 = embeddedRace.signUp(signedUp2.getEntry());
 		
 		signedUp1.getEntry().addLap(new Lap(1, Duration.ofSeconds(840)));
+		embeddedRace.updatePositions(signedUp3);
 		signedUp2.getEntry().addLap(new Lap(1, Duration.ofSeconds(839)));
+		embeddedRace.updatePositions(signedUp4);
 
 		assertEquals(2, signedUp3.getPosition());
 		assertEquals(1, signedUp4.getPosition());
@@ -464,7 +471,7 @@ public class EmbeddedRaceTests {
 	void given_race_is_pursuit_when_twoEntriesHaveFinishedTheSameNumberOfLapsAndOneHasRetired_then_correctly_calculatesPositions() {
 		DinghyClass dinghyClass = new DinghyClass("Test", 1, 1000);
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART);
+		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART, false);
 
 		Set<Race> hostRaces = new HashSet<Race>();
 		hostRaces.add(directRace);
@@ -483,8 +490,11 @@ public class EmbeddedRaceTests {
 		SignedUp signedUp4 = embeddedRace.signUp(signedUp2.getEntry());
 		
 		signedUp1.getEntry().addLap(new Lap(1, Duration.ofSeconds(840)));
+		embeddedRace.updatePositions(signedUp3);
 		signedUp2.getEntry().addLap(new Lap(1, Duration.ofSeconds(240)));
+		embeddedRace.updatePositions(signedUp4);
 		signedUp2.getEntry().setScoringAbbreviation("RET");
+		embeddedRace.updatePositions(signedUp4);
 		
 		assertEquals(1, signedUp3.getPosition());
 		assertEquals(2, signedUp4.getPosition());
@@ -494,7 +504,7 @@ public class EmbeddedRaceTests {
 	void given_race_is_pursuit_when_newPositionHigherThanOldPosition_when_positionOfEntryUpdated_then_updatesPositionsOfOtherEntries() {
 		DinghyClass dinghyClass = new DinghyClass("Test", 1, 1000);
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART);
+		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART, false);
 		
 		Set<Race> hostRaces = new HashSet<Race>();
 		hostRaces.add(directRace);
@@ -521,9 +531,13 @@ public class EmbeddedRaceTests {
 		SignedUp signedUp8 = embeddedRace.signUp(signedUp4.getEntry());
 		
 		signedUp1.getEntry().addLap(new Lap(1, Duration.ofSeconds(240))); // position 1
+		embeddedRace.updatePositions(signedUp5);
 		signedUp2.getEntry().addLap(new Lap(1, Duration.ofSeconds(250))); // position 3
+		embeddedRace.updatePositions(signedUp6);
 		signedUp3.getEntry().addLap(new Lap(1, Duration.ofSeconds(245))); // position 2
+		embeddedRace.updatePositions(signedUp7);
 		signedUp4.getEntry().addLap(new Lap(1, Duration.ofSeconds(260))); // position 4
+		embeddedRace.updatePositions(signedUp8);
 		
 		embeddedRace.updateEntryPositions(signedUp6, 2);
 		
@@ -537,7 +551,7 @@ public class EmbeddedRaceTests {
 	void given_race_is_pursuit_when_oldPositionWasNull_when_positionOfEntryUpdated_then_doesNotUpdatesPositionOfAnyEntryLowerThanNumberOfEntriesInRace() {
 		DinghyClass dinghyClass = new DinghyClass("Test", 1, 1000);
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART);
+		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART, false);
 		
 		Set<Race> hostRaces = new HashSet<Race>();
 		hostRaces.add(directRace);
@@ -574,7 +588,7 @@ public class EmbeddedRaceTests {
 	void given_race_is_pursuit_when_newPositionLowerThanOldPosition_when_positionOfEntryUpdated_then_updatesPositionsOfOtherEntries() {
 		DinghyClass dinghyClass = new DinghyClass("Test", 1, 1000);
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART);
+		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART, false);
 		
 		Set<Race> hostRaces = new HashSet<Race>();
 		hostRaces.add(directRace);
@@ -601,9 +615,13 @@ public class EmbeddedRaceTests {
 		SignedUp signedUp8 = embeddedRace.signUp(signedUp4.getEntry());
 		
 		signedUp1.getEntry().addLap(new Lap(1, Duration.ofSeconds(240))); // position 1
+		embeddedRace.updatePositions(signedUp5);
 		signedUp2.getEntry().addLap(new Lap(1, Duration.ofSeconds(250))); // position 3
+		embeddedRace.updatePositions(signedUp6);
 		signedUp3.getEntry().addLap(new Lap(1, Duration.ofSeconds(245))); // position 2
+		embeddedRace.updatePositions(signedUp7);
 		signedUp4.getEntry().addLap(new Lap(1, Duration.ofSeconds(260))); // position 4
+		embeddedRace.updatePositions(signedUp8);
 
 		embeddedRace.updateEntryPositions(signedUp7, 3);
 		
@@ -617,7 +635,7 @@ public class EmbeddedRaceTests {
 	void given_race_is_pursuit_when_noPositionsCalculated_when_positionOfEntryUpdated_then_updatesOnlyPositionOfEntry() {
 		DinghyClass dinghyClass = new DinghyClass("Test", 1, 1000);
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART);
+		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART, false);
 		
 		Set<Race> hostRaces = new HashSet<Race>();
 		hostRaces.add(directRace);
@@ -655,7 +673,7 @@ public class EmbeddedRaceTests {
 	void given_race_race_is_pursuit_when_scoringAbbreviationSetForEntry_then_positionSetEqualToNumberOfEntriesInRace() {
 		DinghyClass dinghyClass = new DinghyClass("Test", 1, 1000);
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART);
+		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART, false);
 		
 		Set<Race> hostRaces = new HashSet<Race>();
 		hostRaces.add(directRace);
@@ -694,7 +712,7 @@ public class EmbeddedRaceTests {
 	void given_raceIsFleetAndEntriesHaveSamePortsmouthNumberAndSailedTheSameLaps_whenOneEntryHasFasterCorrectedTime_then_entryWithFasterTimeWins() {
 		DinghyClass scorpion = new DinghyClass("Scorpion", 1, 1043);
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		
 		Set<Race> hostRaces = new HashSet<Race>();
 		hostRaces.add(directRace);
@@ -713,9 +731,13 @@ public class EmbeddedRaceTests {
 		SignedUp signedUp4 = embeddedRace.signUp(signedUp2.getEntry());
 		
 		signedUp1.getEntry().addLap(new Lap(1, Duration.ofSeconds(660)));
+		embeddedRace.updatePositions(signedUp3);
 		signedUp2.getEntry().addLap(new Lap(1, Duration.ofSeconds(600)));
+		embeddedRace.updatePositions(signedUp4);
 		signedUp1.getEntry().addLap(new Lap(2, Duration.ofSeconds(660))); // corrected time 1265.580
+		embeddedRace.updatePositions(signedUp3);
 		signedUp2.getEntry().addLap(new Lap(2, Duration.ofSeconds(600))); // corrected time 1150.527
+		embeddedRace.updatePositions(signedUp4);
 
 		assertEquals(1, signedUp4.getPosition());
 		assertEquals(2, signedUp3.getPosition());
@@ -725,7 +747,7 @@ public class EmbeddedRaceTests {
 	void given_raceIsFleetAndEntriesHaveSamePortsmouthNumberAndSailedTheSameLapsAndHaveTheSameTime_then_theyAreAllAssignedTheHighestPositionOfAnyEntryWithThatCorrectedTime() {
 		DinghyClass scorpion = new DinghyClass("Scorpion", 1, 1043);
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		
 		Set<Race> hostRaces = new HashSet<Race>();
 		hostRaces.add(directRace);
@@ -744,7 +766,9 @@ public class EmbeddedRaceTests {
 		SignedUp signedUp4 = embeddedRace.signUp(signedUp2.getEntry());
 		
 		signedUp1.getEntry().addLap(new Lap(1, Duration.ofSeconds(660))); // corrected time 632.790
+		embeddedRace.updatePositions(signedUp3);
 		signedUp2.getEntry().addLap(new Lap(1, Duration.ofSeconds(660))); // corrected time 632.790
+		embeddedRace.updatePositions(signedUp4);
 		
 		assertEquals(1, signedUp3.getPosition());
 		assertEquals(1, signedUp4.getPosition());
@@ -754,7 +778,7 @@ public class EmbeddedRaceTests {
 	void given_raceIsFleetAndEntriesHaveSamePortsmouthNumber_when_oneEntrySailsMoreLapsAndHasFasterCorrectedTime_then_entryWithFasterTimeWins() {
 		DinghyClass scorpion = new DinghyClass("Scorpion", 1, 1043);
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		
 		Set<Race> hostRaces = new HashSet<Race>();
 		hostRaces.add(directRace);
@@ -773,8 +797,11 @@ public class EmbeddedRaceTests {
 		SignedUp signedUp4 = embeddedRace.signUp(signedUp2.getEntry());
 		
 		signedUp3.getEntry().addLap(new Lap(1, Duration.ofSeconds(660)));
+		embeddedRace.updatePositions(signedUp3);
 		signedUp4.getEntry().addLap(new Lap(1, Duration.ofSeconds(1200))); // corrected time 2301.054
+		embeddedRace.updatePositions(signedUp4);
 		signedUp3.getEntry().addLap(new Lap(2, Duration.ofSeconds(660))); // corrected time 1265.580
+		embeddedRace.updatePositions(signedUp3);
 
 		assertEquals(1, signedUp3.getPosition());
 		assertEquals(2, signedUp4.getPosition());
@@ -784,7 +811,7 @@ public class EmbeddedRaceTests {
 	void given_raceIsFleetAndEntriesHaveSamePortsmouthNumber_when_entrySailsMoreLapsAndHasSlowerCorrectedTime_then_entryWithMoreLapsWins() {
 		DinghyClass scorpion = new DinghyClass("Scorpion", 1, 1043);
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		
 		Set<Race> hostRaces = new HashSet<Race>();
 		hostRaces.add(directRace);
@@ -803,8 +830,11 @@ public class EmbeddedRaceTests {
 		SignedUp signedUp4 = embeddedRace.signUp(signedUp2.getEntry());
 		
 		signedUp1.getEntry().addLap(new Lap(1, Duration.ofSeconds(600)));
+		embeddedRace.updatePositions(signedUp3);
 		signedUp2.getEntry().addLap(new Lap(1, Duration.ofSeconds(700))); // corrected time 1342.282
-		signedUp1.getEntry().addLap(new Lap(1, Duration.ofSeconds(900))); // corrected time 1438.159
+		embeddedRace.updatePositions(signedUp4);
+		signedUp1.getEntry().addLap(new Lap(2, Duration.ofSeconds(900))); // corrected time 1438.159
+		embeddedRace.updatePositions(signedUp3);
 
 		assertEquals(1, signedUp3.getPosition());
 		assertEquals(2, signedUp4.getPosition());
@@ -814,7 +844,7 @@ public class EmbeddedRaceTests {
 	void given_raceIsFleetAndEntriesHaveSamePortsmouthNumberAndSameCorrectedTime_when_entrySailsMoreLaps_then_entryWithMoreLapsWins() {
 		DinghyClass scorpion = new DinghyClass("Scorpion", 1, 1043);
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		
 		Set<Race> hostRaces = new HashSet<Race>();
 		hostRaces.add(directRace);
@@ -833,8 +863,11 @@ public class EmbeddedRaceTests {
 		SignedUp signedUp4 = embeddedRace.signUp(signedUp2.getEntry());
 		
 		signedUp1.getEntry().addLap(new Lap(1, Duration.ofSeconds(500)));
+		embeddedRace.updatePositions(signedUp3);
 		signedUp2.getEntry().addLap(new Lap(1, Duration.ofSeconds(500))); // corrected time 958.773
+		embeddedRace.updatePositions(signedUp4);
 		signedUp1.getEntry().addLap(new Lap(2, Duration.ofSeconds(500))); // corrected time 958.773
+		embeddedRace.updatePositions(signedUp3);
 
 		assertEquals(1, signedUp3.getPosition());
 		assertEquals(2, signedUp4.getPosition());
@@ -846,7 +879,7 @@ public class EmbeddedRaceTests {
 		DinghyClass graduate = new DinghyClass("Graduate", 1, 1110);
 		DinghyClass scorpion = new DinghyClass("Scorpion", 1, 1043);
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		
 		Set<Race> hostRaces = new HashSet<Race>();
 		hostRaces.add(directRace);
@@ -865,8 +898,11 @@ public class EmbeddedRaceTests {
 		SignedUp signedUp4 = embeddedRace.signUp(signedUp2.getEntry());
 				
 		signedUp1.getEntry().addLap(new Lap(1, Duration.ofSeconds(600)));
+		embeddedRace.updatePositions(signedUp1);
 		signedUp2.getEntry().addLap(new Lap(1, Duration.ofSeconds(600))); // corrected time 1150.527
+		embeddedRace.updatePositions(signedUp2);
 		signedUp1.getEntry().addLap(new Lap(2, Duration.ofSeconds(700))); // corrected time 1171.171
+		embeddedRace.updatePositions(signedUp1);
 
 		assertEquals(1, signedUp3.getPosition());
 		assertEquals(2, signedUp4.getPosition());
@@ -877,7 +913,7 @@ public class EmbeddedRaceTests {
 		DinghyClass graduate = new DinghyClass("Graduate", 1, 1000);
 		DinghyClass scorpion = new DinghyClass("Scorpion", 1, 500);
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		
 		Set<Race> hostRaces = new HashSet<Race>();
 		hostRaces.add(directRace);
@@ -896,8 +932,11 @@ public class EmbeddedRaceTests {
 		SignedUp signedUp4 = embeddedRace.signUp(signedUp2.getEntry());
 		
 		signedUp1.getEntry().addLap(new Lap(1, Duration.ofSeconds(200)));
+		embeddedRace.updatePositions(signedUp1);
 		signedUp2.getEntry().addLap(new Lap(1, Duration.ofSeconds(250))); // corrected time 1000.00
+		embeddedRace.updatePositions(signedUp2);
 		signedUp1.getEntry().addLap(new Lap(2, Duration.ofSeconds(800))); // corrected time 1000.00
+		embeddedRace.updatePositions(signedUp1);
 		
 		assertEquals(1, signedUp3.getPosition());
 		assertEquals(2, signedUp4.getPosition());
@@ -908,7 +947,7 @@ public class EmbeddedRaceTests {
 		DinghyClass graduate = new DinghyClass("Graduate", 1, 1110);
 		DinghyClass scorpion = new DinghyClass("Scorpion", 1, 1043);
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		
 		Set<Race> hostRaces = new HashSet<Race>();
 		hostRaces.add(directRace);
@@ -927,11 +966,14 @@ public class EmbeddedRaceTests {
 		SignedUp signedUp4 = embeddedRace.signUp(signedUp2.getEntry());
 		
 		signedUp1.getEntry().addLap(new Lap(1, Duration.ofSeconds(600)));
+		embeddedRace.updatePositions(signedUp3);
 		signedUp2.getEntry().addLap(new Lap(1, Duration.ofSeconds(700))); // corrected time 1081.081
+		embeddedRace.updatePositions(signedUp4);
 		signedUp1.getEntry().addLap(new Lap(2, Duration.ofSeconds(600))); // corrected time 1342.282
+		embeddedRace.updatePositions(signedUp3);
 		
-		assertEquals(1, signedUp1.getPosition());
-		assertEquals(2, signedUp2.getPosition());
+		assertEquals(1, signedUp3.getPosition());
+		assertEquals(2, signedUp4.getPosition());
 	}
 
 	@Test
@@ -939,7 +981,7 @@ public class EmbeddedRaceTests {
 		DinghyClass graduate = new DinghyClass("Graduate", 1, 1110);
 		DinghyClass scorpion = new DinghyClass("Scorpion", 1, 1043);
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		
 		Set<Race> hostRaces = new HashSet<Race>();
 		hostRaces.add(directRace);
@@ -958,9 +1000,13 @@ public class EmbeddedRaceTests {
 		SignedUp signedUp4 = embeddedRace.signUp(signedUp2.getEntry());
 		
 		signedUp1.getEntry().addLap(new Lap(1, Duration.ofSeconds(600)));
+		embeddedRace.updatePositions(signedUp3);
 		signedUp2.getEntry().addLap(new Lap(1, Duration.ofSeconds(500)));
+		embeddedRace.updatePositions(signedUp4);
 		signedUp1.getEntry().addLap(new Lap(2, Duration.ofSeconds(600))); // corrected time 1081.081
+		embeddedRace.updatePositions(signedUp3);
 		signedUp2.getEntry().addLap(new Lap(2, Duration.ofSeconds(500))); // corrected time 958.773
+		embeddedRace.updatePositions(signedUp4);
 
 		assertEquals(1, signedUp4.getPosition());
 		assertEquals(2, signedUp3.getPosition());
@@ -971,7 +1017,7 @@ public class EmbeddedRaceTests {
 		DinghyClass graduate = new DinghyClass("Graduate", 1, 1500);
 		DinghyClass scorpion = new DinghyClass("Scorpion", 1, 1000);
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		
 		Set<Race> hostRaces = new HashSet<Race>();
 		hostRaces.add(directRace);
@@ -990,12 +1036,16 @@ public class EmbeddedRaceTests {
 		SignedUp signedUp4 = embeddedRace.signUp(signedUp2.getEntry());
 		
 		signedUp1.getEntry().addLap(new Lap(1, Duration.ofSeconds(750)));
+		embeddedRace.updatePositions(signedUp3);
 		signedUp2.getEntry().addLap(new Lap(1, Duration.ofSeconds(500)));
+		embeddedRace.updatePositions(signedUp4);
 		signedUp1.getEntry().addLap(new Lap(2, Duration.ofSeconds(750))); // corrected time 1000.000
+		embeddedRace.updatePositions(signedUp3);
 		signedUp2.getEntry().addLap(new Lap(2, Duration.ofSeconds(500))); // corrected time 1000.000
+		embeddedRace.updatePositions(signedUp4);
 
-		assertEquals(1, signedUp1.getPosition());
-		assertEquals(1, signedUp2.getPosition());
+		assertEquals(1, signedUp3.getPosition());
+		assertEquals(1, signedUp4.getPosition());
 	}
 	
 	@Test
@@ -1003,7 +1053,7 @@ public class EmbeddedRaceTests {
 		DinghyClass graduate = new DinghyClass("Graduate", 1, 1110);
 		DinghyClass scorpion = new DinghyClass("Scorpion", 1, 1043);
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		
 		Set<Race> hostRaces = new HashSet<Race>();
 		hostRaces.add(directRace);
@@ -1022,9 +1072,13 @@ public class EmbeddedRaceTests {
 		SignedUp signedUp4 = embeddedRace.signUp(signedUp2.getEntry());
 		
 		signedUp1.getEntry().addLap(new Lap(1, Duration.ofSeconds(600)));
+		embeddedRace.updatePositions(signedUp3);
 		signedUp2.getEntry().addLap(new Lap(1, Duration.ofSeconds(600)));
+		embeddedRace.updatePositions(signedUp4);
 		signedUp1.getEntry().addLap(new Lap(2, Duration.ofSeconds(600))); // corrected time 1081.081
+		embeddedRace.updatePositions(signedUp3);
 		signedUp2.getEntry().addLap(new Lap(2, Duration.ofSeconds(600))); // corrected time 1150.527
+		embeddedRace.updatePositions(signedUp4);
 
 		assertEquals(1, signedUp3.getPosition());
 		assertEquals(2, signedUp4.getPosition());
@@ -1036,7 +1090,7 @@ public class EmbeddedRaceTests {
 		DinghyClass scorpion = new DinghyClass("Scorpion", 1, 1043);
 		
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		
 		Set<Race> hostRaces = new HashSet<Race>();
 		hostRaces.add(directRace);
@@ -1055,8 +1109,11 @@ public class EmbeddedRaceTests {
 		SignedUp signedUp4 = embeddedRace.signUp(signedUp2.getEntry());
 		
 		signedUp2.getEntry().addLap(new Lap(1, Duration.ofSeconds(500)));
+		embeddedRace.updatePositions(signedUp4);
 		signedUp1.getEntry().addLap(new Lap(1, Duration.ofSeconds(600))); // corrected time 1081.081
+		embeddedRace.updatePositions(signedUp3);
 		signedUp2.getEntry().addLap(new Lap(2, Duration.ofSeconds(500))); // corrected time 958.773
+		embeddedRace.updatePositions(signedUp4);
 
 		assertEquals(1, signedUp4.getPosition());
 		assertEquals(2, signedUp3.getPosition());
@@ -1067,7 +1124,7 @@ public class EmbeddedRaceTests {
 		DinghyClass graduate = new DinghyClass("Graduate", 1, 1500);
 		DinghyClass scorpion = new DinghyClass("Scorpion", 1, 1000);
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		
 		Set<Race> hostRaces = new HashSet<Race>();
 		hostRaces.add(directRace);
@@ -1086,8 +1143,11 @@ public class EmbeddedRaceTests {
 		SignedUp signedUp4 = embeddedRace.signUp(signedUp2.getEntry());
 		
 		signedUp2.getEntry().addLap(new Lap(1, Duration.ofSeconds(500)));
+		embeddedRace.updatePositions(signedUp4);
 		signedUp1.getEntry().addLap(new Lap(1, Duration.ofSeconds(750))); // corrected time 1000.000
+		embeddedRace.updatePositions(signedUp3);
 		signedUp2.getEntry().addLap(new Lap(2, Duration.ofSeconds(500))); // corrected time 1000.000
+		embeddedRace.updatePositions(signedUp4);
 
 		assertEquals(1, signedUp3.getPosition());
 		assertEquals(1, signedUp4.getPosition());
@@ -1098,7 +1158,7 @@ public class EmbeddedRaceTests {
 		DinghyClass graduate = new DinghyClass("Graduate", 1, 1110);
 		DinghyClass scorpion = new DinghyClass("Scorpion", 1, 1043);
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		
 		Set<Race> hostRaces = new HashSet<Race>();
 		hostRaces.add(directRace);
@@ -1117,8 +1177,11 @@ public class EmbeddedRaceTests {
 		SignedUp signedUp4 = embeddedRace.signUp(signedUp2.getEntry());
 		
 		signedUp2.getEntry().addLap(new Lap(1, Duration.ofSeconds(750)));
+		embeddedRace.updatePositions(signedUp4);
 		signedUp1.getEntry().addLap(new Lap(1, Duration.ofSeconds(700))); // corrected time 1261.261
+		embeddedRace.updatePositions(signedUp3);
 		signedUp2.getEntry().addLap(new Lap(2, Duration.ofSeconds(750))); // corrected time 1438.159
+		embeddedRace.updatePositions(signedUp4);
 
 		assertEquals(1, signedUp3.getPosition());
 		assertEquals(2, signedUp4.getPosition());
@@ -1129,7 +1192,7 @@ public class EmbeddedRaceTests {
 	void given_raceIsFleet_when_scoringAbbreviationSetForEntry_then_positionSetEqualToNumberOfEntriesInRace() {
 		DinghyClass dinghyClass = new DinghyClass("Test", 1, 1000);
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		
 		Set<Race> hostRaces = new HashSet<Race>();
 		hostRaces.add(directRace);
@@ -1164,7 +1227,7 @@ public class EmbeddedRaceTests {
 	void given_raceIsFleetAndEntriesHaveSamePortsmouthNumberSailedSameNumberLaps_whenFasterEntryHasScoringAbbreviation_then_slowerEntryPlacedFirst() {
 		DinghyClass scorpion = new DinghyClass("Scorpion", 1, 1043);
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		
 		Set<Race> hostRaces = new HashSet<Race>();
 		hostRaces.add(directRace);
@@ -1183,10 +1246,15 @@ public class EmbeddedRaceTests {
 		SignedUp signedUp4 = embeddedRace.signUp(signedUp2.getEntry());
 		
 		signedUp1.getEntry().addLap(new Lap(1, Duration.ofSeconds(500)));
+		embeddedRace.updatePositions(signedUp3);
 		signedUp2.getEntry().addLap(new Lap(1, Duration.ofSeconds(600)));
+		embeddedRace.updatePositions(signedUp4);
 		signedUp1.getEntry().addLap(new Lap(2, Duration.ofSeconds(500))); // corrected time 958.773
+		embeddedRace.updatePositions(signedUp3);
 		signedUp2.getEntry().addLap(new Lap(2, Duration.ofSeconds(600))); // corrected time 1150.527
+		embeddedRace.updatePositions(signedUp4);
 		signedUp1.getEntry().setScoringAbbreviation("RET");
+		embeddedRace.updatePositions(signedUp3);
 
 		assertEquals(1, signedUp4.getPosition());
 		assertEquals(2, signedUp3.getPosition());
@@ -1196,7 +1264,7 @@ public class EmbeddedRaceTests {
 	void given_raceIsFleetAndEntriesHaveSamePortsmouthNumber_when_boatWithTheMedianTimeHasScoringAbbreviation_then_medianTimedEntryPlacedLast() {
 		DinghyClass scorpion = new DinghyClass("Scorpion", 1, 1043);
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		
 		Set<Race> hostRaces = new HashSet<Race>();
 		hostRaces.add(directRace);
@@ -1219,8 +1287,11 @@ public class EmbeddedRaceTests {
 		SignedUp signedUp6 = embeddedRace.signUp(signedUp3.getEntry());
 		
 		signedUp1.getEntry().addLap(new Lap(1, Duration.ofSeconds(900))); // corrected time 719.080
+		embeddedRace.updatePositions(signedUp4);
 		signedUp2.getEntry().addLap(new Lap(1, Duration.ofSeconds(750))); // corrected time 958.773
+		embeddedRace.updatePositions(signedUp5);
 		signedUp3.getEntry().addLap(new Lap(1, Duration.ofSeconds(1000))); // corrected time 527.325
+		embeddedRace.updatePositions(signedUp6);
 		signedUp1.getEntry().setScoringAbbreviation("RET");
 
 		assertEquals(1, signedUp5.getPosition());
@@ -1234,7 +1305,7 @@ public class EmbeddedRaceTests {
 		DinghyClass classTwo = new DinghyClass("Class 2", 1, 1000);
 		DinghyClass classThree = new DinghyClass("Class 3", 1, 1100);
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		
 		Set<Race> hostRaces = new HashSet<Race>();
 		hostRaces.add(directRace);
@@ -1257,11 +1328,17 @@ public class EmbeddedRaceTests {
 		SignedUp signedUp6 = embeddedRace.signUp(signedUp3.getEntry());
 		
 		signedUp1.getEntry().addLap(new Lap(1, Duration.ofSeconds(450)));
+		embeddedRace.updatePositions(signedUp4);
 		signedUp2.getEntry().addLap(new Lap(1, Duration.ofSeconds(600))); // corrected time 1200.000
+		embeddedRace.updatePositions(signedUp5);
 		signedUp3.getEntry().addLap(new Lap(1, Duration.ofSeconds(750)));
+		embeddedRace.updatePositions(signedUp6);
 		signedUp1.getEntry().addLap(new Lap(2, Duration.ofSeconds(450))); // corrected time 1000.000
-		signedUp3.getEntry().addLap(new Lap(1, Duration.ofSeconds(750))); // corrected time 1363.636
+		embeddedRace.updatePositions(signedUp4);
+		signedUp3.getEntry().addLap(new Lap(2, Duration.ofSeconds(750))); // corrected time 1363.636
+		embeddedRace.updatePositions(signedUp6);
 		signedUp2.getEntry().setScoringAbbreviation("RET");
+		embeddedRace.updatePositions(signedUp5);
 
 		assertEquals(1, signedUp4.getPosition());
 		assertEquals(2, signedUp6.getPosition());
@@ -1272,7 +1349,7 @@ public class EmbeddedRaceTests {
 	void given_raceIsFleet_when_moreThanOneGroupOfEntriesHaveTheSameCorrectedTimeAndEachGroupHasADifferentCorrectedTime_then_theyAreAllAssignedTheLowestPositionOfAnyEntryWithThatCorrectedTime() {
 		DinghyClass scorpion = new DinghyClass("Scorpion", 1, 1043);
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		
 		Set<Race> hostRaces = new HashSet<Race>();
 		hostRaces.add(directRace);
@@ -1303,10 +1380,15 @@ public class EmbeddedRaceTests {
 		SignedUp signedUp10 = embeddedRace.signUp(signedUp5.getEntry());
 		
 		signedUp1.getEntry().addLap(new Lap(1, Duration.ofSeconds(600))); // 1
+		embeddedRace.updatePositions(signedUp6);
 		signedUp2.getEntry().addLap(new Lap(1, Duration.ofSeconds(660))); // 4
+		embeddedRace.updatePositions(signedUp7);
 		signedUp3.getEntry().addLap(new Lap(1, Duration.ofSeconds(660))); // 4
+		embeddedRace.updatePositions(signedUp8);
 		signedUp4.getEntry().addLap(new Lap(1, Duration.ofSeconds(650))); // 3
+		embeddedRace.updatePositions(signedUp9);
 		signedUp5.getEntry().addLap(new Lap(1, Duration.ofSeconds(600))); // 1
+		embeddedRace.updatePositions(signedUp10);
 
 		assertEquals(1, signedUp6.getPosition());
 		assertEquals(1, signedUp10.getPosition());
@@ -1321,7 +1403,7 @@ public class EmbeddedRaceTests {
 	// when lap is removed from the lead boat after which it is no longer the lead boat need to recalculate positions for all boats
 		DinghyClass scorpion = new DinghyClass("Scorpion", 1, 1043);
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace directRace = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		
 		Set<Race> hostRaces = new HashSet<Race>();
 		hostRaces.add(directRace);
@@ -1343,9 +1425,13 @@ public class EmbeddedRaceTests {
 		SignedUp signedUp4 = embeddedRace.signUp(signedUp2.getEntry());
 		
 		signedUp1.getEntry().addLap(new Lap(1, Duration.ofSeconds(300))); // corrected time 300.000
+		embeddedRace.updatePositions(signedUp3);
 		signedUp2.getEntry().addLap(new Lap(1, Duration.ofSeconds(310)));
+		embeddedRace.updatePositions(signedUp4);
 		signedUp2.getEntry().addLap(new Lap(2, Duration.ofSeconds(90)));
+		embeddedRace.updatePositions(signedUp3);
 		signedUp2.getEntry().removeLap(new Lap(2, Duration.ofSeconds(90))); // corrected time 310.000
+		embeddedRace.updatePositions(signedUp4);
 
 		assertEquals(1, signedUp3.getPosition());
 		assertEquals(2, signedUp4.getPosition());

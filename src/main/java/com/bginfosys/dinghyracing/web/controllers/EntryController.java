@@ -33,7 +33,6 @@ import org.springframework.data.rest.webmvc.mapping.LinkCollector;
 import org.springframework.data.rest.webmvc.support.RepositoryEntityLinks;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Links;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -44,6 +43,7 @@ import com.bginfosys.dinghyracing.model.Entry;
 import com.bginfosys.dinghyracing.model.Lap;
 import com.bginfosys.dinghyracing.persistence.EntryRepository;
 import com.bginfosys.dinghyracing.persistence.LapRepository;
+import com.bginfosys.dinghyracing.service.EntryService;
 import com.bginfosys.dinghyracing.web.dto.LapDTO;
 
 import jakarta.validation.ConstraintViolation;
@@ -52,6 +52,8 @@ import jakarta.validation.Validator;
 
 @RepositoryRestController
 public class EntryController implements ApplicationEventPublisherAware {
+	
+	private final EntryService entryService;
 	
 	private final EntryRepository entryRepository;
 	
@@ -65,8 +67,9 @@ public class EntryController implements ApplicationEventPublisherAware {
 	
 	private Validator validator;
 	
-	EntryController(EntryRepository entryRepository, LapRepository lapRepository, RepositoryEntityLinks entityLinks, 
-			LinkCollector linkCollector, Validator validator) {
+	EntryController(EntryService entryService, EntryRepository entryRepository, LapRepository lapRepository, 
+			RepositoryEntityLinks entityLinks, LinkCollector linkCollector, Validator validator) {
+		this.entryService = entryService;
 		this.entryRepository = entryRepository;
 		this.lapRepository = lapRepository;
 		this.entityLinks = entityLinks;
@@ -86,45 +89,22 @@ public class EntryController implements ApplicationEventPublisherAware {
 	 * @param lapDTO
 	 * @return ResponseEntity<EntityModel<Entry>>
 	 */
-	@Transactional
 	@PatchMapping(path = "/entries/{entryId}/addLap", consumes = "application/json")
-	public ResponseEntity<Object> addLap(@PathVariable("entryId") Long entryId, @RequestBody LapDTO lapDTO) {
-		Optional<Entry> optEntry = entryRepository.findById(entryId);
-		Entry entry = optEntry.get();
-		Lap lap;
+	public ResponseEntity<EntityModel<Entry>> addLapToEntry(@PathVariable("entryId") Long entryId, @RequestBody LapDTO lapDTO) {
+		Entry entry = entryService.addLapToEntry(entryId, lapDTO.getTime());
 		
-		if (lapDTO.getNumber() != null) {
-			lap = new Lap(lapDTO.getNumber(), lapDTO.getTime());
-		}
-		else {
-			lap = new Lap(entry.getLapsSailed() + 1, lapDTO.getTime());
-		}
+		ResponseEntity<EntityModel<Entry>> responseEntity;
 		
-		publisher.publishEvent(new BeforeCreateEvent(lap));
-		Lap savedLap = lapRepository.save(lap);
-		publisher.publishEvent(new AfterCreateEvent(savedLap));
+		Class<?> type = entry.getClass();
 		
-		ResponseEntity<Object> responseEntity;
+		Links links = linkCollector.getLinksFor(entry);
+		EntityModel<Entry> resource = EntityModel.of(entry);
+		resource.add(links);
+		resource.add(entityLinks.linkToItemResource(type, entryId));
 		
-		if (entry.addLap(lap)) {
-			publisher.publishEvent(new BeforeLinkSaveEvent(entry, entry.getLaps()));
-			Entry savedEntry = entryRepository.save(entry);
-			publisher.publishEvent(new AfterLinkSaveEvent(savedEntry, savedEntry.getLaps()));
-			
-			Class<?> type = savedEntry.getClass();
-			
-			Links links = linkCollector.getLinksFor(savedEntry);
-			EntityModel<Entry> resource = EntityModel.of(savedEntry);
-			resource.add(links);
-			resource.add(entityLinks.linkToItemResource(type, entryId));
-			
-			responseEntity = ResponseEntity.ok()
-				.header("Content-Type", "application/hal+json")
-				.body(resource);
-		}
-		else {
-			responseEntity = new ResponseEntity<Object>(HttpStatus.CONFLICT);
-		}
+		responseEntity = ResponseEntity.ok()
+			.header("Content-Type", "application/hal+json")
+			.body(resource);
 		return responseEntity;
 	}
 	
@@ -183,38 +163,22 @@ public class EntryController implements ApplicationEventPublisherAware {
 		return responseEntity;
 	}
 	
-	@Transactional
 	@PatchMapping(path = "/entries/{entryId}/removeLap", consumes = "application/json")
-	public ResponseEntity<Object> removeLap(@PathVariable("entryId") Long entryId, @RequestBody LapDTO lapDTO) {
-		Optional<Entry> optEntry = entryRepository.findById(entryId);
+	public ResponseEntity<EntityModel<Entry>> removeLap(@PathVariable("entryId") Long entryId, @RequestBody LapDTO lapDTO) {
+		Entry entry = entryService.removeLapFromEntry(entryId, new Lap(lapDTO.getNumber(), lapDTO.getTime()));
 		
-		if (optEntry.isPresent()) {
-			ResponseEntity<Object> responseEntity;
-			Entry entry = optEntry.get();
-			Lap lap = new Lap(lapDTO.getNumber(), lapDTO.getTime());
-			if (entry.removeLap(lap)) {
-				publisher.publishEvent(new BeforeLinkSaveEvent(entry, entry.getLaps()));
-				Entry savedEntry = entryRepository.save(entry);
-				publisher.publishEvent(new AfterLinkSaveEvent(savedEntry, savedEntry.getLaps()));
-				
-				Class<?> type = savedEntry.getClass();
-				Links links = linkCollector.getLinksFor(savedEntry);
-				EntityModel<Entry> resource = EntityModel.of(savedEntry);
-				resource.add(links);
-				resource.add(entityLinks.linkToItemResource(type, entryId));
-				
-				responseEntity = ResponseEntity.ok()
-					.header("Content-Type", "application/hal+json")
-					.body(resource);
-				return responseEntity;
-			} 
-			else {
-				return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
-			}
-		}
-		else {
-			return new ResponseEntity<Object>(HttpStatus.NOT_FOUND);
-		}
+		ResponseEntity<EntityModel<Entry>> responseEntity;
+		
+		Class<?> type = entry.getClass();
+		Links links = linkCollector.getLinksFor(entry);
+		EntityModel<Entry> resource = EntityModel.of(entry);
+		resource.add(links);
+		resource.add(entityLinks.linkToItemResource(type, entryId));
+		
+		responseEntity = ResponseEntity.ok()
+			.header("Content-Type", "application/hal+json")
+			.body(resource);
+		return responseEntity;
 	}
 	
 	@Transactional

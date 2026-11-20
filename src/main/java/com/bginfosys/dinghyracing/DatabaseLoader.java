@@ -104,10 +104,10 @@ public class DatabaseLoader implements CommandLineRunner {
 		LocalDateTime now = LocalDateTime.now();
 		now = now.minusNanos(now.getNano()); // avoid precision issues saving and retrieving from database
 		
-		DirectRace rScorpionA = new DirectRace("Scorpion A", now.plusMinutes(0L), fScorpion, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
-		DirectRace rGraduateA = new DirectRace("Graduate A", now.plusMinutes(6L), fGraduate, Duration.ofMinutes(35), 4, RaceType.FLEET, StartType.CSCCLUBSTART);
-		DirectRace rCometA = new DirectRace("Comet A", now.plusMinutes(11L), fComet, Duration.ofMinutes(35), 4, RaceType.FLEET, StartType.CSCCLUBSTART);
-		DirectRace rHandicapA = new DirectRace("Handicap A", now.plusMinutes(1L), fHandicap, Duration.ofMinutes(35), 4, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace rScorpionA = new DirectRace("Scorpion A", now.plusMinutes(0L), fScorpion, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
+		DirectRace rGraduateA = new DirectRace("Graduate A", now.plusMinutes(6L), fGraduate, Duration.ofMinutes(35), 4, RaceType.FLEET, StartType.CSCCLUBSTART, false);
+		DirectRace rCometA = new DirectRace("Comet A", now.plusMinutes(11L), fComet, Duration.ofMinutes(35), 4, RaceType.FLEET, StartType.CSCCLUBSTART, false);
+		DirectRace rHandicapA = new DirectRace("Handicap A", now.plusMinutes(1L), fHandicap, Duration.ofMinutes(35), 4, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		
 		this.raceRepository.save(rScorpionA);
 		this.raceRepository.save(rGraduateA);

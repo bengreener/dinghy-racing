@@ -54,7 +54,7 @@ class DirectRaceTests {
 	@Test
 	void whenParametersProvided_then_raceCreated() {
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2025, 10, 16, 15, 28), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.RRS26);
+		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2025, 10, 16, 15, 28), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.RRS26, false);
 		
 		assertThat(race, notNullValue());
 		assertEquals(race.getName(), "Test Race");
@@ -71,7 +71,7 @@ class DirectRaceTests {
 	void setPlannedStartTime() {
 		Set<DinghyClass> dinghyClasses = new HashSet<DinghyClass>();
 		Fleet fleet = new Fleet("Test Fleet", dinghyClasses);
-		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		
 		race.setPlannedStartTime(LocalDateTime.of(2021, 9, 27, 16, 47));
 		assertEquals(race.getPlannedStartTime(), LocalDateTime.of(2021, 9, 27, 16, 47));
@@ -81,7 +81,7 @@ class DirectRaceTests {
 	void setDuration() {
 		Set<DinghyClass> dinghyClasses = new HashSet<DinghyClass>();
 		Fleet fleet = new Fleet("Test Fleet", dinghyClasses);
-		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		
 		race.setDuration(Duration.ofMillis(1000));
 		assertEquals(race.getDuration(), Duration.ofSeconds(1));
@@ -91,7 +91,7 @@ class DirectRaceTests {
 	void plannedStartTimeIsLocalDateTime() {
 		Set<DinghyClass> dinghyClasses = new HashSet<DinghyClass>();
 		Fleet fleet = new Fleet("Test Fleet", dinghyClasses);
-		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		
 		race.setPlannedStartTime(LocalDateTime.of(2021, 9, 27, 16, 47));
 		assertTrue(race.getPlannedStartTime() instanceof LocalDateTime);
@@ -104,7 +104,7 @@ class DirectRaceTests {
 		
 		Set<DinghyClass> dinghyClasses = new HashSet<DinghyClass>();
 		Fleet fleet = new Fleet("Test Fleet", dinghyClasses);
-		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, Duration.ofMinutes(0));
+		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, Duration.ofMinutes(0), false);
 		
 		Set<ConstraintViolation<DirectRace>> violations = validator.validate(race);
 		
@@ -118,7 +118,7 @@ class DirectRaceTests {
 		
 		Set<DinghyClass> dinghyClasses = new HashSet<DinghyClass>();
 		Fleet fleet = new Fleet("Test Fleet", dinghyClasses);
-		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, Duration.ofMinutes(1));
+		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, Duration.ofMinutes(1), false);
 		
 		Set<ConstraintViolation<DirectRace>> violations = validator.validate(race);
 		
@@ -132,13 +132,13 @@ class DirectRaceTests {
 		
 		Set<DinghyClass> dinghyClasses = new HashSet<DinghyClass>();
 		Fleet fleet = new Fleet("Test Fleet", dinghyClasses);
-		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, Duration.ofMinutes(-1));
+		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, Duration.ofMinutes(-1), false);
 		
 		Set<ConstraintViolation<DirectRace>> violations = validator.validate(race);
 		
 		assertFalse(violations.isEmpty());
-		assertThat(violations).hasSize(1);
-		assertThat(violations).extracting(ConstraintViolation::getMessage)
+		org.assertj.core.api.Assertions.assertThat(violations).hasSize(1);
+		org.assertj.core.api.Assertions.assertThat(violations).extracting(ConstraintViolation::getMessage)
 		  .containsExactlyInAnyOrder("Duration must be greater than or equal to zero");
 	}
 	
@@ -153,7 +153,7 @@ class DirectRaceTests {
 		DinghyClass dinghyClass = new DinghyClass("Comet", 1, 1000);
 		Dinghy dinghy = new Dinghy("1234", dinghyClass);
 		Fleet fleet = new Fleet("Open");
-		DirectRace race = new DirectRace("Race", LocalDateTime.of(2025, 10, 17, 19, 30), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.RRS26);
+		DirectRace race = new DirectRace("Race", LocalDateTime.of(2025, 10, 17, 19, 30), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.RRS26, false);
 		
 		Set<SignedUp> preSignedUp = new HashSet<SignedUp>(race.getSignedUp());
 		race.signUp(helm, dinghy);
@@ -176,7 +176,7 @@ class DirectRaceTests {
 		DinghyClass dinghyClass = new DinghyClass("Scorpion", 1, 1000);
 		Dinghy dinghy = new Dinghy("1234", dinghyClass);
 		Fleet fleet = new Fleet("Open");
-		DirectRace race = new DirectRace("Race", LocalDateTime.of(2025, 10, 17, 19, 30), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.RRS26);
+		DirectRace race = new DirectRace("Race", LocalDateTime.of(2025, 10, 17, 19, 30), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.RRS26, false);
 		
 		Set<SignedUp> preSignedUp = new HashSet<SignedUp>(race.getSignedUp());
 		race.signUp(helm, crew, dinghy);
@@ -202,7 +202,7 @@ class DirectRaceTests {
 		Set<DinghyClass> fleetDinghyClasses = new HashSet<DinghyClass>();
 		fleetDinghyClasses.add(dinghyClass2);
 		Fleet fleet = new Fleet("Optimist", fleetDinghyClasses);
-		DirectRace race = new DirectRace("Race", LocalDateTime.of(2025, 10, 17, 19, 30), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.RRS26);
+		DirectRace race = new DirectRace("Race", LocalDateTime.of(2025, 10, 17, 19, 30), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.RRS26, false);
 		
 		assertThrows(DinghyClassMismatchException.class, () -> {
 			race.signUp(helm, dinghy);
@@ -219,7 +219,7 @@ class DirectRaceTests {
 		Set<DinghyClass> fleetDinghyClasses = new HashSet<DinghyClass>();
 		fleetDinghyClasses.add(dinghyClass2);
 		Fleet fleet = new Fleet("Optimist", fleetDinghyClasses);
-		DirectRace race = new DirectRace("Race", LocalDateTime.of(2025, 10, 17, 19, 30), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.RRS26);
+		DirectRace race = new DirectRace("Race", LocalDateTime.of(2025, 10, 17, 19, 30), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.RRS26, false);
 		
 		assertThrows(DinghyClassMismatchException.class, () -> {
 			race.signUp(helm, crew, dinghy);
@@ -236,7 +236,7 @@ class DirectRaceTests {
 		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
 		Dinghy dinghy2 = new Dinghy("6789", dinghyClass);
 		Fleet fleet = new Fleet("Open");
-		DirectRace race = new DirectRace("Race", LocalDateTime.of(2025, 10, 17, 19, 30), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.RRS26);
+		DirectRace race = new DirectRace("Race", LocalDateTime.of(2025, 10, 17, 19, 30), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.RRS26, false);
 		
 		race.signUp(helm, dinghy1);
 		assertThrows(CompetitorAlreadySignedUpException.class, () -> {
@@ -252,7 +252,7 @@ class DirectRaceTests {
 		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
 		Dinghy dinghy2 = new Dinghy("1234", dinghyClass);
 		Fleet fleet = new Fleet("Open");
-		DirectRace race = new DirectRace("Race", LocalDateTime.of(2025, 10, 17, 19, 30), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.RRS26);
+		DirectRace race = new DirectRace("Race", LocalDateTime.of(2025, 10, 17, 19, 30), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.RRS26, false);
 		
 		race.signUp(helm, crew, dinghy1);
 		assertThrows(CompetitorAlreadySignedUpException.class, () -> {
@@ -270,7 +270,7 @@ class DirectRaceTests {
 		DinghyClass dinghyClass = new DinghyClass("Comet", 1, 1000);
 		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
 		Fleet fleet = new Fleet("Open");
-		DirectRace race = new DirectRace("Race", LocalDateTime.of(2025, 10, 17, 19, 30), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.RRS26);
+		DirectRace race = new DirectRace("Race", LocalDateTime.of(2025, 10, 17, 19, 30), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.RRS26, false);
 		
 		race.signUp(helm1, dinghy1);
 		assertThrows(DinghyAlreadySignedUpException.class, () -> {
@@ -287,7 +287,7 @@ class DirectRaceTests {
 		DinghyClass dinghyClass = new DinghyClass("Scorpion", 1, 1000);
 		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
 		Fleet fleet = new Fleet("Open");
-		DirectRace race = new DirectRace("Race", LocalDateTime.of(2025, 10, 17, 19, 30), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.RRS26);
+		DirectRace race = new DirectRace("Race", LocalDateTime.of(2025, 10, 17, 19, 30), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.RRS26, false);
 		
 		race.signUp(helm1, crew1, dinghy1);
 		assertThrows(DinghyAlreadySignedUpException.class, () -> {
@@ -307,7 +307,7 @@ class DirectRaceTests {
 		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
 		Dinghy dinghy2 = new Dinghy("1234", dinghyClass);
 		Fleet fleet = new Fleet("Open");
-		DirectRace race = new DirectRace("Race", LocalDateTime.of(2025, 10, 17, 19, 30), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.RRS26);
+		DirectRace race = new DirectRace("Race", LocalDateTime.of(2025, 10, 17, 19, 30), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.RRS26, false);
 		
 		race.signUp(helm1, crew, dinghy1);
 		assertThrows(CompetitorAlreadySignedUpException.class, () -> {
@@ -321,7 +321,7 @@ class DirectRaceTests {
 	@Test
 	void given_noLapsCompleted_when_requestNumberOfLapsCompletedByLeadEntry_then_returnsZero() {
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		Competitor competitor1 = new Competitor("Competitor One");
 		DinghyClass dinghyClass = new DinghyClass("Comet", 1, 1000);
 		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
@@ -333,7 +333,7 @@ class DirectRaceTests {
 	@Test
 	void given_TwoEntriesHaveCompletedTheSameNumberOfLaps_when_requestNumberOfLapsCompletedByLeadEntry_then_returnsNumberOFLaps() {
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("competitor Two");
 		DinghyClass dinghyClass = new DinghyClass("Comet", 1, 1000);
@@ -354,7 +354,7 @@ class DirectRaceTests {
 	@Test
 	void given_OneEntryHasCompletedMoreLaps_when_requestNumberOfLapsCompletedByLeadEntry_then_returnsNumberOfLaps() {
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("competitor Two");
 		DinghyClass dinghyClass = new DinghyClass("Comet", 1, 1000);
@@ -377,7 +377,7 @@ class DirectRaceTests {
 	@Test
 	void given_twoEntriesHaveCompletedTheSameNumberOfLaps_when_requestLeadEntryInRace_then_returnsEntryWithFastestTime() {
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("competitor Two");
 		DinghyClass dinghyClass = new DinghyClass("Comet", 1, 1000);
@@ -393,13 +393,13 @@ class DirectRaceTests {
 		entry1.addLap(new Lap(2, Duration.ofMinutes(14)));
 		entry2.addLap(new Lap(2, Duration.ofMinutes(15)));
 		
-		assertEquals(entry1, race.getLeadEntry());		
+		assertEquals(entry1, race.getLeadEntry().get());		
 	}
 	
 	@Test
 	void given_oneEntryHasCompletedMoreLaps_when_requestLeadEntryInRace_then_returnsEntryWithMostLaps() {
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("competitor Two");
 		DinghyClass dinghyClass = new DinghyClass("Comet", 1, 1000);
@@ -416,13 +416,13 @@ class DirectRaceTests {
 		entry2.addLap(new Lap(2, Duration.ofMinutes(15)));
 		entry2.addLap(new Lap(3, Duration.ofMinutes(15)));		
 		
-		assertEquals(entry2, race.getLeadEntry());
+		assertEquals(entry2, race.getLeadEntry().get());
 	}
 	
 	@Test
-	void given_NoBoatsHaveSignedUp_when_requestLeadEntryInRace_then_returnsNull() {
+	void given_NoBoatsHaveSignedUp_when_requestLeadEntryInRace_then_returnsEmptyOptional() {
 		DirectRace race = new DirectRace();
-		assertNull(race.getLeadEntry());		
+		assertThat(race.getLeadEntry()).isEmpty();		
 	}
 	
 	@Test
@@ -430,7 +430,7 @@ class DirectRaceTests {
 		DinghyClass dinghyClass = new DinghyClass("Test", 1, 1000);
 		Set<DinghyClass> dinghyClasses = new HashSet<DinghyClass>();
 		Fleet fleet = new Fleet("Test Fleet", dinghyClasses);
-		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("competitor Two");
 		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
@@ -446,7 +446,7 @@ class DirectRaceTests {
 		DinghyClass dinghyClass = new DinghyClass("Test", 1, 1000);
 		Set<DinghyClass> dinghyClasses = new HashSet<DinghyClass>();
 		Fleet fleet = new Fleet("Test Fleet", dinghyClasses);
-		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("competitor Two");
 		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
@@ -468,7 +468,7 @@ class DirectRaceTests {
 	void given_NoBoatsHaveSignedUp_when_requestLapsForecast_then_returnsNumberOfPlannedLaps() {
 		Set<DinghyClass> dinghyClasses = new HashSet<DinghyClass>();
 		Fleet fleet = new Fleet("Test Fleet", dinghyClasses);
-		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		assertEquals(5, race.getLapForecast());
 	}
 
@@ -477,7 +477,7 @@ class DirectRaceTests {
 		DinghyClass dinghyClass = new DinghyClass("Test", 1, 1000);
 		Set<DinghyClass> dinghyClasses = new HashSet<DinghyClass>();
 		Fleet fleet = new Fleet("Test Fleet", dinghyClasses);
-		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		
 		race.setPlannedLaps(5);
 		Competitor competitor1 = new Competitor("Competitor One");
@@ -500,48 +500,19 @@ class DirectRaceTests {
 		assertEquals(4D, race.getLapForecast());
 	}
 
-	// Shorten course
-	@Test
-	void when_raceIsShortened_then_updatesEntriesNowOnLastLap() {
-		DinghyClass dinghyClass = new DinghyClass("Test", 1, 1000);
-		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 3, RaceType.PURSUIT, StartType.CSCCLUBSTART);
-		Competitor competitor1 = new Competitor("Competitor One");
-		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
-		race.signUp(competitor1, dinghy1);
-		Entry entry1 = race.getSignedUp().stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor1)).findFirst().get().getEntry();
-		entry1.addLap(new Lap(1, Duration.ofMinutes(14)));
-		race.setPlannedLaps(2);
-		assertTrue(entry1.getOnLastLap());
-	}
-	
-	@Test
-	void when_raceIsShortened_then_updatesEntriesNowFinshedRace() {
-		DinghyClass dinghyClass = new DinghyClass("Test", 1, 1000);
-		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 4, RaceType.PURSUIT, StartType.CSCCLUBSTART);
-		Competitor competitor1 = new Competitor("Competitor One");
-		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
-		race.signUp(competitor1, dinghy1);
-		Entry entry1 = race.getSignedUp().stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor1)).findFirst().get().getEntry();
-		entry1.addLap(new Lap(1, Duration.ofMinutes(14)));
-		entry1.addLap(new Lap(2, Duration.ofMinutes(14)));
-		race.setPlannedLaps(2);
-		assertTrue(entry1.getFinishedRace());
-	}
-
 	// Pursuit Race Position Tests
 	@Test
 	void given_race_is_pursuit_when_oneEntryHasFinishedLap_then_correctly_calculatesPosition() {
 		DinghyClass dinghyClass = new DinghyClass("Test", 1, 1000);
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART);
+		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART, false);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
 		race.signUp(competitor1, dinghy1);
 		SignedUp signedUp1 = race.getSignedUp().stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor1)).findFirst().get();
 		signedUp1.getEntry().addLap(new Lap(1, Duration.ofMinutes(14)));
-		
+
+		race.updatePositions(signedUp1);
 		assertEquals(1, signedUp1.getPosition());
 	}
 
@@ -549,7 +520,7 @@ class DirectRaceTests {
 	void given_race_is_pursuit_when_twoEntriesHaveFinishedDifferentNumberOfLaps_then_correctly_calculatesPositions() {
 		DinghyClass dinghyClass = new DinghyClass("Test", 1, 1000);
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART);
+		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART, false);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("Competitor Two");
 		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
@@ -559,9 +530,11 @@ class DirectRaceTests {
 		SignedUp signedUp1 = race.getSignedUp().stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor1)).findFirst().get();
 		SignedUp signedUp2 = race.getSignedUp().stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor2)).findFirst().get();
 		signedUp1.getEntry().addLap(new Lap(1, Duration.ofSeconds(840)));
+		race.updatePositions(signedUp1);
 		signedUp2.getEntry().addLap(new Lap(1, Duration.ofSeconds(540)));
+		race.updatePositions(signedUp2);
 		signedUp2.getEntry().addLap(new Lap(2, Duration.ofSeconds(540)));
-
+		race.updatePositions(signedUp2);
 		assertEquals(2, signedUp1.getPosition());
 		assertEquals(1, signedUp2.getPosition());
 	}
@@ -570,7 +543,7 @@ class DirectRaceTests {
 	void given_race_is_pursuit_when_twoEntriesHaveFinishedTheSameNumberOfLaps_then_correctly_calculatesPositions() {
 		DinghyClass dinghyClass = new DinghyClass("Test", 1, 1000);
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART);
+		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART, false);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("Competitor Two");
 		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
@@ -580,8 +553,9 @@ class DirectRaceTests {
 		SignedUp signedUp1 = race.getSignedUp().stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor1)).findFirst().get();
 		SignedUp signedUp2 = race.getSignedUp().stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor2)).findFirst().get();
 		signedUp1.getEntry().addLap(new Lap(1, Duration.ofSeconds(840)));
+		race.updatePositions(signedUp1);
 		signedUp2.getEntry().addLap(new Lap(1, Duration.ofSeconds(839)));
-
+		race.updatePositions(signedUp2);
 		assertEquals(2, signedUp1.getPosition());
 		assertEquals(1, signedUp2.getPosition());
 	}
@@ -590,19 +564,20 @@ class DirectRaceTests {
 	void given_race_is_pursuit_when_twoEntriesHaveFinishedTheSameNumberOfLapsAndOneHasRetired_then_correctly_calculatesPositions() {
 		DinghyClass dinghyClass = new DinghyClass("Test", 1, 1000);
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART);
+		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART, false);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("Competitor Two");
 		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
 		Dinghy dinghy2 = new Dinghy("4567", dinghyClass);
 		race.signUp(competitor1, dinghy1);
 		race.signUp(competitor2, dinghy2);
+		Entry entry1 = race.getSignedUp().stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor1)).findFirst().get().getEntry();
 		SignedUp signedUp1 = race.getSignedUp().stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor1)).findFirst().get();
 		SignedUp signedUp2 = race.getSignedUp().stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor2)).findFirst().get();
 		signedUp1.getEntry().addLap(new Lap(1, Duration.ofSeconds(840)));
 		signedUp2.getEntry().addLap(new Lap(1, Duration.ofSeconds(240)));
 		signedUp2.getEntry().setScoringAbbreviation("RET");
-		
+		entry1.getSignedUpTo().forEach(s -> s.getRace().updatePositions(s));
 		assertEquals(1, signedUp1.getPosition());
 		assertEquals(2, signedUp2.getPosition());
 	}
@@ -611,7 +586,7 @@ class DirectRaceTests {
 	void given_race_is_pursuit_when_newPositionHigherThanOldPosition_when_positionOfEntryUpdated_then_updatesPositionsOfOtherEntries() {
 		DinghyClass dinghyClass = new DinghyClass("Test", 1, 1000);
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART);
+		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART, false);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("Competitor Two");
 		Competitor competitor3 = new Competitor("Competitor Three");
@@ -629,9 +604,13 @@ class DirectRaceTests {
 		SignedUp signedUp3 = race.getSignedUp().stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor3)).findFirst().get();
 		SignedUp signedUp4 = race.getSignedUp().stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor4)).findFirst().get();
 		signedUp1.getEntry().addLap(new Lap(1, Duration.ofSeconds(240))); // position 1
+		race.updatePositions(signedUp1);
 		signedUp2.getEntry().addLap(new Lap(1, Duration.ofSeconds(250))); // position 3
+		race.updatePositions(signedUp2);
 		signedUp3.getEntry().addLap(new Lap(1, Duration.ofSeconds(245))); // position 2
+		race.updatePositions(signedUp3);
 		signedUp4.getEntry().addLap(new Lap(1, Duration.ofSeconds(260))); // position 4
+		race.updatePositions(signedUp4);
 		
 		race.updateEntryPositions(signedUp2, 2);
 		
@@ -645,7 +624,7 @@ class DirectRaceTests {
 	void given_race_is_pursuit_when_oldPositionWasNull_when_positionOfEntryUpdated_then_doesNotUpdatesPositionOfAnyEntryLowerThanNumberOfEntriesInRace() {
 		DinghyClass dinghyClass = new DinghyClass("Test", 1, 1000);
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART);
+		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART, false);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("Competitor Two");
 		Competitor competitor3 = new Competitor("Competitor Three");
@@ -673,7 +652,7 @@ class DirectRaceTests {
 	void given_race_is_pursuit_when_newPositionLowerThanOldPosition_when_positionOfEntryUpdated_then_updatesPositionsOfOtherEntries() {
 		DinghyClass dinghyClass = new DinghyClass("Test", 1, 1000);
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART);
+		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART, false);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("Competitor Two");
 		Competitor competitor3 = new Competitor("Competitor Three");
@@ -691,9 +670,13 @@ class DirectRaceTests {
 		SignedUp signedUp3 = race.getSignedUp().stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor3)).findFirst().get();
 		SignedUp signedUp4 = race.getSignedUp().stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor4)).findFirst().get();
 		signedUp1.getEntry().addLap(new Lap(1, Duration.ofSeconds(240))); // position 1
+		race.updatePositions(signedUp1);
 		signedUp2.getEntry().addLap(new Lap(1, Duration.ofSeconds(250))); // position 3
+		race.updatePositions(signedUp2);
 		signedUp3.getEntry().addLap(new Lap(1, Duration.ofSeconds(245))); // position 2
+		race.updatePositions(signedUp3);
 		signedUp4.getEntry().addLap(new Lap(1, Duration.ofSeconds(260))); // position 4
+		race.updatePositions(signedUp4);
 
 		race.updateEntryPositions(signedUp3, 3);
 		assertEquals(1, signedUp1.getPosition());
@@ -706,7 +689,7 @@ class DirectRaceTests {
 	void given_race_is_pursuit_when_noPositionsCalculated_when_positionOfEntryUpdated_then_updatesOnlyPositionOfEntry() {
 		DinghyClass dinghyClass = new DinghyClass("Test", 1, 1000);
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART);
+		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART, false);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("Competitor Two");
 		Competitor competitor3 = new Competitor("Competitor Three");
@@ -735,7 +718,7 @@ class DirectRaceTests {
 	void given_race_race_is_pursuit_when_scoringAbbreviationSetForEntry_then_positionSetEqualToNumberOfEntriesInRace() {
 		DinghyClass dinghyClass = new DinghyClass("Test", 1, 1000);
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART);
+		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.PURSUIT, StartType.CSCCLUBSTART, false);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("Competitor Two");
 		Competitor competitor3 = new Competitor("Competitor Three");
@@ -764,7 +747,7 @@ class DirectRaceTests {
 		DinghyClass scorpion = new DinghyClass("Scorpion", 2, 1043);
 		
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("Competitor Two");
 		Dinghy dinghy1 = new Dinghy("1234", scorpion);
@@ -776,8 +759,9 @@ class DirectRaceTests {
 		signedUp1.getEntry().addLap(new Lap(1, Duration.ofSeconds(660)));
 		signedUp2.getEntry().addLap(new Lap(1, Duration.ofSeconds(600)));
 		signedUp1.getEntry().addLap(new Lap(2, Duration.ofSeconds(660))); // corrected time 1265.580
+		race.updatePositions(signedUp1);
 		signedUp2.getEntry().addLap(new Lap(2, Duration.ofSeconds(600))); // corrected time 1150.527
-
+		race.updatePositions(signedUp2);
 		assertEquals(1, signedUp2.getPosition());
 		assertEquals(2, signedUp1.getPosition());
 	}
@@ -787,17 +771,20 @@ class DirectRaceTests {
 		DinghyClass scorpion = new DinghyClass("Scorpion", 2, 1043);
 		
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("Competitor Two");
 		Dinghy dinghy1 = new Dinghy("1234", scorpion);
 		Dinghy dinghy2 = new Dinghy("4567", scorpion);
 		race.signUp(competitor1, dinghy1);
 		race.signUp(competitor2, dinghy2);
+		Entry entry1 = race.getSignedUp().stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor1)).findFirst().get().getEntry();
 		SignedUp signedUp1 = race.getSignedUp().stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor1)).findFirst().get();
 		SignedUp signedUp2 = race.getSignedUp().stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor2)).findFirst().get();
 		signedUp1.getEntry().addLap(new Lap(1, Duration.ofSeconds(660))); // corrected time 632.790
+		race.updatePositions(signedUp1);
 		signedUp2.getEntry().addLap(new Lap(1, Duration.ofSeconds(660))); // corrected time 632.790
+		race.updatePositions(signedUp1);
 		assertEquals(1, signedUp1.getPosition());
 		assertEquals(1, signedUp2.getPosition());
 	}
@@ -807,19 +794,20 @@ class DirectRaceTests {
 		DinghyClass scorpion = new DinghyClass("Scorpion", 2, 1043);
 		
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("Competitor Two");
 		Dinghy dinghy1 = new Dinghy("1234", scorpion);
 		Dinghy dinghy2 = new Dinghy("4567", scorpion);
 		race.signUp(competitor1, dinghy1);
 		race.signUp(competitor2, dinghy2);
+		Entry entry1 = race.getSignedUp().stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor1)).findFirst().get().getEntry();
 		SignedUp signedUp1 = race.getSignedUp().stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor1)).findFirst().get();
 		SignedUp signedUp2 = race.getSignedUp().stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor2)).findFirst().get();
 		signedUp1.getEntry().addLap(new Lap(1, Duration.ofSeconds(660)));
 		signedUp2.getEntry().addLap(new Lap(1, Duration.ofSeconds(1200))); // corrected time 2301.054
 		signedUp1.getEntry().addLap(new Lap(2, Duration.ofSeconds(660))); // corrected time 1265.580
-
+		entry1.getSignedUpTo().forEach(s -> s.getRace().updatePositions(s));
 		assertEquals(1, signedUp1.getPosition());
 		assertEquals(2, signedUp2.getPosition());
 	}
@@ -829,7 +817,7 @@ class DirectRaceTests {
 		DinghyClass scorpion = new DinghyClass("Scorpion", 2, 1043);
 		
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("Competitor Two");
 		Dinghy dinghy1 = new Dinghy("1234", scorpion);
@@ -839,8 +827,11 @@ class DirectRaceTests {
 		SignedUp signedUp1 = race.getSignedUp().stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor1)).findFirst().get();
 		SignedUp signedUp2 = race.getSignedUp().stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor2)).findFirst().get();
 		signedUp1.getEntry().addLap(new Lap(1, Duration.ofSeconds(600)));
+		race.updatePositions(signedUp1);
 		signedUp2.getEntry().addLap(new Lap(1, Duration.ofSeconds(700))); // corrected time 1342.282
-		signedUp1.getEntry().addLap(new Lap(1, Duration.ofSeconds(900))); // corrected time 1438.159
+		race.updatePositions(signedUp2);
+		signedUp1.getEntry().addLap(new Lap(2, Duration.ofSeconds(900))); // corrected time 1438.159
+		race.updatePositions(signedUp1);
 
 		assertEquals(1, signedUp1.getPosition());
 		assertEquals(2, signedUp2.getPosition());
@@ -851,18 +842,19 @@ class DirectRaceTests {
 		DinghyClass scorpion = new DinghyClass("Scorpion", 2, 1043);
 		
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("Competitor Two");
 		Dinghy dinghy1 = new Dinghy("1234", scorpion);
 		Dinghy dinghy2 = new Dinghy("4567", scorpion);race.signUp(competitor1, dinghy1);
 		race.signUp(competitor2, dinghy2);
+		Entry entry1 = race.getSignedUp().stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor1)).findFirst().get().getEntry();
 		SignedUp signedUp1 = race.getSignedUp().stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor1)).findFirst().get();
 		SignedUp signedUp2 = race.getSignedUp().stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor2)).findFirst().get();
 		signedUp1.getEntry().addLap(new Lap(1, Duration.ofSeconds(500)));
 		signedUp2.getEntry().addLap(new Lap(1, Duration.ofSeconds(500))); // corrected time 958.773
 		signedUp1.getEntry().addLap(new Lap(2, Duration.ofSeconds(500))); // corrected time 958.773
-
+		entry1.getSignedUpTo().forEach(s -> s.getRace().updatePositions(s));
 		assertEquals(1, signedUp1.getPosition());
 		assertEquals(2, signedUp2.getPosition());
 	}
@@ -874,7 +866,7 @@ class DirectRaceTests {
 		DinghyClass scorpion = new DinghyClass("Scorpion", 2, 1043);
 		
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("Competitor Two");
 		Dinghy dinghy1 = new Dinghy("1234", graduate);
@@ -887,6 +879,7 @@ class DirectRaceTests {
 		entry2.addLap(new Lap(1, Duration.ofSeconds(600))); // corrected time 1150.527
 		entry1.addLap(new Lap(2, Duration.ofSeconds(700))); // corrected time 1171.171
 
+		entry1.getSignedUpTo().forEach(s -> s.getRace().updatePositions(s));
 		SignedUp signedUp1 = race.signedUp.stream().filter(signedUp -> signedUp.getEntry().equals(entry1)).findFirst().get();
 		SignedUp signedUp2 = race.signedUp.stream().filter(signedUp -> signedUp.getEntry().equals(entry2)).findFirst().get();
 		assertEquals(1, signedUp1.getPosition());
@@ -899,7 +892,7 @@ class DirectRaceTests {
 		DinghyClass scorpion = new DinghyClass("Scorpion", 2, 500);
 		
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("Competitor Two");
 		Dinghy dinghy1 = new Dinghy("rif1234", graduate);
@@ -908,10 +901,12 @@ class DirectRaceTests {
 		race.signUp(competitor2, dinghy2);
 		SignedUp signedUp1 = race.signedUp.stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor1)).findFirst().get();
 		SignedUp signedUp2 = race.signedUp.stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor2)).findFirst().get();
+		Entry entry1 = race.getSignedUp().stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor1)).findFirst().get().getEntry();
 		signedUp1.getEntry().addLap(new Lap(1, Duration.ofSeconds(200)));
 		signedUp2.getEntry().addLap(new Lap(1, Duration.ofSeconds(250))); // corrected time 1000.00
 		signedUp1.getEntry().addLap(new Lap(2, Duration.ofSeconds(800))); // corrected time 1000.00
 		
+		entry1.getSignedUpTo().forEach(s -> s.getRace().updatePositions(s));
 		assertEquals(1, signedUp1.getPosition());
 		assertEquals(2, signedUp2.getPosition());
 	}
@@ -922,7 +917,7 @@ class DirectRaceTests {
 		DinghyClass scorpion = new DinghyClass("Scorpion", 2, 1043);
 		
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("Competitor Two");
 		Dinghy dinghy1 = new Dinghy("1234", graduate);
@@ -931,10 +926,12 @@ class DirectRaceTests {
 		race.signUp(competitor2, dinghy2);
 		SignedUp signedUp1 = race.getSignedUp().stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor1)).findFirst().get();
 		SignedUp signedUp2 = race.getSignedUp().stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor2)).findFirst().get();
+
+		Entry entry1 = race.getSignedUp().stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor1)).findFirst().get().getEntry();
 		signedUp1.getEntry().addLap(new Lap(1, Duration.ofSeconds(600)));
 		signedUp2.getEntry().addLap(new Lap(1, Duration.ofSeconds(700))); // corrected time 1081.081
 		signedUp1.getEntry().addLap(new Lap(2, Duration.ofSeconds(600))); // corrected time 1342.282
-		
+		entry1.getSignedUpTo().forEach(s -> s.getRace().updatePositions(s));
 		assertEquals(1, signedUp1.getPosition());
 		assertEquals(2, signedUp2.getPosition());
 	}
@@ -945,7 +942,7 @@ class DirectRaceTests {
 		DinghyClass scorpion = new DinghyClass("Scorpion", 2, 1043);
 		
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("Competitor Two");
 		Dinghy dinghy1 = new Dinghy("1234", graduate);
@@ -957,8 +954,9 @@ class DirectRaceTests {
 		signedUp1.getEntry().addLap(new Lap(1, Duration.ofSeconds(600)));
 		signedUp2.getEntry().addLap(new Lap(1, Duration.ofSeconds(500)));
 		signedUp1.getEntry().addLap(new Lap(2, Duration.ofSeconds(600))); // corrected time 1081.081
+		signedUp1.getEntry().getSignedUpTo().forEach(s -> s.getRace().updatePositions(s));
 		signedUp2.getEntry().addLap(new Lap(2, Duration.ofSeconds(500))); // corrected time 958.773
-
+		signedUp2.getEntry().getSignedUpTo().forEach(s -> s.getRace().updatePositions(s));
 		assertEquals(1, signedUp2.getPosition());
 		assertEquals(2, signedUp1.getPosition());
 	}
@@ -969,20 +967,24 @@ class DirectRaceTests {
 		DinghyClass scorpion = new DinghyClass("Scorpion", 2, 1000);
 		
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("Competitor Two");
 		Dinghy dinghy1 = new Dinghy("1234", graduate);
 		Dinghy dinghy2 = new Dinghy("4567", scorpion);
 		race.signUp(competitor1, dinghy1);
 		race.signUp(competitor2, dinghy2);
+		Entry entry1 = race.getSignedUp().stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor1)).findFirst().get().getEntry();
 		SignedUp signedUp1 = race.getSignedUp().stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor1)).findFirst().get();
 		SignedUp signedUp2 = race.getSignedUp().stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor2)).findFirst().get();
 		signedUp1.getEntry().addLap(new Lap(1, Duration.ofSeconds(750)));
+		race.updatePositions(signedUp1);
 		signedUp2.getEntry().addLap(new Lap(1, Duration.ofSeconds(500)));
+		race.updatePositions(signedUp2);
 		signedUp1.getEntry().addLap(new Lap(2, Duration.ofSeconds(750))); // corrected time 1000.000
+		race.updatePositions(signedUp1);
 		signedUp2.getEntry().addLap(new Lap(2, Duration.ofSeconds(500))); // corrected time 1000.000
-
+		race.updatePositions(signedUp2);
 		assertEquals(1, signedUp1.getPosition());
 		assertEquals(1, signedUp2.getPosition());
 	}
@@ -993,20 +995,21 @@ class DirectRaceTests {
 		DinghyClass scorpion = new DinghyClass("Scorpion", 2, 1043);
 		
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("Competitor Two");
 		Dinghy dinghy1 = new Dinghy("1234", graduate);
 		Dinghy dinghy2 = new Dinghy("4567", scorpion);
 		race.signUp(competitor1, dinghy1);
 		race.signUp(competitor2, dinghy2);
+		Entry entry1 = race.getSignedUp().stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor1)).findFirst().get().getEntry();
 		SignedUp signedUp1 = race.getSignedUp().stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor1)).findFirst().get();
 		SignedUp signedUp2 = race.getSignedUp().stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor2)).findFirst().get();
 		signedUp1.getEntry().addLap(new Lap(1, Duration.ofSeconds(600)));
 		signedUp2.getEntry().addLap(new Lap(1, Duration.ofSeconds(600)));
 		signedUp1.getEntry().addLap(new Lap(2, Duration.ofSeconds(600))); // corrected time 1081.081
 		signedUp2.getEntry().addLap(new Lap(2, Duration.ofSeconds(600))); // corrected time 1150.527
-
+		entry1.getSignedUpTo().forEach(s -> s.getRace().updatePositions(s));
 		assertEquals(1, signedUp1.getPosition());
 		assertEquals(2, signedUp2.getPosition());
 	}
@@ -1017,7 +1020,7 @@ class DirectRaceTests {
 		DinghyClass scorpion = new DinghyClass("Scorpion", 2, 1043);
 		
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("Competitor Two");
 		Dinghy dinghy1 = new Dinghy("1234", graduate);
@@ -1030,6 +1033,7 @@ class DirectRaceTests {
 		entry1.addLap(new Lap(1, Duration.ofSeconds(600))); // corrected time 1081.081
 		entry2.addLap(new Lap(2, Duration.ofSeconds(500))); // corrected time 958.773
 
+		entry2.getSignedUpTo().forEach(s -> s.getRace().updatePositions(s));
 		SignedUp signedUp1 = race.signedUp.stream().filter(signedUp -> signedUp.getEntry().equals(entry1)).findFirst().get();
 		SignedUp signedUp2 = race.signedUp.stream().filter(signedUp -> signedUp.getEntry().equals(entry2)).findFirst().get();
 		assertEquals(1, signedUp2.getPosition());
@@ -1040,9 +1044,8 @@ class DirectRaceTests {
 	void given_raceIsFleetAndEntryHasLargerPortsmouthNumberAndSameCorrectedTime_when_largerPortsmouthNumberEntrySailedLessLaps_then_entriesAllAssignedTheHighestPositionOfAnyEntryWithThatCorrectedTime() {
 		DinghyClass graduate = new DinghyClass("Graduate", 2, 1500);
 		DinghyClass scorpion = new DinghyClass("Scorpion", 2, 1000);
-		
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("Competitor Two");
 		Dinghy dinghy1 = new Dinghy("1234", graduate);
@@ -1051,10 +1054,14 @@ class DirectRaceTests {
 		race.signUp(competitor2, dinghy2);
 		SignedUp signedUp1 = race.getSignedUp().stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor1)).findFirst().get();
 		SignedUp signedUp2 = race.getSignedUp().stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor2)).findFirst().get();
+		Entry entry1 = signedUp1.getEntry();
+		Entry entry2 = signedUp2.getEntry();
 		signedUp2.getEntry().addLap(new Lap(1, Duration.ofSeconds(500)));
+		entry2.getSignedUpTo().forEach(s -> s.getRace().updatePositions(s));
 		signedUp1.getEntry().addLap(new Lap(1, Duration.ofSeconds(750))); // corrected time 1000.000
+		entry1.getSignedUpTo().forEach(s -> s.getRace().updatePositions(s));
 		signedUp2.getEntry().addLap(new Lap(2, Duration.ofSeconds(500))); // corrected time 1000.000
-
+		entry2.getSignedUpTo().forEach(s -> s.getRace().updatePositions(s));
 		assertEquals(1, signedUp1.getPosition());
 		assertEquals(1, signedUp2.getPosition());
 	}
@@ -1065,7 +1072,7 @@ class DirectRaceTests {
 		DinghyClass scorpion = new DinghyClass("Scorpion", 2, 1043);
 		
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("Competitor Two");
 		Dinghy dinghy1 = new Dinghy("1234", graduate);
@@ -1073,12 +1080,13 @@ class DirectRaceTests {
 
 		race.signUp(competitor1, dinghy1);
 		race.signUp(competitor2, dinghy2);
+		Entry entry1 = race.getSignedUp().stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor1)).findFirst().get().getEntry();
 		SignedUp signedUp1 = race.getSignedUp().stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor1)).findFirst().get();
 		SignedUp signedUp2 = race.getSignedUp().stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor2)).findFirst().get();
 		signedUp2.getEntry().addLap(new Lap(1, Duration.ofSeconds(750)));
 		signedUp1.getEntry().addLap(new Lap(1, Duration.ofSeconds(700))); // corrected time 1261.261
 		signedUp2.getEntry().addLap(new Lap(2, Duration.ofSeconds(750))); // corrected time 1438.159
-
+		entry1.getSignedUpTo().forEach(s -> s.getRace().updatePositions(s));
 		assertEquals(1, signedUp1.getPosition());
 		assertEquals(2, signedUp2.getPosition());
 	}
@@ -1088,7 +1096,7 @@ class DirectRaceTests {
 	void given_raceIsFleet_when_scoringAbbreviationSetForEntry_then_positionSetEqualToNumberOfEntriesInRace() {
 		DinghyClass dinghyClass = new DinghyClass("Test", 1, 1000);
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("Competitor Two");
 		Competitor competitor3 = new Competitor("Competitor Three");
@@ -1113,7 +1121,7 @@ class DirectRaceTests {
 		DinghyClass scorpion = new DinghyClass("Scorpion", 2, 1043);
 		
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("Competitor Two");
 		Dinghy dinghy1 = new Dinghy("1234", scorpion);
@@ -1125,9 +1133,11 @@ class DirectRaceTests {
 		signedUp1.getEntry().addLap(new Lap(1, Duration.ofSeconds(500)));
 		signedUp2.getEntry().addLap(new Lap(1, Duration.ofSeconds(600)));
 		signedUp1.getEntry().addLap(new Lap(2, Duration.ofSeconds(500))); // corrected time 958.773
+		signedUp1.getEntry().getSignedUpTo().forEach(s -> s.getRace().updatePositions(s));
 		signedUp2.getEntry().addLap(new Lap(2, Duration.ofSeconds(600))); // corrected time 1150.527
+		signedUp2.getEntry().getSignedUpTo().forEach(s -> s.getRace().updatePositions(s));
 		signedUp1.getEntry().setScoringAbbreviation("RET");
-
+		
 		assertEquals(1, signedUp2.getPosition());
 		assertEquals(2, signedUp1.getPosition());
 	}
@@ -1136,7 +1146,7 @@ class DirectRaceTests {
 	void given_raceIsFleetAndEntriesHaveSamePortsmouthNumber_when_boatWithTheMedianTimeHasScoringAbbreviation_then_medianTimedEntryPlacedLast() {
 		DinghyClass scorpion = new DinghyClass("Scorpion", 2, 1043);
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("Competitor Two");
 		Competitor competitor3 = new Competitor("Competitor Three");
@@ -1146,14 +1156,18 @@ class DirectRaceTests {
 		race.signUp(competitor1, dinghy1);
 		race.signUp(competitor2, dinghy2);
 		race.signUp(competitor3, dinghy3);
+		Entry entry1 = race.getSignedUp().stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor1)).findFirst().get().getEntry();
 		SignedUp signedUp1 = race.getSignedUp().stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor1)).findFirst().get();
 		SignedUp signedUp2 = race.getSignedUp().stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor2)).findFirst().get();
 		SignedUp signedUp3 = race.getSignedUp().stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor3)).findFirst().get();
 		signedUp1.getEntry().addLap(new Lap(1, Duration.ofSeconds(900))); // corrected time 719.080
+		race.updatePositions(signedUp1);
 		signedUp2.getEntry().addLap(new Lap(1, Duration.ofSeconds(750))); // corrected time 958.773
+		race.updatePositions(signedUp2);
 		signedUp3.getEntry().addLap(new Lap(1, Duration.ofSeconds(1000))); // corrected time 527.325
+		race.updatePositions(signedUp3);
 		signedUp1.getEntry().setScoringAbbreviation("RET");
-
+		race.updatePositions(signedUp1);
 		assertEquals(1, signedUp2.getPosition());
 		assertEquals(2, signedUp3.getPosition());
 		assertEquals(3, signedUp1.getPosition());
@@ -1165,7 +1179,7 @@ class DirectRaceTests {
 		DinghyClass classTwo = new DinghyClass("Class 2", 2, 1000);
 		DinghyClass classThree = new DinghyClass("Class 3", 2, 1100);
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("Competitor Two");
 		Competitor competitor3 = new Competitor("Competitor Three");
@@ -1175,6 +1189,7 @@ class DirectRaceTests {
 		race.signUp(competitor1, dinghy1);
 		race.signUp(competitor2, dinghy2);
 		race.signUp(competitor3, dinghy3);
+		Entry entry1 = race.getSignedUp().stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor1)).findFirst().get().getEntry();
 		
 		SignedUp signedUp1 = race.getSignedUp().stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor1)).findFirst().get();
 		SignedUp signedUp2 = race.getSignedUp().stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor2)).findFirst().get();
@@ -1184,9 +1199,9 @@ class DirectRaceTests {
 		signedUp2.getEntry().addLap(new Lap(1, Duration.ofSeconds(600))); // corrected time 1200.000
 		signedUp3.getEntry().addLap(new Lap(1, Duration.ofSeconds(750)));
 		signedUp1.getEntry().addLap(new Lap(2, Duration.ofSeconds(450))); // corrected time 1000.000
-		signedUp3.getEntry().addLap(new Lap(1, Duration.ofSeconds(750))); // corrected time 1363.636
+		signedUp3.getEntry().addLap(new Lap(2, Duration.ofSeconds(750))); // corrected time 1363.636
 		signedUp2.getEntry().setScoringAbbreviation("RET");
-
+		entry1.getSignedUpTo().forEach(s -> s.getRace().updatePositions(s));
 		assertEquals(1, signedUp1.getPosition());
 		assertEquals(2, signedUp3.getPosition());
 		assertEquals(3, signedUp2.getPosition());
@@ -1197,7 +1212,7 @@ class DirectRaceTests {
 		DinghyClass scorpion = new DinghyClass("Scorpion", 2, 1043);
 		
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("Competitor Two");
 		Competitor competitor3 = new Competitor("Competitor Three");
@@ -1213,18 +1228,21 @@ class DirectRaceTests {
 		race.signUp(competitor3, dinghy3);
 		race.signUp(competitor4, dinghy4);
 		race.signUp(competitor5, dinghy5);
-		
 		SignedUp signedUp1 = race.getSignedUp().stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor1)).findFirst().get();
 		SignedUp signedUp2 = race.getSignedUp().stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor2)).findFirst().get();
 		SignedUp signedUp3 = race.getSignedUp().stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor3)).findFirst().get();
 		SignedUp signedUp4 = race.getSignedUp().stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor4)).findFirst().get();
 		SignedUp signedUp5 = race.getSignedUp().stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor5)).findFirst().get();
 		signedUp1.getEntry().addLap(new Lap(1, Duration.ofSeconds(600))); // 1
+		race.updatePositions(signedUp1);
 		signedUp2.getEntry().addLap(new Lap(1, Duration.ofSeconds(660))); // 4
+		race.updatePositions(signedUp2);
 		signedUp3.getEntry().addLap(new Lap(1, Duration.ofSeconds(660))); // 4
+		race.updatePositions(signedUp3);
 		signedUp4.getEntry().addLap(new Lap(1, Duration.ofSeconds(650))); // 3
+		race.updatePositions(signedUp4);
 		signedUp5.getEntry().addLap(new Lap(1, Duration.ofSeconds(600))); // 1
-
+		race.updatePositions(signedUp5);
 		assertEquals(1, signedUp1.getPosition());
 		assertEquals(1, signedUp5.getPosition());
 		assertEquals(3, signedUp4.getPosition());
@@ -1239,20 +1257,21 @@ class DirectRaceTests {
 		DinghyClass scorpion = new DinghyClass("Scorpion", 2, 1043);
 		
 		Fleet fleet = new Fleet("Test Fleet");
-		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace race = new DirectRace("Test Race", LocalDateTime.of(2021, 10, 14, 14, 10), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		Competitor competitor1 = new Competitor("Competitor One");
 		Competitor competitor2 = new Competitor("Competitor Two");
 		Dinghy dinghy1 = new Dinghy("1234", scorpion);
 		Dinghy dinghy2 = new Dinghy("4567", scorpion);
 		race.signUp(competitor1, dinghy1);
 		race.signUp(competitor2, dinghy2);
+		Entry entry1 = race.getSignedUp().stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor1)).findFirst().get().getEntry();
 		SignedUp signedUp1 = race.getSignedUp().stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor1)).findFirst().get();
 		SignedUp signedUp2 = race.getSignedUp().stream().filter(signedUp -> signedUp.getEntry().getHelm().equals(competitor2)).findFirst().get();
 		signedUp1.getEntry().addLap(new Lap(1, Duration.ofSeconds(300))); // corrected time 300.000
 		signedUp2.getEntry().addLap(new Lap(1, Duration.ofSeconds(310)));
 		signedUp2.getEntry().addLap(new Lap(2, Duration.ofSeconds(90)));
 		signedUp2.getEntry().removeLap(new Lap(2, Duration.ofSeconds(90))); // corrected time 310.000
-
+		entry1.getSignedUpTo().forEach(s -> s.getRace().updatePositions(s));
 		assertEquals(1, signedUp1.getPosition());
 		assertEquals(2, signedUp2.getPosition());
 	}

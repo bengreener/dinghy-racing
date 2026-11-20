@@ -16,6 +16,7 @@
    
 package com.bginfosys.dinghyracing.persistence;
 
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
@@ -29,5 +30,13 @@ public class RaceRepositoryTests {
 	@Autowired
 	RaceRepository raceRepository;
 
+	@Test
+	public void given_raceHasBeenSaved_when_findByPlannedStartTimeBetween_then_returnsListOfRaces() {
+		
+	}
 	
+	@Test
+	public void given_raceHasBeenSaved_when_findByPlannedStartTimeBetweenAsPaged_then_returnsListOfRaces() {
+		
+	}
 }

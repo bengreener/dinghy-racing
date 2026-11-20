@@ -63,12 +63,11 @@ public class Race implements Serializable {
 	@OrderBy("entry_id ASC")
 	protected Set<SignedUp> signedUp = new HashSet<SignedUp>(64);
 	
-	// tried making this @Transient but value not retained. Appears to be unsafe to assume Spring will use the same instance of the entity
 	// tried setting JsonIgnore but link was still output in Json
 	@ManyToOne
 	protected Entry lastLeadEntry; // used to check if positions need to be recalculated because leadEntry has changed; for example if a lap is removed from the last lead entry
 	
-	// track laps completed by lead entry in database so race id (and ETag) are updated when the lead entry completes a lap without the lead entry changing
+	// track laps completed by lead entry in database so race version (and ETag) are updated when the lead entry completes a lap without the lead entry changing
 	// a better solution to remove lead entry information from race entity and provide through a seperate API call to a controller? (log technical debt and attempt this as quick solution for now)
 	@JsonIgnore
 	protected Integer lastLeadEntryLapsCompleted;
@@ -125,33 +124,12 @@ public class Race implements Serializable {
 		return signedUp != null ? signedUp.stream().mapToInt(signedUp -> signedUp.getEntry().getLaps().size()).max().orElse(0) : 0;
 	}
 	
-	public Entry getLeadEntry() {
-		if (signedUp != null && signedUp.size() > 0 ) {
-			// get entries that have completed the same number of laps as lead boat
-			Integer leadLapCount = this.leadEntrylapsCompleted();
-			Stream<SignedUp> entriesOnLeadLap = signedUp.stream().filter(signedUp -> signedUp.getEntry().getLaps().size() == leadLapCount);
-			// return entry on lead lap with lowest sum of lap times
-			Optional<Entry> optional = entriesOnLeadLap.min((SignedUp signedUp1, SignedUp signedUp2) -> signedUp1.getEntry().getSumOfLapTimes().compareTo(signedUp2.getEntry().getSumOfLapTimes())).map(SignedUp::getEntry);
-			return optional.orElse(null);
-		}
-		return null;
-	}
-	
-	// This method should be overridden in any subtype it is here to allow Race to implement RaceResult and support cast for subtypes without using instanceof
-//	public RaceType getType() {
-//		return null;
-//	}
-	
-	public boolean onLastLap(Entry entry) {
-		return false;
-	}
-	
-	public boolean completedLastLap(Entry entry) {
-		return false;
+	public Optional<Entry> getLeadEntry() {
+		return signedUp.stream().filter(signedUp -> signedUp.getEntry().getLaps().size() == leadEntrylapsCompleted()).min((SignedUp signedUp1, SignedUp signedUp2) -> signedUp1.getEntry().getSumOfLapTimes().compareTo(signedUp2.getEntry().getSumOfLapTimes())).map(SignedUp::getEntry);
 	}
 	
 	public void updatePositions(SignedUp signedUp) {
-		
+		// Do nothing. Implement in subclasses as required
 	};
 	
 	public Boolean singleHandedOnly() {

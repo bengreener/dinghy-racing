@@ -213,7 +213,7 @@ ALTER TABLE entry DROP COLUMN corrected_time;
 ALTER TABLE direct_race ADD COLUMN start_time_offset NUMERIC(21,0) DEFAULT 0;
 UPDATE race set version = version + 1;
 
--- v2026.5.2 to v2026.10.1
+-- v2026.5.2 to v2026.11.1
 CREATE TABLE dropbox_token_seq (
 	next_val BIGINT NOT NULL,
   PRIMARY KEY (next_val)
@@ -226,4 +226,7 @@ CREATE TABLE dropbox_token (
   refresh_token VARCHAR(255) DEFAULT NULL,
   expires_at BIGINT DEFAULT NULL,
   PRIMARY KEY (id)
-) ENGINE=InnoDB
+) ENGINE=InnoDB;
+
+ALTER TABLE direct_race ADD COLUMN grand_prix_finish TINYINT NOT NULL;
+

@@ -164,7 +164,7 @@ public class EntryRepositoryTests {
 		Fleet fleet = new Fleet("Test Fleet");
 		entityManager.persist(fleet);
 		
-		Race race = new DirectRace("Test Race", LocalDateTime.of(2023, 5, 13, 12, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		Race race = new DirectRace("Test Race", LocalDateTime.of(2023, 5, 13, 12, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		race.setFleet(fleet);
 		entityManager.persist(race);
 		
@@ -223,7 +223,7 @@ public class EntryRepositoryTests {
 		Fleet fleet = new Fleet("Test Fleet", dinghyClasses);
 		entityManager.persist(fleet);
 		
-		DirectRace race = new DirectRace("A race", LocalDateTime.of(2023,  3, 24, 12, 30, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace race = new DirectRace("A race", LocalDateTime.of(2023, 3, 24, 12, 30, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		entityManager.persist(race);
 		
 		Dinghy dinghy1 = new Dinghy("1234", dinghyClass);
@@ -252,7 +252,7 @@ public class EntryRepositoryTests {
 		Fleet fleet = new Fleet("Test Fleet", dinghyClasses);
 		entityManager.persist(fleet);
 		
-		DirectRace race = new DirectRace("A race", LocalDateTime.of(2023,  3, 24, 12, 30, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace race = new DirectRace("A race", LocalDateTime.of(2023, 3, 24, 12, 30, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		entityManager.persist(race);
 		Entry entry = new Entry();
 //		entry.setRace(race);
@@ -273,7 +273,7 @@ public class EntryRepositoryTests {
 		Fleet fleet = new Fleet("Test Fleet", dinghyClasses);
 		entityManager.persist(fleet);
 		
-		DirectRace race = new DirectRace("A race", LocalDateTime.of(2023,  3, 24, 12, 30, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART);
+		DirectRace race = new DirectRace("A race", LocalDateTime.of(2023, 3, 24, 12, 30, 00), fleet, Duration.ofMinutes(45), 5, RaceType.FLEET, StartType.CSCCLUBSTART, false);
 		entityManager.persist(race);
 		Entry entry = new Entry();
 //		entry.setRace(race);

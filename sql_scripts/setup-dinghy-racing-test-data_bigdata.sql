@@ -1423,10 +1423,14 @@ INSERT INTO race (id, name, fleet_id, version) VALUES (2, "Graduate A", 4, 0);
 INSERT INTO race (id, name, fleet_id, version) VALUES (3, "Comet A", 1, 0);
 INSERT INTO race (id, name, fleet_id, version) VALUES (4, "Handicap A", 11, 0);
 
-INSERT INTO direct_race (id, duration, planned_laps, planned_start_time, `type`, start_type) VALUES (1, 2700000000000, 5, "2025-02-09 10:10:00", "FLEET", "CSCCLUBSTART");
-INSERT INTO direct_race (id, duration, planned_laps, planned_start_time, `type`, start_type) VALUES (2, 2700000000000, 5, "2025-02-09 10:15:00", "FLEET", "CSCCLUBSTART");
-INSERT INTO direct_race (id, duration, planned_laps, planned_start_time, `type`, start_type) VALUES (3, 2100000000000, 4, "2025-02-09 10:20:00", "FLEET", "CSCCLUBSTART");
-INSERT INTO direct_race (id, duration, planned_laps, planned_start_time, `type`, start_type) VALUES (4, 2100000000000, 4, "2025-02-09 10:25:00", "FLEET", "CSCCLUBSTART");
+INSERT INTO direct_race (id, duration, planned_laps, planned_start_time, `type`, start_type, grand_prix_finish)
+	VALUES (1, 2700000000000, 5, "2025-02-09 10:10:00", "FLEET", "CSCCLUBSTART", 0);
+INSERT INTO direct_race (id, duration, planned_laps, planned_start_time, `type`, start_type, grand_prix_finish)
+	VALUES (2, 2700000000000, 5, "2025-02-09 10:15:00", "FLEET", "CSCCLUBSTART", 0);
+INSERT INTO direct_race (id, duration, planned_laps, planned_start_time, `type`, start_type, grand_prix_finish)
+	VALUES (3, 2100000000000, 4, "2025-02-09 10:20:00", "FLEET", "CSCCLUBSTART", 0);
+INSERT INTO direct_race (id, duration, planned_laps, planned_start_time, `type`, start_type, grand_prix_finish)
+	VALUES (4, 2100000000000, 4, "2025-02-09 10:25:00", "FLEET", "CSCCLUBSTART", 0);
 
 INSERT INTO entry (id, helm_id, dinghy_id, crew_id, on_last_lap, finished_race, version) VALUES (42, 328, 13, NULL, FALSE, FALSE, 0);
 INSERT INTO entry (id, helm_id, dinghy_id, crew_id, on_last_lap, finished_race, version) VALUES (43, 93, 15, NULL, FALSE, FALSE, 0);
